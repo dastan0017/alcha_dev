@@ -12,11 +12,11 @@ export function MediaPage() {
 
   const list = useQuery({
     queryKey: ['media'],
-    queryFn: () => http.get<MediaAsset[]>('/admin/media').then((r) => r.data),
+    queryFn: () => http.get<MediaAsset[]>('/media').then((r) => r.data),
   });
 
   const remove = useMutation({
-    mutationFn: (id: string) => http.delete(`/admin/media/${id}`),
+    mutationFn: (id: string) => http.delete(`/media/${id}`),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['media'] });
       message.success('Удалено');
