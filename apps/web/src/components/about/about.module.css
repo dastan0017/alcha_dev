@@ -1,0 +1,311 @@
+/* ==================================================================== Hero */
+.hero {
+  padding-block: 56px 40px;
+}
+.heroInner {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 48px;
+  align-items: start;
+}
+.name {
+  font-size: clamp(34px, 5vw, 52px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 22px;
+}
+.bio {
+  color: var(--body);
+  font-size: 18px;
+  line-height: 1.65;
+  max-width: 56ch;
+}
+.bio :global(strong) {
+  color: var(--ink);
+  font-weight: 700;
+}
+.bio p + p {
+  margin-top: 14px;
+}
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+}
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.photoCard {
+  position: relative;
+  border-radius: var(--r-card);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  aspect-ratio: 4 / 5;
+}
+.photo {
+  object-fit: cover;
+}
+.photoPlaceholder {
+  position: absolute;
+  inset: 0;
+}
+.caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 14px 16px;
+  background: linear-gradient(transparent, rgba(23, 18, 31, 0.72));
+  color: #fff;
+  font-family: var(--font-mono-stack);
+  font-size: 12px;
+}
+
+/* =============================================================== Headings */
+.sectionH2 {
+  font-size: clamp(24px, 3.4vw, 34px);
+  margin-bottom: 32px;
+}
+
+/* ============================================================= Experience */
+.expList {
+  border-top: 1px solid var(--border);
+}
+.expRow {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 32px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+}
+.expCompany {
+  font-size: 20px;
+}
+.expRole {
+  color: var(--primary);
+  font-weight: 600;
+  margin-top: 4px;
+}
+.expMeta {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 8px;
+  letter-spacing: 0.02em;
+}
+.expDesc {
+  color: var(--body);
+  max-width: 66ch;
+}
+
+/* =============================================================== Projects */
+.projGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.projCard {
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  overflow: hidden;
+  background: #fff;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+}
+.projMedia {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--primary-light);
+}
+.projImg {
+  object-fit: cover;
+}
+.projPlaceholder {
+  position: absolute;
+  inset: 0;
+}
+.projBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.projBadge {
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.projBadgeOwn {
+  background: var(--own-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.projTitle {
+  font-size: 23px;
+}
+.projRole {
+  color: var(--body);
+  font-size: 14px;
+}
+.projRoleLabel {
+  color: var(--muted);
+  font-family: var(--font-mono-stack);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.projDesc {
+  color: var(--body);
+  font-size: 15px;
+}
+.projBullets {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.projBullets li {
+  position: relative;
+  padding-left: 20px;
+  color: var(--body);
+  font-size: 15px;
+}
+.projBullets li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 9px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+.projTech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+.projLink {
+  margin-top: 6px;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 15px;
+}
+.projLink:hover {
+  color: var(--primary-hover);
+}
+
+/* ================================================================== Stack */
+.stackList {
+  border-top: 1px solid var(--border);
+}
+.stackRow {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 24px;
+  align-items: center;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--border);
+}
+.stackCat {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 16px;
+}
+.stackItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ================================================================ Hobbies */
+.hobbyGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.hobbyCard {
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  overflow: hidden;
+  background: #fff;
+  box-shadow: var(--shadow-card);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+  display: flex;
+  flex-direction: column;
+}
+.hobbyCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover);
+}
+.hobbyMedia {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: var(--primary-light);
+}
+.hobbyImg {
+  object-fit: cover;
+}
+.hobbyPlaceholder {
+  position: absolute;
+  inset: 0;
+}
+.hobbyBody {
+  padding: 22px 24px;
+}
+.hobbyTitle {
+  font-size: 19px;
+  margin-bottom: 8px;
+}
+.hobbyDesc {
+  color: var(--body);
+  font-size: 15px;
+}
+.hobbyHandle {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--primary);
+  font-size: 13px;
+}
+
+/* ============================================================= Responsive */
+@media (max-width: 900px) {
+  .heroInner {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .photoCard {
+    order: -1;
+    aspect-ratio: 3 / 2;
+    max-height: 320px;
+  }
+  .projGrid,
+  .hobbyGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .expRow,
+  .stackRow {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .heroActions {
+    width: 100%;
+  }
+}

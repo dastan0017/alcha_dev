@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "works": "Работы",
+    "about": "Обо мне",
+    "cta": "Обсудить проект",
+    "menu": "Меню",
+    "close": "Закрыть"
+  },
+  "locale": {
+    "ru": "RU",
+    "en": "EN",
+    "switchLabel": "Сменить язык"
+  },
+  "hero": {
+    "browserBar": "alcha.dev",
+    "crmTitle": "Заявки",
+    "crmNew": "Новая",
+    "crmInProgress": "В работе",
+    "crmPaid": "Оплачено",
+    "deploy": "Деплой · alcha.dev",
+    "deployStatus": "Успешно",
+    "accessPill": "Доступы и ключи → ВАМ"
+  },
+  "contact": {
+    "title": "Обсудить проект",
+    "subtitle": "Расскажите о задаче — отвечу в течение дня.",
+    "name": "Имя",
+    "contact": "Телефон, Telegram или email",
+    "message": "Сообщение",
+    "namePlaceholder": "Как к вам обращаться",
+    "contactPlaceholder": "Как с вами связаться",
+    "messagePlaceholder": "Пара слов о проекте",
+    "submit": "Отправить",
+    "sending": "Отправляем…",
+    "success": "Спасибо! Свяжусь с вами в ближайшее время.",
+    "error": "Не удалось отправить. Попробуйте ещё раз или напишите в Telegram.",
+    "orTelegram": "или написать в Telegram",
+    "required": "Заполните это поле"
+  },
+  "works": {
+    "viewCase": "Смотреть кейс",
+    "role": "Роль",
+    "stack": "Стек",
+    "whatWasDone": "Что сделано",
+    "backToHome": "На главную",
+    "allWorks": "Работы",
+    "screenshot": "Скриншот проекта",
+    "prev": "Предыдущие работы",
+    "next": "Следующие работы"
+  },
+  "footer": {
+    "tagline": "Сайты, CRM и веб-приложения под ключ.",
+    "rights": "Все права защищены",
+    "madeIn": "Бишкек, Кыргызстан",
+    "navHeading": "Навигация",
+    "contactsHeading": "Контакты"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Страница не найдена",
+    "description": "Возможно, ссылка устарела или страница была удалена.",
+    "home": "Вернуться на главную"
+  },
+  "enHint": {
+    "text": "This site is available in English.",
+    "action": "Switch to EN",
+    "dismiss": "Закрыть"
+  },
+  "a11y": {
+    "skipToContent": "Перейти к содержимому",
+    "homeLink": "alcha.dev — на главную"
+  }
+}

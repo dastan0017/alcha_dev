@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "works": "Work",
+    "about": "About",
+    "cta": "Discuss a project",
+    "menu": "Menu",
+    "close": "Close"
+  },
+  "locale": {
+    "ru": "RU",
+    "en": "EN",
+    "switchLabel": "Change language"
+  },
+  "hero": {
+    "browserBar": "alcha.dev",
+    "crmTitle": "Leads",
+    "crmNew": "New",
+    "crmInProgress": "In progress",
+    "crmPaid": "Paid",
+    "deploy": "Deploy · alcha.dev",
+    "deployStatus": "Success",
+    "accessPill": "Access & keys → YOURS"
+  },
+  "contact": {
+    "title": "Discuss a project",
+    "subtitle": "Tell me about the task — I’ll reply within a day.",
+    "name": "Name",
+    "contact": "Phone, Telegram or email",
+    "message": "Message",
+    "namePlaceholder": "What should I call you",
+    "contactPlaceholder": "How to reach you",
+    "messagePlaceholder": "A few words about the project",
+    "submit": "Send",
+    "sending": "Sending…",
+    "success": "Thanks! I’ll get back to you shortly.",
+    "error": "Couldn’t send. Please try again or message me on Telegram.",
+    "orTelegram": "or message on Telegram",
+    "required": "Please fill in this field"
+  },
+  "works": {
+    "viewCase": "View case",
+    "role": "Role",
+    "stack": "Stack",
+    "whatWasDone": "What was done",
+    "backToHome": "Home",
+    "allWorks": "Selected work",
+    "screenshot": "Project screenshot",
+    "prev": "Previous work",
+    "next": "Next work"
+  },
+  "footer": {
+    "tagline": "Turnkey websites, CRMs and web apps.",
+    "rights": "All rights reserved",
+    "madeIn": "Bishkek, Kyrgyzstan",
+    "navHeading": "Navigation",
+    "contactsHeading": "Contacts"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Page not found",
+    "description": "The link may be outdated or the page may have been removed.",
+    "home": "Back to home"
+  },
+  "enHint": {
+    "text": "Этот сайт доступен на русском.",
+    "action": "Переключить на RU",
+    "dismiss": "Dismiss"
+  },
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "homeLink": "alcha.dev — home"
+  }
+}

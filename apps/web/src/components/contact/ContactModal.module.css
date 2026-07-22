@@ -1,0 +1,134 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(23, 18, 31, 0.5);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fade 0.18s ease;
+}
+
+.dialog {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  background: #fff;
+  border-radius: var(--r-card);
+  padding: 32px;
+  box-shadow: var(--shadow-floating);
+  animation: pop 0.2s ease;
+}
+
+.close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-pill);
+  color: var(--muted);
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+.close:hover {
+  background: var(--primary-light);
+  color: var(--ink);
+}
+
+.title {
+  font-size: 26px;
+  margin-top: 10px;
+}
+.subtitle {
+  color: var(--body);
+  margin-top: 8px;
+  margin-bottom: 22px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.field input,
+.field textarea {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-btn-sm);
+  padding: 11px 13px;
+  font-size: 15px;
+  background: #fff;
+  transition: border-color 0.15s ease;
+  resize: vertical;
+}
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.error {
+  color: #d6336c;
+  font-size: 14px;
+}
+.success {
+  background: var(--primary-light);
+  border-radius: var(--r-card-sm);
+  padding: 20px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.telegram {
+  text-align: center;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 500;
+}
+.telegram:hover {
+  text-decoration: underline;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+@media (max-width: 520px) {
+  .dialog {
+    padding: 24px 20px;
+  }
+}
