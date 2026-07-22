@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Lint · Typecheck · Build
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: alcha
+          POSTGRES_PASSWORD: alcha
+          POSTGRES_DB: alcha
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U alcha -d alcha"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://alcha:alcha@localhost:5432/alcha?schema=public
+      JWT_SECRET: ci-access-secret
+      JWT_REFRESH_SECRET: ci-refresh-secret
+      REVALIDATE_SECRET: ci-revalidate-secret
+      WEB_URL: http://localhost:3000
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm --filter @alcha/api db:generate
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test (unit + web smoke)
+        run: pnpm test
+
+      - name: Migrate & seed database (for e2e)
+        run: |
+          pnpm --filter @alcha/api exec prisma migrate deploy
+          pnpm --filter @alcha/api exec prisma db seed
+
+      - name: API e2e
+        run: pnpm --filter @alcha/api test:e2e

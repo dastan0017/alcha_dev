@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: alcha_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-alcha}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-alcha}
+      POSTGRES_DB: ${POSTGRES_DB:-alcha}
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
+    volumes:
+      - alcha_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-alcha} -d ${POSTGRES_DB:-alcha}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Optional: local S3-compatible storage for media uploads (presigned URLs).
+  # Start with: docker compose up -d minio  (or `pnpm db:up:all`)
+  minio:
+    image: minio/minio:latest
+    container_name: alcha_minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-minioadmin}
+    ports:
+      - '${S3_PORT:-9000}:9000'
+      - '${S3_CONSOLE_PORT:-9001}:9001'
+    volumes:
+      - alcha_miniodata:/data
+    healthcheck:
+      test: ['CMD', 'mc', 'ready', 'local']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Creates the media bucket on first run and makes it public-read for served assets.
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      until (mc alias set local http://minio:9000 ${S3_ACCESS_KEY:-minioadmin} ${S3_SECRET_KEY:-minioadmin}) do echo 'waiting for minio...' && sleep 2; done;
+      mc mb --ignore-existing local/${S3_BUCKET:-alcha-media};
+      mc anonymous set download local/${S3_BUCKET:-alcha-media};
+      echo 'minio bucket ready';
+      exit 0;
+      "
+
+volumes:
+  alcha_pgdata:
+  alcha_miniodata:
