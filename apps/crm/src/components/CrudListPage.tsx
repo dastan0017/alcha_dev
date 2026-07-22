@@ -51,6 +51,7 @@ export function CrudListPage<T extends Item>({
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [formValues, setFormValues] = useState<Record<string, unknown>>({});
 
   const list = useQuery({
     queryKey: [queryKey],
@@ -86,15 +87,13 @@ export function CrudListPage<T extends Item>({
 
   const openCreate = () => {
     setEditingId(null);
-    form.resetFields();
-    form.setFieldsValue({ published: true, sortOrder: items.length, ...emptyValues });
+    setFormValues({ published: true, sortOrder: items.length, ...emptyValues });
     setOpen(true);
   };
 
   const openEdit = (item: T) => {
     setEditingId(item.id);
-    form.resetFields();
-    form.setFieldsValue(toFormValues(item));
+    setFormValues(toFormValues(item));
     setOpen(true);
   };
 
@@ -198,8 +197,12 @@ export function CrudListPage<T extends Item>({
         okText="Сохранить"
         cancelText="Отмена"
         destroyOnClose
+        // Set values once the form inside the modal is actually mounted.
+        afterOpenChange={(opened) => {
+          if (opened) form.setFieldsValue(formValues);
+        }}
       >
-        <Form form={form} layout="vertical" preserve={false}>
+        <Form form={form} layout="vertical" preserve={false} initialValues={formValues}>
           <Form.Item name="sortOrder" hidden>
             <Input />
           </Form.Item>

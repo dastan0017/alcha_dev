@@ -14,6 +14,7 @@ export function SeoPage() {
   const { message } = App.useApp();
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
+  const [formValues, setFormValues] = useState<Record<string, unknown>>({});
 
   const list = useQuery({
     queryKey: ['seo'],
@@ -31,8 +32,7 @@ export function SeoPage() {
   });
 
   const openEdit = (meta?: SeoMeta) => {
-    form.resetFields();
-    form.setFieldsValue(meta ?? { page: 'home', locale: 'ru', keywords: [] });
+    setFormValues(meta ?? { page: 'home', locale: 'ru', keywords: [] });
     setOpen(true);
   };
 
@@ -79,8 +79,11 @@ export function SeoPage() {
         okText="Сохранить"
         cancelText="Отмена"
         destroyOnClose
+        afterOpenChange={(opened) => {
+          if (opened) form.setFieldsValue(formValues);
+        }}
       >
-        <Form form={form} layout="vertical">
+        <Form form={form} layout="vertical" initialValues={formValues}>
           <Space>
             <Form.Item name="page" label="Страница" rules={[{ required: true }]}>
               <Select

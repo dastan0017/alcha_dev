@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { App, Button, Drawer, Form, Input, Select, Table, Tag, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -40,10 +40,12 @@ export function LeadsPage() {
     },
   });
 
-  const openLead = (lead: Lead) => {
-    setActive(lead);
-    form.setFieldsValue({ status: lead.status, note: lead.note ?? '' });
-  };
+  const openLead = (lead: Lead) => setActive(lead);
+
+  // Populate the drawer form after it mounts for the selected lead.
+  useEffect(() => {
+    if (active) form.setFieldsValue({ status: active.status, note: active.note ?? '' });
+  }, [active, form]);
 
   const statusTag = (s: LeadStatus) => <Tag color={LEAD_STATUS_COLORS[s]}>{LEAD_STATUS_LABELS[s].ru}</Tag>;
 
