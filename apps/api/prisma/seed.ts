@@ -76,19 +76,19 @@ async function seedHome(): Promise<void> {
           {
             locale: 'ru',
             eyebrow: 'САЙТЫ · CRM · ПОД КЛЮЧ',
-            heroTitle: 'Сайт, который работает. А не просто существует.',
+            heroTitle: 'Сайт, который работает.\nА не просто существует.',
             heroSubtitle:
               'Помогаю малому бизнесу получать клиентов из Google. Разрабатываю эффективные продающие сайты:',
             heroBullets: [
-              'Современный дизайн',
-              'Убедительные тексты',
-              'SEO-оптимизация',
-              'Интеграция CRM',
+              'Дизайн, вызывающий доверие',
+              'Тексты, которые продают',
+              'SEO — вас находят в Google',
+              'CRM — сайт под вашим контролем',
             ],
             heroNote: 'От $300. Запуск — от 1 недели.',
             heroCtaPrimary: 'Обсудить проект',
             heroCtaSecondary: 'Смотреть работы ↓',
-            trustLine: 'React · TypeScript · Next.js — 5+ лет в продакшене',
+            trustLine: '5+ лет в продакшене — React · TypeScript · Next.js',
             servicesEyebrow: 'УСЛУГИ',
             servicesHeading: 'От первого макета до запуска и передачи ключей',
             servicesLede:
@@ -105,19 +105,19 @@ async function seedHome(): Promise<void> {
           {
             locale: 'en',
             eyebrow: 'WEBSITES · CRM · TURNKEY',
-            heroTitle: 'A website that works. Not one that merely exists.',
+            heroTitle: 'A website that works.\nNot one that merely exists.',
             heroSubtitle:
               'I help small businesses win customers from Google. I build effective websites that sell:',
             heroBullets: [
-              'Modern design',
-              'Persuasive copy',
-              'SEO optimisation',
-              'CRM integration',
+              'Design that earns trust',
+              'Copy that sells',
+              'SEO — clients find you in Google',
+              'CRM — the site under your control',
             ],
             heroNote: 'From $300. Launch in as little as 1 week.',
             heroCtaPrimary: 'Discuss a project',
             heroCtaSecondary: 'See the work ↓',
-            trustLine: 'React · TypeScript · Next.js — 5+ years in production',
+            trustLine: '5+ years in production — React · TypeScript · Next.js',
             servicesEyebrow: 'SERVICES',
             servicesHeading: 'From the first mockup to launch and handover',
             servicesLede:
