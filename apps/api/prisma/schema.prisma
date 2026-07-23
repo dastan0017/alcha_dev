@@ -101,8 +101,10 @@ model HomeContentTranslation {
   servicesLede      String      @default("")
   servicesSecondaryLabel String @default("")
   worksHeading      String
+  pricingEyebrow    String      @default("")
   pricingHeading    String
   pricingNote       String
+  pricingFootnote   String      @default("")
   ctaTitle          String
   ctaSubtitle       String
   ctaTelegramLabel  String

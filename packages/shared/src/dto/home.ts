@@ -24,8 +24,13 @@ export const homeContentSchema = z.object({
   /** Divider label above the supporting service cards. */
   servicesSecondaryLabel: z.string(),
   worksHeading: z.string(),
+  /** Small label above the pricing heading, e.g. "ЦЕНЫ". */
+  pricingEyebrow: z.string(),
   pricingHeading: z.string(),
+  /** Sits beside the pricing heading. */
   pricingNote: z.string(),
+  /** Instalment explanation under the pricing grid. */
+  pricingFootnote: z.string(),
   ctaTitle: z.string(),
   ctaSubtitle: z.string(),
   ctaTelegramLabel: z.string(),
@@ -43,6 +48,8 @@ export const homeContentTranslationInput = homeContentSchema.extend({
   servicesEyebrow: z.string().default(''),
   servicesLede: z.string().default(''),
   servicesSecondaryLabel: z.string().default(''),
+  pricingEyebrow: z.string().default(''),
+  pricingFootnote: z.string().default(''),
 });
 
 export const homeContentUpdateSchema = z.object({

@@ -32,8 +32,17 @@ export function HomeContentPage() {
 
       <Divider orientation="left">Заголовки секций</Divider>
       <TranslatedField field="worksHeading" label="Заголовок «Работы»" />
+
+      <Divider orientation="left">Секция «Цены»</Divider>
+      <TranslatedField field="pricingEyebrow" label="Надзаголовок" required={false} />
       <TranslatedField field="pricingHeading" label="Заголовок «Цены»" />
-      <TranslatedField field="pricingNote" label="Подпись к ценам" />
+      <TranslatedField field="pricingNote" label="Подпись рядом с заголовком" />
+      <TranslatedField
+        field="pricingFootnote"
+        label="Сноска под тарифами (рассрочка)"
+        type="textarea"
+        required={false}
+      />
 
       <Divider orientation="left">Баннер призыва к действию</Divider>
       <TranslatedField field="ctaTitle" label="Заголовок баннера" />

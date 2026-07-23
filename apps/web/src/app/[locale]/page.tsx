@@ -44,11 +44,7 @@ export default async function HomePage({ params }: Params) {
       <Hero content={home.content} />
       <Services content={home.content} services={home.services} />
       <Works heading={home.content.worksHeading} projects={home.projects} />
-      <Pricing
-        heading={home.content.pricingHeading}
-        note={home.content.pricingNote}
-        plans={home.pricingPlans}
-      />
+      <Pricing content={home.content} plans={home.pricingPlans} />
       <CtaBanner
         title={home.content.ctaTitle}
         subtitle={home.content.ctaSubtitle}
