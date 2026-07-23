@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 230" role="img" aria-label="Разработка + SEO">
+<style>
+@keyframes scn{0%{opacity:0}3%,94%{opacity:1}99%,100%{opacity:0}}
+@keyframes b_a1{0%,4%{transform:scaleX(0)}10%,100%{transform:scaleX(1)}}
+@keyframes b_a2{0%,10%{transform:scaleX(0)}16%,100%{transform:scaleX(1)}}
+@keyframes b_a3{0%,16%{transform:scaleX(0)}22%,100%{transform:scaleX(1)}}
+@keyframes b_a4{0%,22%{transform:scaleX(0)}28%,100%{transform:scaleX(1)}}
+@keyframes b_a5{0%,28%{transform:scaleX(0)}34%,100%{transform:scaleX(1)}}
+@keyframes b_a6{0%,34%{transform:scaleX(0)}40%,100%{transform:scaleX(1)}}
+@keyframes b_a7{0%,40%{transform:scaleX(0)}46%,100%{transform:scaleX(1)}}
+@keyframes b_cr{0%{opacity:1}100%{opacity:0}}
+@keyframes b_mg{0%,46%{transform:scale(1)}50%{transform:scale(1.18)}54%,100%{transform:scale(1)}}
+@keyframes b_r3{0%,58%{transform:translateY(0)}70%,100%{transform:translateY(-80px)}}
+@keyframes b_r12{0%,58%{transform:translateY(0)}70%,100%{transform:translateY(40px)}}
+@keyframes b_fl{0%,70%{stroke:#DFDAE7}76%,100%{stroke:#5B34C9}}
+@keyframes b_up{0%,72%{transform:scale(0)}76%{transform:scale(1.2)}78%,88%{transform:scale(1)}92%,100%{transform:scale(0)}}
+@media (prefers-reduced-motion: reduce){*{animation-delay:-7.2s!important;animation-play-state:paused!important}}
+</style>
+<rect width="440" height="230" rx="18" fill="#F8F6FC"></rect>
+<g style="animation:scn 8s linear infinite">
+<rect x="28" y="32" width="204" height="166" rx="12" fill="#FFFFFF" stroke="#17121F" stroke-opacity=".1"></rect>
+<circle cx="46" cy="50" r="4" fill="#D6336C"></circle><circle cx="60" cy="50" r="4" fill="#E8930C"></circle><circle cx="74" cy="50" r="4" fill="#5B34C9"></circle>
+<line x1="28" y1="62" x2="232" y2="62" stroke="#17121F" stroke-opacity=".08" stroke-width="1"></line>
+<rect x="44" y="76" width="70" height="8" rx="4" fill="#5B34C9" style="transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);animation:b_a1 8s linear infinite"></rect>
+<rect x="56" y="90" width="92" height="8" rx="4" fill="#C6C0D1" style="transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);animation:b_a2 8s linear infinite"></rect>
+<rect x="56" y="104" width="58" height="8" rx="4" fill="#D6336C" style="transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);animation:b_a3 8s linear infinite"></rect>
+<rect x="68" y="118" width="82" height="8" rx="4" fill="#C6C0D1" style="transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);animation:b_a4 8s linear infinite"></rect>
+<rect x="68" y="132" width="54" height="8" rx="4" fill="#8E6BE8" style="transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);animation:b_a5 8s linear infinite"></rect>
+<rect x="56" y="146" width="66" height="8" rx="4" fill="#C6C0D1" style="transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);animation:b_a6 8s linear infinite"></rect>
+<rect x="44" y="160" width="40" height="8" rx="4" fill="#4A4553" style="transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);animation:b_a7 8s linear infinite"></rect>
+<rect x="92" y="158" width="8" height="12" rx="2" fill="#5B34C9" style="animation:b_cr 1s steps(2,jump-none) infinite"></rect>
+<rect x="252" y="32" width="160" height="166" rx="12" fill="#FFFFFF" stroke="#17121F" stroke-opacity=".1"></rect>
+<g fill="none" stroke="#17121F" stroke-width="2.5" stroke-linecap="round" style="transform-box:fill-box;transform-origin:50% 50%;animation:b_mg 8s ease-in-out infinite"><circle cx="280" cy="54" r="8"></circle><line x1="286.5" y1="60.5" x2="294" y2="68"></line></g>
+<rect x="316" y="46" width="76" height="8" rx="4" fill="#E2DDEA"></rect>
+<g style="animation:b_r12 8s ease-in-out infinite">
+<g><rect x="268" y="84" width="128" height="32" rx="8" fill="#FFFFFF" stroke="#DFDAE7"></rect><rect x="276" y="92" width="4" height="16" rx="2" fill="#D9D3E3"></rect><rect x="288" y="92" width="72" height="6" rx="3" fill="#E2DDEA"></rect><rect x="288" y="102" width="48" height="6" rx="3" fill="#EDE9F2"></rect></g>
+<g><rect x="268" y="124" width="128" height="32" rx="8" fill="#FFFFFF" stroke="#DFDAE7"></rect><rect x="276" y="132" width="4" height="16" rx="2" fill="#D9D3E3"></rect><rect x="288" y="132" width="64" height="6" rx="3" fill="#E2DDEA"></rect><rect x="288" y="142" width="52" height="6" rx="3" fill="#EDE9F2"></rect></g>
+</g>
+<g style="animation:b_r3 8s ease-in-out infinite"><rect x="268" y="164" width="128" height="32" rx="8" fill="#FFFFFF" stroke="#DFDAE7" stroke-width="1.5" style="animation:b_fl 8s linear infinite"></rect><rect x="276" y="172" width="4" height="16" rx="2" fill="#5B34C9"></rect><rect x="288" y="172" width="68" height="6" rx="3" fill="#C4B0FF"></rect><rect x="288" y="182" width="44" height="6" rx="3" fill="#E2DDEA"></rect><path d="M382 186 l6 -9 6 9 z" fill="#D6336C" style="transform-box:fill-box;transform-origin:50% 100%;transform:scale(0);animation:b_up 8s linear infinite"></path></g>
+</g>
+</svg>

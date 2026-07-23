@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 230" role="img" aria-label="Дизайн и тексты">
+<style>
+@keyframes scn{0%{opacity:0}3%,94%{opacity:1}99%,100%{opacity:0}}
+@keyframes a_hd{0%,8%{stroke-dashoffset:380}20%,100%{stroke-dashoffset:0}}
+@keyframes a_im{0%,22%{stroke-dashoffset:280}34%,100%{stroke-dashoffset:0}}
+@keyframes a_ic{0%,34%{opacity:0}38%,100%{opacity:1}}
+@keyframes a_t1{0%,36%{transform:scaleX(0)}42%,100%{transform:scaleX(1)}}
+@keyframes a_t2{0%,42%{transform:scaleX(0)}48%,100%{transform:scaleX(1)}}
+@keyframes a_t3{0%,48%{transform:scaleX(0)}54%,100%{transform:scaleX(1)}}
+@keyframes a_t4{0%,54%{transform:scaleX(0)}60%,100%{transform:scaleX(1)}}
+@keyframes a_t5{0%,58%{transform:scaleX(0)}64%,100%{transform:scaleX(1)}}
+@keyframes a_bt{0%,66%{transform:scale(0)}70%{transform:scale(1.12)}72%,100%{transform:scale(1)}}
+@keyframes a_dt{0%,74%{transform:scale(0)}77%,100%{transform:scale(1)}}
+@keyframes a_cu{0%{transform:translate(360px,200px)}8%{transform:translate(196px,48px)}20%{transform:translate(140px,72px)}32%{transform:translate(250px,78px)}45%{transform:translate(238px,104px)}58%{transform:translate(170px,150px)}66%{transform:translate(152px,180px)}72%{transform:translate(152px,180px)}82%{transform:translate(330px,168px)}100%{transform:translate(360px,200px)}}
+@keyframes a_cc{0%,67%{transform:scale(1)}69%{transform:scale(.8)}71%,100%{transform:scale(1)}}
+@media (prefers-reduced-motion: reduce){*{animation-delay:-7.2s!important;animation-play-state:paused!important}}
+</style>
+<rect width="440" height="230" rx="18" fill="#F8F6FC"></rect>
+<g style="animation:scn 8s linear infinite">
+<rect x="115" y="28" width="210" height="174" rx="10" fill="#FFFFFF" stroke="#17121F" stroke-opacity=".1"></rect>
+<rect x="131" y="44" width="178" height="12" rx="4" fill="none" stroke="#17121F" stroke-opacity=".45" stroke-width="2" style="stroke-dasharray:380;animation:a_hd 8s linear infinite"></rect>
+<rect x="131" y="68" width="80" height="60" rx="6" fill="none" stroke="#17121F" stroke-opacity=".45" stroke-width="2" style="stroke-dasharray:280;animation:a_im 8s linear infinite"></rect>
+<g stroke="#8A8494" stroke-width="2" fill="none" style="opacity:0;animation:a_ic 8s linear infinite"><circle cx="147" cy="84" r="5"></circle><path d="M135 122 l18 -16 12 9 16 -13"></path></g>
+<rect x="223" y="70" width="86" height="8" rx="4" fill="#CFC8DA" style="transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);animation:a_t1 8s linear infinite"></rect>
+<rect x="223" y="84" width="62" height="8" rx="4" fill="#CFC8DA" style="transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);animation:a_t2 8s linear infinite"></rect>
+<rect x="223" y="98" width="74" height="8" rx="4" fill="#CFC8DA" style="transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);animation:a_t3 8s linear infinite"></rect>
+<rect x="131" y="142" width="178" height="8" rx="4" fill="#DDD7E6" style="transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);animation:a_t4 8s linear infinite"></rect>
+<rect x="131" y="156" width="140" height="8" rx="4" fill="#DDD7E6" style="transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);animation:a_t5 8s linear infinite"></rect>
+<rect x="131" y="174" width="56" height="16" rx="6" fill="#5B34C9" style="transform-box:fill-box;transform-origin:50% 50%;transform:scale(0);animation:a_bt 8s linear infinite"></rect>
+<circle cx="300" cy="182" r="5" fill="#D6336C" style="transform-box:fill-box;transform-origin:50% 50%;transform:scale(0);animation:a_dt 8s linear infinite"></circle>
+<g style="animation:a_cu 8s ease-in-out infinite"><path d="M0 0 L14 5 L8 7.5 L11.5 14 L9 15.2 L5.6 8.6 L0 12 Z" fill="#17121F" stroke="#FFFFFF" stroke-width="1.2" style="animation:a_cc 8s linear infinite"></path></g>
+</g>
+</svg>
