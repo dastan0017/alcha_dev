@@ -46,7 +46,7 @@ export function Pricing({
               </ul>
               <ContactButton
                 label={nav('cta')}
-                className={`btn ${plan.highlighted ? 'btn--on-dark' : 'btn--ghost'} ${styles.priceCta}`}
+                className={`btn ${plan.highlighted ? 'btn--primary' : 'btn--ghost'} ${styles.priceCta}`}
               />
             </article>
           ))}

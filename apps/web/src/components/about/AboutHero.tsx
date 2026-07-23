@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import Image from 'next/image';
 import type { AboutProfile, SiteSettings } from '@alcha/shared';
 import styles from './about.module.css';
@@ -6,6 +7,10 @@ interface Social {
   label: string;
   href: string;
   external: boolean;
+  /** Initials shown in the round badge. */
+  badge: string;
+  /** Brand colour: badge background and hover border, per the design. */
+  brand: string;
 }
 
 export function AboutHero({
@@ -18,10 +23,34 @@ export function AboutHero({
   cvLabel: string;
 }) {
   const socials: Social[] = [
-    settings.github && { label: 'GitHub', href: settings.github, external: true },
-    settings.linkedin && { label: 'LinkedIn', href: settings.linkedin, external: true },
-    settings.telegram && { label: 'Telegram', href: settings.telegram, external: true },
-    settings.email && { label: settings.email, href: `mailto:${settings.email}`, external: false },
+    settings.github && {
+      label: 'GitHub',
+      href: settings.github,
+      external: true,
+      badge: 'GH',
+      brand: '#17121F',
+    },
+    settings.linkedin && {
+      label: 'LinkedIn',
+      href: settings.linkedin,
+      external: true,
+      badge: 'in',
+      brand: '#0A66C2',
+    },
+    settings.telegram && {
+      label: 'Telegram',
+      href: settings.telegram,
+      external: true,
+      badge: 'TG',
+      brand: '#229ED9',
+    },
+    settings.email && {
+      label: settings.email,
+      href: `mailto:${settings.email}`,
+      external: false,
+      badge: '@',
+      brand: '#5B34C9',
+    },
   ].filter(Boolean) as Social[];
 
   return (
@@ -46,10 +75,14 @@ export function AboutHero({
               {socials.map((s) => (
                 <li key={s.label}>
                   <a
-                    className="pill"
+                    className={styles.socialPill}
+                    style={{ '--brand': s.brand } as CSSProperties}
                     href={s.href}
                     {...(s.external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
                   >
+                    <span className={styles.socialBadge} aria-hidden="true">
+                      {s.badge}
+                    </span>
                     {s.label}
                   </a>
                 </li>

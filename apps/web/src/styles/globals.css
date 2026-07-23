@@ -163,9 +163,6 @@ h4 {
     border-color 0.15s ease;
   white-space: nowrap;
 }
-.btn:active {
-  transform: translateY(1px);
-}
 .btn--primary {
   background: var(--primary);
   color: #fff;
@@ -173,28 +170,36 @@ h4 {
 }
 .btn--primary:hover {
   background: var(--primary-hover);
+  transform: translateY(-1px);
 }
 .btn--ghost {
-  background: #fff;
+  background: transparent;
   color: var(--ink);
-  border: 1px solid var(--border-strong);
+  border: 1px solid rgba(23, 18, 31, 0.16);
 }
+/* Design darkens the border to ink and keeps the label colour. */
 .btn--ghost:hover {
-  border-color: var(--primary);
-  color: var(--primary);
+  border-color: var(--ink);
 }
+/* Primary action on the dark CTA banner: purple, lightening on hover. */
 .btn--on-dark {
-  background: #fff;
-  color: var(--ink);
+  background: var(--primary);
+  color: #fff;
+}
+.btn--on-dark:hover {
+  background: #6d46db;
 }
 .btn--on-dark-ghost {
   background: transparent;
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 .btn--on-dark-ghost:hover {
-  border-color: var(--on-dark-purple);
-  color: var(--on-dark-purple);
+  border-color: #fff;
+}
+/* Declared last so the press state wins over the hover lift. */
+.btn:active {
+  transform: translateY(1px);
 }
 
 .chip {
@@ -267,9 +272,10 @@ a.pill:hover {
   margin-bottom: 44px;
 }
 .section-title {
-  font-size: clamp(28px, 4vw, 40px);
-  /* No ch cap: long headings should use the container width and stay on one
-     line on desktop. `balance` keeps the wrap even once they do have to wrap. */
+  /* Design 2a sets section h2 at 34px. No ch cap, so long headings use the
+     container width; `balance` keeps the wrap even once they must wrap. */
+  font-size: clamp(26px, 3.2vw, 34px);
+  letter-spacing: -0.01em;
   text-wrap: balance;
 }
 

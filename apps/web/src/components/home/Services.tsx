@@ -49,9 +49,7 @@ export function Services({ content, services }: { content: HomeContent; services
         {rest.length > 0 && (
           <>
             {content.servicesSecondaryLabel && (
-              <p className={`eyebrow eyebrow--muted ${styles.svcSecondaryLabel}`}>
-                {content.servicesSecondaryLabel}
-              </p>
+              <p className={styles.svcSecondaryLabel}>{content.servicesSecondaryLabel}</p>
             )}
             <div className={styles.svcGrid}>
               {rest.map((service) => (
