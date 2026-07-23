@@ -9,6 +9,13 @@ export function HomeContentPage() {
       <TranslatedField field="eyebrow" label="Надзаголовок" />
       <TranslatedField field="heroTitle" label="Заголовок" type="textarea" rows={2} />
       <TranslatedField field="heroSubtitle" label="Подзаголовок" type="textarea" />
+      <TranslatedField
+        field="heroBullets"
+        label="Пункты под подзаголовком"
+        type="tags"
+        required={false}
+      />
+      <TranslatedField field="heroNote" label="Строка с ценой / сроком" required={false} />
       <TranslatedField field="heroCtaPrimary" label="Кнопка (основная)" />
       <TranslatedField field="heroCtaSecondary" label="Кнопка (вторичная)" />
       <TranslatedField field="trustLine" label="Строка доверия" />

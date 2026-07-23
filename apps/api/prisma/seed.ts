@@ -78,7 +78,14 @@ async function seedHome(): Promise<void> {
             eyebrow: 'САЙТЫ · CRM · ПОД КЛЮЧ',
             heroTitle: 'Сайт, который работает. А не просто существует.',
             heroSubtitle:
-              'Помогаю малому бизнесу получать клиентов из Google: сайт под ключ — дизайн, продающие тексты, SEO и CRM. От $300, запуск за 1–2 недели.',
+              'Помогаю малому бизнесу получать клиентов из Google. Разрабатываю эффективные продающие сайты:',
+            heroBullets: [
+              'Современный дизайн',
+              'Убедительные тексты',
+              'SEO-оптимизация',
+              'Интеграция CRM',
+            ],
+            heroNote: 'От $300. Запуск — от 1 недели.',
             heroCtaPrimary: 'Обсудить проект',
             heroCtaSecondary: 'Смотреть работы ↓',
             trustLine: 'React · TypeScript · Next.js — 5+ лет в продакшене',
@@ -96,7 +103,14 @@ async function seedHome(): Promise<void> {
             eyebrow: 'WEBSITES · CRM · TURNKEY',
             heroTitle: 'A website that works. Not one that merely exists.',
             heroSubtitle:
-              'I help small businesses win customers from Google: a turnkey website — design, copy that sells, SEO and a CRM. From $300, live in 1–2 weeks.',
+              'I help small businesses win customers from Google. I build effective websites that sell:',
+            heroBullets: [
+              'Modern design',
+              'Persuasive copy',
+              'SEO optimisation',
+              'CRM integration',
+            ],
+            heroNote: 'From $300. Launch in as little as 1 week.',
             heroCtaPrimary: 'Discuss a project',
             heroCtaSecondary: 'See the work ↓',
             trustLine: 'React · TypeScript · Next.js — 5+ years in production',

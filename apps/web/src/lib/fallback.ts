@@ -26,6 +26,8 @@ export function emptyHome(locale: Locale): HomeResponse {
       eyebrow: '',
       heroTitle: '',
       heroSubtitle: '',
+      heroBullets: [],
+      heroNote: '',
       heroCtaPrimary: '',
       heroCtaSecondary: '',
       trustLine: '',

@@ -9,6 +9,10 @@ export const homeContentSchema = z.object({
   eyebrow: z.string(),
   heroTitle: z.string(),
   heroSubtitle: z.string(),
+  /** Short benefit bullets rendered under the hero subtitle. */
+  heroBullets: z.array(z.string()),
+  /** Closing price / timeline line under the bullets. */
+  heroNote: z.string(),
   heroCtaPrimary: z.string(),
   heroCtaSecondary: z.string(),
   trustLine: z.string(),
@@ -23,7 +27,14 @@ export const homeContentSchema = z.object({
 });
 export type HomeContent = z.infer<typeof homeContentSchema>;
 
-export const homeContentTranslationInput = homeContentSchema;
+/**
+ * Write shape: the optional hero extras default so the CRM can submit a form
+ * with an empty bullets field without failing validation.
+ */
+export const homeContentTranslationInput = homeContentSchema.extend({
+  heroBullets: z.array(z.string()).default([]),
+  heroNote: z.string().default(''),
+});
 
 export const homeContentUpdateSchema = z.object({
   translations: translatedSchema(homeContentTranslationInput),

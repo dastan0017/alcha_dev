@@ -11,6 +11,19 @@ export function Hero({ content }: { content: HomeContent }) {
           <p className="eyebrow">{content.eyebrow}</p>
           <h1 className={styles.heroTitle}>{content.heroTitle}</h1>
           <p className={styles.heroSub}>{content.heroSubtitle}</p>
+          {content.heroBullets.length > 0 && (
+            <ul className={styles.heroBullets}>
+              {content.heroBullets.map((bullet) => (
+                <li key={bullet}>
+                  <span className={styles.heroCheck} aria-hidden="true">
+                    ✓
+                  </span>
+                  {bullet}
+                </li>
+              ))}
+            </ul>
+          )}
+          {content.heroNote && <p className={styles.heroNote}>{content.heroNote}</p>}
           <div className={styles.heroCtas}>
             <ContactButton label={content.heroCtaPrimary} />
             <a href="#works" className="btn btn--ghost">

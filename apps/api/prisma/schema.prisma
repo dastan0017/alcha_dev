@@ -91,6 +91,8 @@ model HomeContentTranslation {
   eyebrow           String
   heroTitle         String
   heroSubtitle      String
+  heroBullets       String[]
+  heroNote          String      @default("")
   heroCtaPrimary    String
   heroCtaSecondary  String
   trustLine         String
