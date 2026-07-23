@@ -268,7 +268,9 @@ a.pill:hover {
 }
 .section-title {
   font-size: clamp(28px, 4vw, 40px);
-  max-width: 20ch;
+  /* No ch cap: long headings should use the container width and stay on one
+     line on desktop. `balance` keeps the wrap even once they do have to wrap. */
+  text-wrap: balance;
 }
 
 /* Striped placeholder for project screenshots without an image yet. */
