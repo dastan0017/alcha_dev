@@ -49,10 +49,10 @@ async function wipeContent(): Promise<void> {
 async function seedSettings(): Promise<void> {
   await prisma.siteSettings.create({
     data: {
-      email: 'hello@alcha.dev',
-      telegram: 'https://t.me/alchadev', // TODO(dastan): real Telegram handle
-      whatsapp: 'https://wa.me/996700000000', // TODO(dastan): real WhatsApp number
-      github: 'https://github.com/dastanr', // TODO(dastan): real GitHub username
+      email: 'dastan.rakhmanzhanov@gmail.com',
+      telegram: 'https://t.me/rakhmanzhanov', // TODO(dastan): real Telegram handle
+      whatsapp: 'https://wa.me/996706304803', // TODO(dastan): real WhatsApp number
+      github: 'https://github.com/dastan0017', // TODO(dastan): real GitHub username
       linkedin: 'https://www.linkedin.com/in/dastan-rakhmanzhanov', // TODO(dastan)
       instagram: 'https://www.instagram.com/dastich_fantastich_r',
       cvUrl: '/cv/dastan-rakhmanzhanov.pdf', // TODO(dastan): upload real CV in the CRM
@@ -78,7 +78,7 @@ async function seedHome(): Promise<void> {
             eyebrow: 'САЙТЫ · CRM · ПОД КЛЮЧ',
             heroTitle: 'Сайт, который работает. А не просто существует.',
             heroSubtitle:
-              'Продуманный дизайн, продающие тексты, SEO для высоких позиций в поиске и удобная CRM для управления контентом.',
+              'Помогаю малому бизнесу получать клиентов из Google: сайт под ключ — дизайн, продающие тексты, SEO и CRM. От $300, запуск за 1–2 недели.',
             heroCtaPrimary: 'Обсудить проект',
             heroCtaSecondary: 'Смотреть работы ↓',
             trustLine: 'React · TypeScript · Next.js — 5+ лет в продакшене',
@@ -96,7 +96,7 @@ async function seedHome(): Promise<void> {
             eyebrow: 'WEBSITES · CRM · TURNKEY',
             heroTitle: 'A website that works. Not one that merely exists.',
             heroSubtitle:
-              'Thoughtful design, copy that sells, SEO built for top search rankings, and a handy CRM to manage your content.',
+              'I help small businesses win customers from Google: a turnkey website — design, copy that sells, SEO and a CRM. From $300, live in 1–2 weeks.',
             heroCtaPrimary: 'Discuss a project',
             heroCtaSecondary: 'See the work ↓',
             trustLine: 'React · TypeScript · Next.js — 5+ years in production',
@@ -180,7 +180,12 @@ async function seedServices(): Promise<void> {
         number: s.number,
         sortOrder: s.sortOrder,
         published: true,
-        translations: { create: [{ locale: 'ru', ...s.ru }, { locale: 'en', ...s.en }] },
+        translations: {
+          create: [
+            { locale: 'ru', ...s.ru },
+            { locale: 'en', ...s.en },
+          ],
+        },
       },
     });
   }
@@ -241,7 +246,8 @@ async function seedPricing(): Promise<void> {
         priceLabel: 'from $700',
         termLine: '3–6 WEEKS · 50/30/20 INSTALMENTS',
         highlightLabel: 'MOST POPULAR',
-        description: '3–7 pages and an admin panel: the site lives and updates without a developer.',
+        description:
+          '3–7 pages and an admin panel: the site lives and updates without a developer.',
         features: [
           'Everything in “Landing page”',
           'CRM: manage the site content yourself — text, photos, prices',
@@ -285,7 +291,12 @@ async function seedPricing(): Promise<void> {
         sortOrder: p.sortOrder,
         highlighted: p.highlighted,
         published: true,
-        translations: { create: [{ locale: 'ru', ...p.ru }, { locale: 'en', ...p.en }] },
+        translations: {
+          create: [
+            { locale: 'ru', ...p.ru },
+            { locale: 'en', ...p.en },
+          ],
+        },
       },
     });
   }
@@ -564,7 +575,12 @@ async function seedProjects(): Promise<void> {
         published: true,
         screenshots: [],
         coverImage: null,
-        translations: { create: [{ locale: 'ru', ...p.ru }, { locale: 'en', ...p.en }] },
+        translations: {
+          create: [
+            { locale: 'ru', ...p.ru },
+            { locale: 'en', ...p.en },
+          ],
+        },
       },
     });
   }
@@ -613,7 +629,12 @@ async function seedExperience(): Promise<void> {
         company: e.company,
         sortOrder: e.sortOrder,
         published: true,
-        translations: { create: [{ locale: 'ru', ...e.ru }, { locale: 'en', ...e.en }] },
+        translations: {
+          create: [
+            { locale: 'ru', ...e.ru },
+            { locale: 'en', ...e.en },
+          ],
+        },
       },
     });
   }
@@ -660,7 +681,15 @@ async function seedStack(): Promise<void> {
   const categories = [
     {
       sortOrder: 0,
-      items: ['React', 'Next.js', 'React Native', 'Expo', 'TypeScript', 'Tailwind CSS', 'Material UI'],
+      items: [
+        'React',
+        'Next.js',
+        'React Native',
+        'Expo',
+        'TypeScript',
+        'Tailwind CSS',
+        'Material UI',
+      ],
       ru: { title: 'Фронтенд' },
       en: { title: 'Frontend' },
     },
@@ -696,7 +725,12 @@ async function seedStack(): Promise<void> {
         sortOrder: c.sortOrder,
         items: c.items,
         published: true,
-        translations: { create: [{ locale: 'ru', ...c.ru }, { locale: 'en', ...c.en }] },
+        translations: {
+          create: [
+            { locale: 'ru', ...c.ru },
+            { locale: 'en', ...c.en },
+          ],
+        },
       },
     });
   }
@@ -711,8 +745,7 @@ async function seedHobbies(): Promise<void> {
       sortOrder: 0,
       ru: {
         title: '@arashan_televyshka',
-        description:
-          'Делюсь опытом в фермерстве: разведение арашанских овец и жизнь хозяйства.',
+        description: 'Делюсь опытом в фермерстве: разведение арашанских овец и жизнь хозяйства.',
       },
       en: {
         title: '@arashan_televyshka',
@@ -744,7 +777,12 @@ async function seedHobbies(): Promise<void> {
         imageUrl: null,
         sortOrder: h.sortOrder,
         published: true,
-        translations: { create: [{ locale: 'ru', ...h.ru }, { locale: 'en', ...h.en }] },
+        translations: {
+          create: [
+            { locale: 'ru', ...h.ru },
+            { locale: 'en', ...h.en },
+          ],
+        },
       },
     });
   }
