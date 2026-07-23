@@ -89,7 +89,11 @@ async function seedHome(): Promise<void> {
             heroCtaPrimary: 'Обсудить проект',
             heroCtaSecondary: 'Смотреть работы ↓',
             trustLine: 'React · TypeScript · Next.js — 5+ лет в продакшене',
+            servicesEyebrow: 'УСЛУГИ',
             servicesHeading: 'От первого макета до запуска и передачи ключей',
+            servicesLede:
+              'Сайт продают дизайн и тексты — на них мой главный фокус. Быстрый код, SEO, CRM и сервер входят в каждый проект по умолчанию.',
+            servicesSecondaryLabel: 'И ВСЕГДА В КОМПЛЕКТЕ',
             worksHeading: 'Работы',
             pricingHeading: 'Сколько это стоит',
             pricingNote: 'Точная смета — за 24 часа после первого разговора',
@@ -114,7 +118,11 @@ async function seedHome(): Promise<void> {
             heroCtaPrimary: 'Discuss a project',
             heroCtaSecondary: 'See the work ↓',
             trustLine: 'React · TypeScript · Next.js — 5+ years in production',
+            servicesEyebrow: 'SERVICES',
             servicesHeading: 'From the first mockup to launch and handover',
+            servicesLede:
+              'Websites are sold by design and copy — that is where my focus goes. Fast code, SEO, a CRM and the server are included in every project by default.',
+            servicesSecondaryLabel: 'AND ALWAYS INCLUDED',
             worksHeading: 'Selected work',
             pricingHeading: 'How much it costs',
             pricingNote: 'A precise quote within 24 hours of our first conversation',
@@ -135,55 +143,89 @@ async function seedServices(): Promise<void> {
     {
       number: '01',
       sortOrder: 0,
+      featured: true,
       ru: {
         title: 'Дизайн и тексты',
         description:
-          'Макет + тексты, которые цепляют и продают. Правим вместе, пока не скажете „да“.',
+          'Дизайн и тексты, которые превращают посетителей в клиентов, — а не просто «красиво». Этим занимаюсь лично и глубже всего.',
+        badge: 'МОЯ ГЛАВНАЯ СИЛА',
+        bullets: [
+          'Макет — до начала разработки',
+          'Тексты — на языке ваших клиентов',
+          'Правки — пока не скажете «да»',
+        ],
+        techLine: '',
       },
       en: {
         title: 'Design & copy',
         description:
-          'A layout plus copy that grabs attention and sells. We refine it together until you say “yes.”',
+          'Design and copy that turn visitors into customers — not just something that “looks nice”. This is what I do personally, and go deepest on.',
+        badge: 'MY CORE STRENGTH',
+        bullets: [
+          'A mockup — before development starts',
+          'Copy — in your customers’ language',
+          'Revisions — until you say “yes”',
+        ],
+        techLine: '',
       },
     },
     {
       number: '02',
       sortOrder: 1,
+      featured: false,
       ru: {
         title: 'Разработка + SEO',
-        description:
-          'React и Next.js: сайт грузится быстро и хорошо виден в Google. SEO заложено с первой строки кода.',
+        description: 'Сайт грузится мгновенно и виден в Google — клиенты находят вас сами.',
+        badge: '',
+        bullets: ['Lighthouse 95+', 'Идеально на телефоне'],
+        techLine: 'React · Next.js · TypeScript',
       },
       en: {
         title: 'Development + SEO',
-        description:
-          'React and Next.js: the site loads fast and ranks well in Google. SEO is built in from the very first line of code.',
+        description: 'The site loads instantly and is visible in Google — clients find you themselves.',
+        badge: '',
+        bullets: ['Lighthouse 95+', 'Flawless on mobile'],
+        techLine: 'React · Next.js · TypeScript',
       },
     },
     {
       number: '03',
       sortOrder: 2,
+      featured: false,
       ru: {
         title: 'CRM и контент',
         description:
-          'Управляете сайтом сами: тексты, фото, цены — в любой момент. Система ведёт учёт продаж и заявок и готовит отчёты, чтобы вы видели цифры бизнеса.',
+          'Меняете тексты, фото и цены сами — без программиста. CRM считает заявки и продажи.',
+        badge: '',
+        bullets: ['Обновления — без разработчика', 'Отчёты и цифры бизнеса'],
+        techLine: '',
       },
       en: {
         title: 'CRM & content',
         description:
-          'Run the site yourself: text, photos, prices — anytime. The system tracks sales and leads and prepares reports so you can see your business numbers.',
+          'Change text, photos and prices yourself — no developer needed. The CRM counts leads and sales.',
+        badge: '',
+        bullets: ['Updates — without a developer', 'Reports and business numbers'],
+        techLine: '',
       },
     },
     {
       number: '04',
       sortOrder: 3,
+      featured: false,
       ru: {
         title: 'Сервер и передача',
-        description: 'Разворачиваю, настраиваю, отдаю ключи. Всё — ваше.',
+        description: 'Запускаю на вашем домене и отдаю все доступы. Всё — ваше.',
+        badge: '',
+        bullets: ['Сервер и домен — на вас', 'Код и доступы — ваши'],
+        techLine: '',
       },
       en: {
         title: 'Server & handover',
-        description: 'I deploy, configure, and hand over the keys. Everything is yours.',
+        description: 'I launch on your domain and hand over every credential. Everything is yours.',
+        badge: '',
+        bullets: ['Server and domain — in your name', 'Code and access — yours'],
+        techLine: '',
       },
     },
   ];
@@ -194,6 +236,7 @@ async function seedServices(): Promise<void> {
         number: s.number,
         sortOrder: s.sortOrder,
         published: true,
+        featured: s.featured,
         translations: {
           create: [
             { locale: 'ru', ...s.ru },

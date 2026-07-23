@@ -42,7 +42,7 @@ export default async function HomePage({ params }: Params) {
     <>
       <HomeJsonLd home={home} locale={typed} />
       <Hero content={home.content} />
-      <Services heading={home.content.servicesHeading} services={home.services} />
+      <Services content={home.content} services={home.services} />
       <Works heading={home.content.worksHeading} projects={home.projects} />
       <Pricing
         heading={home.content.pricingHeading}

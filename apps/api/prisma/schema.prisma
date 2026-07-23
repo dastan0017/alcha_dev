@@ -96,7 +96,10 @@ model HomeContentTranslation {
   heroCtaPrimary    String
   heroCtaSecondary  String
   trustLine         String
+  servicesEyebrow   String      @default("")
   servicesHeading   String
+  servicesLede      String      @default("")
+  servicesSecondaryLabel String @default("")
   worksHeading      String
   pricingHeading    String
   pricingNote       String
@@ -115,18 +118,26 @@ model Service {
   number       String
   sortOrder    Int                  @default(0)
   published    Boolean              @default(true)
+  /// The one highlighted "core strength" service rendered as the large card.
+  featured     Boolean              @default(false)
   createdAt    DateTime             @default(now())
   updatedAt    DateTime             @updatedAt
   translations ServiceTranslation[]
 }
 
 model ServiceTranslation {
-  id          String  @id @default(cuid())
-  service     Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  id          String   @id @default(cuid())
+  service     Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   serviceId   String
   locale      Locale
   title       String
   description String
+  /// Pill label on the featured card, e.g. "МОЯ ГЛАВНАЯ СИЛА".
+  badge       String   @default("")
+  /// Checklist rendered with purple ticks.
+  bullets     String[]
+  /// Optional mono tech line, e.g. "React · Next.js · TypeScript".
+  techLine    String   @default("")
 
   @@unique([serviceId, locale])
 }

@@ -253,40 +253,146 @@
 }
 
 /* ================================================================ Services */
-.svcList {
-  border-top: 1px solid var(--border);
+.svcHead {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 36px;
 }
-.svcRow {
+.svcLede {
+  color: var(--body);
+  font-size: 17px;
+  max-width: 62ch;
+}
+
+/* Shared tick marker */
+.tick {
+  color: var(--primary);
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+/* ---------------------------------------------------- Featured service --- */
+.svcFeatured {
   display: grid;
-  grid-template-columns: 64px minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 40px;
   align-items: center;
-  gap: 24px;
-  padding: 24px 16px;
-  border-bottom: 1px solid var(--border);
-  border-radius: var(--r-card-sm);
-  transition: background 0.15s ease;
+  padding: 40px;
+  border: 1.5px solid var(--primary);
+  border-radius: var(--r-card);
+  background: linear-gradient(115deg, #f3eeff 0%, #f8f5fd 45%, #fdfcff 100%);
 }
-.svcAnim {
-  width: 100%;
-  height: auto;
-  justify-self: end;
+.svcFeaturedTop {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
 }
-.svcRow:hover {
-  background: var(--primary-light);
-}
-.svcNum {
+.svcNumFeatured {
   font-family: var(--font-mono-stack);
   font-size: 15px;
   font-weight: 600;
   color: var(--primary);
 }
-.svcTitle {
-  font-size: 22px;
-  margin-bottom: 8px;
+.svcBadge {
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--primary);
+  border-radius: var(--r-pill);
+  padding: 7px 14px;
+  line-height: 1;
 }
-.svcDesc {
+.svcFeaturedTitle {
+  font-size: clamp(26px, 3.2vw, 34px);
+  margin-bottom: 14px;
+}
+.svcFeaturedDesc {
   color: var(--body);
-  max-width: 62ch;
+  font-size: 17px;
+  max-width: 46ch;
+}
+.svcFeaturedTicks {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.svcFeaturedTicks li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 17px;
+  color: var(--ink);
+}
+
+/* -------------------------------------------------- Supporting services -- */
+.svcSecondaryLabel {
+  margin: 40px 0 18px;
+}
+.svcGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.svcCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px 26px;
+  background: #fff;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-card);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.svcCard:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-card);
+}
+.svcCardHead {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.svcNum {
+  font-family: var(--font-mono-stack);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.svcCardTitle {
+  font-size: 20px;
+}
+.svcCardDesc {
+  color: var(--body);
+  font-size: 15px;
+}
+.svcCardTicks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 2px;
+}
+.svcCardTicks li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 15px;
+  color: var(--ink);
+}
+.svcTech {
+  margin-top: auto;
+  padding-top: 12px;
+  font-size: 12px;
+  color: var(--faint);
+  letter-spacing: 0.02em;
 }
 
 /* =================================================================== Works */
@@ -526,15 +632,13 @@
   .workMedia {
     min-height: 200px;
   }
-  .svcRow {
-    grid-template-columns: 56px minmax(0, 1fr);
-    gap: 14px 20px;
+  .svcFeatured {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    padding: 32px 28px;
   }
-  .svcAnim {
-    grid-column: 1 / -1;
-    justify-self: start;
-    max-width: 440px;
-    margin-top: 6px;
+  .svcGrid {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -563,13 +667,23 @@
   .heroCtas .btn {
     flex: 1;
   }
-  .svcRow {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    padding: 20px 12px;
+  .svcFeatured {
+    padding: 26px 20px;
+    gap: 20px;
   }
-  .svcTitle {
-    font-size: 19px;
+  .svcFeaturedDesc,
+  .svcFeaturedTicks li,
+  .svcLede {
+    font-size: 15px;
+  }
+  .svcGrid {
+    grid-template-columns: 1fr;
+  }
+  .svcSecondaryLabel {
+    margin: 28px 0 14px;
+  }
+  .svcCard {
+    padding: 22px 20px;
   }
   .collage {
     min-height: 340px;

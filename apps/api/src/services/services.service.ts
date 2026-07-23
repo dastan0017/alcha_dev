@@ -34,6 +34,7 @@ export class ServicesService {
         number: input.number,
         sortOrder: input.sortOrder,
         published: input.published,
+        featured: input.featured,
         translations: {
           create: LOCALES_TUPLE.map((locale) => ({ locale, ...input.translations[locale] })),
         },
@@ -51,6 +52,7 @@ export class ServicesService {
         number: input.number,
         sortOrder: input.sortOrder,
         published: input.published,
+        featured: input.featured,
         translations: {
           upsert: LOCALES_TUPLE.map((locale) => ({
             where: { serviceId_locale: { serviceId: id, locale } },
@@ -90,8 +92,12 @@ export class ServicesService {
       id: row.id,
       number: row.number,
       sortOrder: row.sortOrder,
+      featured: row.featured,
       title: t.title,
       description: t.description,
+      badge: t.badge,
+      bullets: t.bullets,
+      techLine: t.techLine,
     };
   }
 
@@ -101,6 +107,7 @@ export class ServicesService {
       number: row.number,
       sortOrder: row.sortOrder,
       published: row.published,
+      featured: row.featured,
       translations: {
         ru: this.txInput(row.translations, 'ru'),
         en: this.txInput(row.translations, 'en'),
@@ -110,6 +117,12 @@ export class ServicesService {
 
   private txInput(translations: ServiceTx[], locale: Locale) {
     const t = translations.find((x) => x.locale === locale);
-    return { title: t?.title ?? '', description: t?.description ?? '' };
+    return {
+      title: t?.title ?? '',
+      description: t?.description ?? '',
+      badge: t?.badge ?? '',
+      bullets: t?.bullets ?? [],
+      techLine: t?.techLine ?? '',
+    };
   }
 }

@@ -16,7 +16,13 @@ export const homeContentSchema = z.object({
   heroCtaPrimary: z.string(),
   heroCtaSecondary: z.string(),
   trustLine: z.string(),
+  /** Small label above the services heading, e.g. "УСЛУГИ". */
+  servicesEyebrow: z.string(),
   servicesHeading: z.string(),
+  /** Intro paragraph under the services heading. */
+  servicesLede: z.string(),
+  /** Divider label above the supporting service cards. */
+  servicesSecondaryLabel: z.string(),
   worksHeading: z.string(),
   pricingHeading: z.string(),
   pricingNote: z.string(),
@@ -34,6 +40,9 @@ export type HomeContent = z.infer<typeof homeContentSchema>;
 export const homeContentTranslationInput = homeContentSchema.extend({
   heroBullets: z.array(z.string()).default([]),
   heroNote: z.string().default(''),
+  servicesEyebrow: z.string().default(''),
+  servicesLede: z.string().default(''),
+  servicesSecondaryLabel: z.string().default(''),
 });
 
 export const homeContentUpdateSchema = z.object({

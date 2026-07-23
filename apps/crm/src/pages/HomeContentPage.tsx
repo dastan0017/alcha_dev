@@ -20,8 +20,17 @@ export function HomeContentPage() {
       <TranslatedField field="heroCtaSecondary" label="Кнопка (вторичная)" />
       <TranslatedField field="trustLine" label="Строка доверия" />
 
-      <Divider orientation="left">Заголовки секций</Divider>
+      <Divider orientation="left">Секция «Услуги»</Divider>
+      <TranslatedField field="servicesEyebrow" label="Надзаголовок" required={false} />
       <TranslatedField field="servicesHeading" label="Заголовок «Услуги»" type="textarea" rows={2} />
+      <TranslatedField field="servicesLede" label="Вводный абзац" type="textarea" required={false} />
+      <TranslatedField
+        field="servicesSecondaryLabel"
+        label="Подпись над остальными карточками"
+        required={false}
+      />
+
+      <Divider orientation="left">Заголовки секций</Divider>
       <TranslatedField field="worksHeading" label="Заголовок «Работы»" />
       <TranslatedField field="pricingHeading" label="Заголовок «Цены»" />
       <TranslatedField field="pricingNote" label="Подпись к ценам" />
