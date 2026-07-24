@@ -36,7 +36,7 @@ export function HeroJourney() {
             <span className={styles.jDot} />
             <span className={styles.jDot} />
             <span className={styles.jDot} />
-            <span className={styles.jBrowserUrl}>{t('resultUrl')}</span>
+            <span className={styles.jBrowserUrl}>{t('browserUrl')}</span>
           </div>
           <div className={styles.jBrowserBody}>
             <div className={styles.jSiteTitle}>{t('siteTitle')}</div>
