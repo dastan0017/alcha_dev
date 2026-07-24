@@ -15,8 +15,12 @@ export const projectSchema = z.object({
   title: z.string(),
   /** Badge label text, e.g. "ЭТОТ САЙТ" / "APP STORE + GOOGLE PLAY". */
   badge: z.string(),
-  /** Short card description used on the home carousel. */
+  /** Product-type tag (green own / orange client); empty = hidden. */
+  typeTag: z.string(),
+  /** Short card description / transformation story. */
   metaLine: z.string(),
+  /** Mono highlight line of concrete facts on the works card. */
+  factsLine: z.string(),
   /** Role line shown on the detailed About-page card (may be empty). */
   role: z.string(),
   description: z.string(),
@@ -33,7 +37,9 @@ export type Project = z.infer<typeof projectSchema>;
 export const projectTranslationInput = z.object({
   title: z.string().min(1),
   badge: z.string().min(1),
+  typeTag: z.string().default(''),
   metaLine: z.string().min(1),
+  factsLine: z.string().default(''),
   role: z.string().default(''),
   description: z.string().min(1),
   pills: z.array(z.string()).default([]),

@@ -100,7 +100,10 @@ model HomeContentTranslation {
   servicesHeading   String
   servicesLede      String      @default("")
   servicesSecondaryLabel String @default("")
+  worksEyebrow      String      @default("")
   worksHeading      String
+  worksLede         String      @default("")
+  worksLinkLabel    String      @default("")
   pricingEyebrow    String      @default("")
   pricingHeading    String
   pricingNote       String
@@ -170,7 +173,11 @@ model ProjectTranslation {
   locale         Locale
   title          String
   badge          String
+  /// Product-type tag on the works card, e.g. "СОБСТВЕННЫЙ ПРОДУКТ" (empty = hidden).
+  typeTag        String  @default("")
   metaLine       String
+  /// Mono highlight line of concrete facts on the works card.
+  factsLine      String  @default("")
   role           String  @default("")
   description    String
   pills          String[]

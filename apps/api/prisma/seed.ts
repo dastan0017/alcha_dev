@@ -94,7 +94,11 @@ async function seedHome(): Promise<void> {
             servicesLede:
               'Сайт продают дизайн и тексты — на них мой главный фокус. Быстрый код, SEO, CRM и сервер входят в каждый проект по умолчанию.',
             servicesSecondaryLabel: 'И ВСЕГДА В КОМПЛЕКТЕ',
+            worksEyebrow: 'РАБОТЫ',
             worksHeading: 'Работы',
+            worksLede:
+              'Каждый проект — от начала до конца лично мной. Беру немного клиентов, поэтому каждому — максимум внимания.',
+            worksLinkLabel: 'Все проекты →',
             pricingEyebrow: 'ЦЕНЫ',
             pricingHeading: 'Сколько это стоит',
             pricingNote: 'Точная смета — за 24 часа после первого разговора',
@@ -126,7 +130,11 @@ async function seedHome(): Promise<void> {
             servicesLede:
               'Websites are sold by design and copy — that is where my focus goes. Fast code, SEO, a CRM and the server are included in every project by default.',
             servicesSecondaryLabel: 'AND ALWAYS INCLUDED',
+            worksEyebrow: 'WORK',
             worksHeading: 'Selected work',
+            worksLede:
+              'Every project is done end to end by me personally. I take on few clients, so each one gets my full attention.',
+            worksLinkLabel: 'All projects →',
             pricingEyebrow: 'PRICING',
             pricingHeading: 'How much it costs',
             pricingNote: 'A precise quote within 24 hours of our first conversation',
@@ -382,12 +390,14 @@ async function seedProjects(): Promise<void> {
       ru: {
         title: 'alcha.dev',
         badge: 'ЭТОТ САЙТ',
+        typeTag: '',
         metaLine:
           'Портфолио и витрина услуг — сайт, на котором вы сейчас находитесь. Спроектирован, написан и запущен целиком мной: от текстов и дизайна до сервера.',
+        factsLine: 'Lighthouse 95+ · два языка (RU / EN) · заявки — в Telegram',
         role: 'Свой продукт · дизайн, разработка и сервер',
         description:
           'Портфолио и витрина услуг — сайт, на котором вы сейчас находитесь. Спроектирован, написан и запущен целиком мной: от текстов и дизайна до сервера. Статическая генерация, две языковые версии и CRM для управления контентом без программиста.',
-        pills: ['Дизайн и тексты', 'Сайт на двух языках (RU / EN)', 'SEO', 'Сервер и домен'],
+        pills: ['Дизайн и тексты', 'SEO', 'Сервер и передача'],
         bullets: [],
         techChips: ['React', 'Next.js', 'TypeScript'],
         seoTitle: 'alcha.dev — портфолио и услуги',
@@ -397,12 +407,14 @@ async function seedProjects(): Promise<void> {
       en: {
         title: 'alcha.dev',
         badge: 'THIS SITE',
+        typeTag: '',
         metaLine:
           'A portfolio and services showcase — the very site you’re on now. Designed, written and shipped entirely by me: from copy and design to the server.',
+        factsLine: 'Lighthouse 95+ · two languages (RU / EN) · leads — to Telegram',
         role: 'Own product · design, development and server',
         description:
           'A portfolio and services showcase — the very site you’re on now. Designed, written and shipped entirely by me: from copy and design to the server. Static generation, two language versions and a CRM to manage content without a developer.',
-        pills: ['Design & copy', 'Bilingual site (RU / EN)', 'SEO', 'Server & domain'],
+        pills: ['Design & copy', 'SEO', 'Server & handover'],
         bullets: [],
         techChips: ['React', 'Next.js', 'TypeScript'],
         seoTitle: 'alcha.dev — portfolio and services',
@@ -419,23 +431,24 @@ async function seedProjects(): Promise<void> {
       ru: {
         title: 'Чабан',
         badge: 'APP STORE + GOOGLE PLAY',
+        typeTag: 'СОБСТВЕННЫЙ ПРОДУКТ',
         metaLine:
-          'Сообщество заводчиков арашанских овец: карта проверенных ферм, электронные родословные, объявления „на племя“, база знаний и календарь ухода за стадом.',
+          'Заводчики арашанских овец искали племенных животных через знакомых и базары. Теперь — карта проверенных ферм, электронные родословные и объявления «на племя» в одном приложении: покупка породы стала прозрачной.',
+        // TODO(dastan): подставьте реальные цифры (×× ферм / родословных).
+        factsLine: 'Карта проверенных ферм · электронные родословные · календарь ухода за стадом',
         role: 'Свой продукт · дизайн, разработка, сервер',
         description:
-          'Сообщество заводчиков арашанских овец: карта проверенных ферм, электронные родословные, объявления „на племя“, база знаний и календарь ухода за стадом.',
+          'Заводчики арашанских овец искали племенных животных через знакомых и базары. Теперь — карта проверенных ферм, электронные родословные и объявления «на племя» в одном приложении: покупка породы стала прозрачной.',
         pills: [
           'Мобильное приложение (iOS + Android)',
-          'Админ-панель',
+          'Админка',
           'Карта ферм',
-          'Родословные',
           'Вход по WhatsApp-коду',
         ],
-        // TODO(dastan): replace bullets with verbatim text from the design file.
         bullets: [
           'Карта проверенных ферм с профилями хозяйств',
           'Электронные родословные животных',
-          'Объявления „на племя“ и база знаний',
+          'Объявления «на племя» и база знаний',
           'Календарь ухода за стадом с напоминаниями',
           'Админ-панель для модерации и контента',
         ],
@@ -447,16 +460,17 @@ async function seedProjects(): Promise<void> {
       en: {
         title: 'Chaban',
         badge: 'APP STORE + GOOGLE PLAY',
+        typeTag: 'OWN PRODUCT',
         metaLine:
-          'A community for Arashan sheep breeders: a map of verified farms, digital pedigrees, breeding listings, a knowledge base and a herd-care calendar.',
+          'Arashan sheep breeders used to find breeding animals through acquaintances and markets. Now a map of verified farms, digital pedigrees and breeding listings live in one app — buying a breed became transparent.',
+        factsLine: 'Verified farm map · digital pedigrees · herd-care calendar',
         role: 'Own product · design, development, server',
         description:
-          'A community for Arashan sheep breeders: a map of verified farms, digital pedigrees, breeding listings, a knowledge base and a herd-care calendar.',
+          'Arashan sheep breeders used to find breeding animals through acquaintances and markets. Now a map of verified farms, digital pedigrees and breeding listings live in one app — buying a breed became transparent.',
         pills: [
           'Mobile app (iOS + Android)',
           'Admin panel',
           'Farm map',
-          'Pedigrees',
           'WhatsApp-code login',
         ],
         bullets: [
@@ -474,26 +488,27 @@ async function seedProjects(): Promise<void> {
     },
     {
       slug: 'kit-store',
-      badgeType: ProjectBadge.own,
+      badgeType: ProjectBadge.work,
       sortOrder: 2,
       showOnHome: true,
       showOnAbout: true,
       ru: {
         title: 'Kit Store',
         badge: 'APP STORE + GOOGLE PLAY',
+        typeTag: 'КЛИЕНТСКИЙ ПРОЕКТ',
         metaLine:
-          'Оптовый дистрибьютор перевёл заказы из звонков и WhatsApp в приложение: магазины-партнёры заказывают сами, менеджеры ведут каталог, заказы и клиентов в CRM.',
-        role: 'Свой продукт · мобильное приложение, CRM и сервер',
+          'Магазины заказывают товар у дистрибьютора прямо с телефона — как в интернет-магазине. Раньше заказы собирали торговые агенты вручную; теперь каталог, заказы и клиенты — в CRM у менеджеров.',
+        // TODO(dastan): подставьте реальные цифры (×× магазинов-партнёров).
+        factsLine: 'Магазины заказывают сами · заказы без звонков · уведомления в WhatsApp',
+        role: 'Клиентский проект · мобильное приложение, CRM и сервер',
         description:
-          'Оптовый дистрибьютор перевёл заказы из звонков и WhatsApp в приложение: магазины-партнёры заказывают сами, менеджеры ведут каталог, заказы и клиентов в CRM.',
+          'Магазины заказывают товар у дистрибьютора прямо с телефона — как в интернет-магазине. Раньше заказы собирали торговые агенты вручную; теперь каталог, заказы и клиенты — в CRM у менеджеров.',
         pills: [
           'Мобильное приложение (iOS + Android)',
           'CRM для персонала',
           'Каталог и заказы',
-          'Уведомления в WhatsApp',
-          'Сервер и деплой',
+          'Сервер и передача',
         ],
-        // TODO(dastan): replace bullets with verbatim text from the design file.
         bullets: [
           'Магазины-партнёры оформляют заказы сами',
           'Менеджеры ведут каталог, заказы и клиентов в CRM',
@@ -504,22 +519,23 @@ async function seedProjects(): Promise<void> {
         techChips: ['React Native', 'Expo', 'React', 'NestJS', 'GraphQL', 'PostgreSQL'],
         seoTitle: 'Kit Store — приложение и CRM для дистрибьютора',
         seoDescription:
-          'Оптовый дистрибьютор перевёл заказы в приложение: магазины заказывают сами, менеджеры ведут CRM.',
+          'Магазины заказывают у дистрибьютора с телефона; каталог, заказы и клиенты — в CRM у менеджеров.',
       },
       en: {
         title: 'Kit Store',
         badge: 'APP STORE + GOOGLE PLAY',
+        typeTag: 'CLIENT PROJECT',
         metaLine:
-          'A wholesale distributor moved orders from calls and WhatsApp into an app: partner stores order themselves, managers run the catalogue, orders and clients in a CRM.',
-        role: 'Own product · mobile app, CRM and server',
+          'Stores order goods from the distributor straight from their phone — like an online shop. Orders used to be collected by sales reps by hand; now the catalogue, orders and clients live in the managers’ CRM.',
+        factsLine: 'Stores order themselves · orders without calls · WhatsApp notifications',
+        role: 'Client project · mobile app, CRM and server',
         description:
-          'A wholesale distributor moved orders from calls and WhatsApp into an app: partner stores order themselves, managers run the catalogue, orders and clients in a CRM.',
+          'Stores order goods from the distributor straight from their phone — like an online shop. Orders used to be collected by sales reps by hand; now the catalogue, orders and clients live in the managers’ CRM.',
         pills: [
           'Mobile app (iOS + Android)',
           'CRM for staff',
           'Catalogue & orders',
-          'WhatsApp notifications',
-          'Server & deployment',
+          'Server & handover',
         ],
         bullets: [
           'Partner stores place orders themselves',
@@ -531,7 +547,7 @@ async function seedProjects(): Promise<void> {
         techChips: ['React Native', 'Expo', 'React', 'NestJS', 'GraphQL', 'PostgreSQL'],
         seoTitle: 'Kit Store — app and CRM for a distributor',
         seoDescription:
-          'A wholesale distributor moved orders into an app: stores order themselves, managers run a CRM.',
+          'Stores order from the distributor by phone; the catalogue, orders and clients live in the managers’ CRM.',
       },
     },
     {

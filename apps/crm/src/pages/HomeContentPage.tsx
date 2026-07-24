@@ -31,7 +31,15 @@ export function HomeContentPage() {
       />
 
       <Divider orientation="left">Заголовки секций</Divider>
+      <Divider orientation="left">Секция «Работы»</Divider>
+      <TranslatedField field="worksEyebrow" label="Надзаголовок" required={false} />
       <TranslatedField field="worksHeading" label="Заголовок «Работы»" />
+      <TranslatedField field="worksLede" label="Вводный абзац" type="textarea" required={false} />
+      <TranslatedField
+        field="worksLinkLabel"
+        label="Ссылка «Все проекты» (ведёт на «Обо мне»)"
+        required={false}
+      />
 
       <Divider orientation="left">Секция «Цены»</Divider>
       <TranslatedField field="pricingEyebrow" label="Надзаголовок" required={false} />

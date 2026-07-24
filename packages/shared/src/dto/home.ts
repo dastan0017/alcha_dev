@@ -23,7 +23,13 @@ export const homeContentSchema = z.object({
   servicesLede: z.string(),
   /** Divider label above the supporting service cards. */
   servicesSecondaryLabel: z.string(),
+  /** Small label above the works heading, e.g. "РАБОТЫ". */
+  worksEyebrow: z.string(),
   worksHeading: z.string(),
+  /** Intro paragraph under the works heading. */
+  worksLede: z.string(),
+  /** "All projects →" link label (empty = hidden). */
+  worksLinkLabel: z.string(),
   /** Small label above the pricing heading, e.g. "ЦЕНЫ". */
   pricingEyebrow: z.string(),
   pricingHeading: z.string(),
@@ -50,6 +56,9 @@ export const homeContentTranslationInput = homeContentSchema.extend({
   servicesSecondaryLabel: z.string().default(''),
   pricingEyebrow: z.string().default(''),
   pricingFootnote: z.string().default(''),
+  worksEyebrow: z.string().default(''),
+  worksLede: z.string().default(''),
+  worksLinkLabel: z.string().default(''),
 });
 
 export const homeContentUpdateSchema = z.object({

@@ -15,45 +15,53 @@ export function WorkCard({ project }: { project: Project }) {
             src={project.coverImage}
             alt={`${project.title} — ${t('screenshot')}`}
             fill
-            sizes="(max-width: 768px) 85vw, 960px"
+            sizes="(max-width: 900px) 100vw, 380px"
             className={styles.workImg}
           />
         ) : (
-          <div className={`screenshot-placeholder ${styles.workPlaceholder}`}>{project.title}</div>
+          <span className={styles.workShot}>
+            {t('screenshot')}: {project.title}
+          </span>
         )}
       </div>
+
       <div className={styles.workBody}>
-        <span
-          className={`${styles.workBadge} ${project.badgeType === 'own' ? styles.workBadgeOwn : ''}`}
-        >
-          {project.badge}
-        </span>
-        <h3 className={styles.workTitle}>{project.title}</h3>
+        <div className={styles.workHeadRow}>
+          <div className={styles.workTitleWrap}>
+            <span className={styles.workTitle}>{project.title}</span>
+            {project.typeTag && (
+              <span
+                className={`${styles.workTag} ${
+                  project.badgeType === 'own' ? styles.workTagOwn : styles.workTagWork
+                }`}
+              >
+                {project.typeTag}
+              </span>
+            )}
+          </div>
+          {project.badge && <span className={styles.workBadge}>{project.badge}</span>}
+        </div>
+
         <p className={styles.workMeta}>{project.metaLine}</p>
+
+        {project.factsLine && <div className={styles.workFacts}>{project.factsLine}</div>}
 
         {project.pills.length > 0 && (
           <ul className={styles.workPills}>
             {project.pills.map((pill) => (
-              <li key={pill} className="pill">
-                {pill}
-              </li>
+              <li key={pill}>{pill}</li>
             ))}
           </ul>
         )}
 
-        {project.techChips.length > 0 && (
-          <ul className={styles.workTech}>
-            {project.techChips.map((chip) => (
-              <li key={chip} className="chip">
-                {chip}
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <Link href={`/works/${project.slug}`} className={styles.workLink}>
-          {t('viewCase')} →
-        </Link>
+        <div className={styles.workFooter}>
+          {project.techChips.length > 0 && (
+            <span className={`mono ${styles.workTech}`}>{project.techChips.join(' · ')}</span>
+          )}
+          <Link href={`/works/${project.slug}`} className={styles.workLink}>
+            {t('viewCase')} →
+          </Link>
+        </div>
       </div>
     </article>
   );

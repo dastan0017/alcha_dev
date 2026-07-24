@@ -25,7 +25,9 @@ export function ProjectsPage() {
           ru: {
             title: '',
             badge: '',
+            typeTag: '',
             metaLine: '',
+            factsLine: '',
             role: '',
             description: '',
             pills: [],
@@ -37,7 +39,9 @@ export function ProjectsPage() {
           en: {
             title: '',
             badge: '',
+            typeTag: '',
             metaLine: '',
+            factsLine: '',
             role: '',
             description: '',
             pills: [],
@@ -93,8 +97,22 @@ export function ProjectsPage() {
 
           <Divider orientation="left">Контент</Divider>
           <TranslatedField field="title" label="Название" />
-          <TranslatedField field="badge" label="Плашка (напр. APP STORE + GOOGLE PLAY)" />
-          <TranslatedField field="metaLine" label="Короткое описание (карточка)" type="textarea" />
+          <TranslatedField field="badge" label="Плашка справа (напр. APP STORE + GOOGLE PLAY)" />
+          <TranslatedField
+            field="typeTag"
+            label="Тег типа (напр. СОБСТВЕННЫЙ ПРОДУКТ; цвет — по типу проекта)"
+            required={false}
+          />
+          <TranslatedField
+            field="metaLine"
+            label="Описание-история (карточка «Работы»)"
+            type="textarea"
+          />
+          <TranslatedField
+            field="factsLine"
+            label="Строка фактов (моно, напр. «×× ферм · родословные»)"
+            required={false}
+          />
           <TranslatedField field="role" label="Роль" required={false} />
           <TranslatedField field="description" label="Полное описание" type="textarea" rows={4} />
           <TranslatedField field="pills" label="Что сделано (чипы)" type="tags" required={false} />

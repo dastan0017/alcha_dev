@@ -43,7 +43,7 @@ export default async function HomePage({ params }: Params) {
       <HomeJsonLd home={home} locale={typed} />
       <Hero content={home.content} />
       <Services content={home.content} services={home.services} />
-      <Works heading={home.content.worksHeading} projects={home.projects} />
+      <Works content={home.content} projects={home.projects} />
       <Pricing content={home.content} plans={home.pricingPlans} />
       <CtaBanner
         title={home.content.ctaTitle}
