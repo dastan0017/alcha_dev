@@ -92,7 +92,7 @@ async function seedHome(): Promise<void> {
             servicesEyebrow: 'УСЛУГИ',
             servicesHeading: 'От первого макета до запуска и передачи ключей',
             servicesLede:
-              'Сайт продают дизайн и тексты — на них мой главный фокус. Быстрый код, SEO, CRM и сервер входят в каждый проект по умолчанию.',
+              'Сайт продают дизайн и тексты — это мой главный фокус. Остальное — по умолчанию: быстрый код, SEO, CRM и сервер.',
             servicesSecondaryLabel: 'И ВСЕГДА В КОМПЛЕКТЕ',
             worksEyebrow: 'РАБОТЫ',
             worksHeading: 'Работы',
@@ -128,7 +128,7 @@ async function seedHome(): Promise<void> {
             servicesEyebrow: 'SERVICES',
             servicesHeading: 'From the first mockup to launch and handover',
             servicesLede:
-              'Websites are sold by design and copy — that is where my focus goes. Fast code, SEO, a CRM and the server are included in every project by default.',
+              'Websites are sold by design and copy — that is my main focus. Everything else comes by default: fast code, SEO, a CRM and the server.',
             servicesSecondaryLabel: 'AND ALWAYS INCLUDED',
             worksEyebrow: 'WORK',
             worksHeading: 'Selected work',
