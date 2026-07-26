@@ -37,6 +37,9 @@
     "pillLaunched": "Site launched",
     "pillYours": "The site and all access — yours"
   },
+  "pricing": {
+    "swipe": "Swipe →"
+  },
   "contact": {
     "title": "Discuss a project",
     "subtitle": "Tell me about the task — I’ll reply within a day.",

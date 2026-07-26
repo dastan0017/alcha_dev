@@ -5,6 +5,7 @@ import styles from './home.module.css';
 
 export function Pricing({ content, plans }: { content: HomeContent; plans: PricingPlan[] }) {
   const nav = useTranslations('nav');
+  const t = useTranslations('pricing');
   if (plans.length === 0) return null;
 
   return (
@@ -51,6 +52,15 @@ export function Pricing({ content, plans }: { content: HomeContent; plans: Prici
               />
             </article>
           ))}
+        </div>
+
+        <div className={styles.priceSwipeHint} aria-hidden="true">
+          <span className={styles.priceDots}>
+            {plans.map((plan, i) => (
+              <span key={plan.id} className={i === 0 ? styles.priceDotActive : undefined} />
+            ))}
+          </span>
+          {t('swipe')}
         </div>
 
         {content.pricingFootnote && (

@@ -10,6 +10,7 @@ import { Works } from '@/components/home/Works';
 import { Pricing } from '@/components/home/Pricing';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 import { HomeJsonLd } from '@/components/seo/JsonLd';
+import styles from '@/components/home/home.module.css';
 
 type Params = { params: Promise<{ locale: string }> };
 
@@ -41,18 +42,21 @@ export default async function HomePage({ params }: Params) {
   return (
     <>
       <HomeJsonLd home={home} locale={typed} />
-      <Hero content={home.content} />
-      <Services content={home.content} services={home.services} />
-      <Works content={home.content} projects={home.projects} />
-      <Pricing content={home.content} plans={home.pricingPlans} />
-      <CtaBanner
-        title={home.content.ctaTitle}
-        subtitle={home.content.ctaSubtitle}
-        telegramLabel={home.content.ctaTelegramLabel}
-        cvLabel={home.content.ctaCvLabel}
-        telegramUrl={home.settings.telegram}
-        cvUrl={home.settings.cvUrl}
-      />
+      {/* Flex column so the mobile breakpoint can reorder sections (works → services → prices). */}
+      <div className={styles.homeMain}>
+        <Hero content={home.content} />
+        <Services content={home.content} services={home.services} />
+        <Works content={home.content} projects={home.projects} />
+        <Pricing content={home.content} plans={home.pricingPlans} />
+        <CtaBanner
+          title={home.content.ctaTitle}
+          subtitle={home.content.ctaSubtitle}
+          telegramLabel={home.content.ctaTelegramLabel}
+          cvLabel={home.content.ctaCvLabel}
+          telegramUrl={home.settings.telegram}
+          cvUrl={home.settings.cvUrl}
+        />
+      </div>
     </>
   );
 }

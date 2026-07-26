@@ -1,3 +1,9 @@
+/* Wraps the home sections so the mobile breakpoint can reorder them. */
+.homeMain {
+  display: flex;
+  flex-direction: column;
+}
+
 /* ==================================================================== Hero */
 .hero {
   padding-block: 56px 40px;
@@ -647,6 +653,33 @@
   font-size: 13px;
   color: var(--muted);
 }
+/* Swipe affordance — only shown on the mobile carousel. */
+.priceSwipeHint {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 14px;
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  color: var(--faint);
+}
+.priceDots {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.priceDots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d9d3e2;
+}
+.priceDotActive {
+  width: 18px !important;
+  border-radius: 999px !important;
+  background: var(--primary) !important;
+}
 .priceGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -757,36 +790,121 @@
   }
 }
 
+/* ------------------------------------------------------ Mobile (design 12a) */
 @media (max-width: 768px) {
+  /* Section order: hero → works → services → prices → cta */
+  .homeMain > :nth-child(2) {
+    order: 2;
+  }
+  .homeMain > :nth-child(3) {
+    order: 1;
+  }
+  .homeMain > :nth-child(4) {
+    order: 3;
+  }
+  .homeMain > :nth-child(5) {
+    order: 4;
+  }
+
+  /* ~64px rhythm between sections */
+  .section {
+    padding-block: 34px;
+  }
+
+  /* Hero */
   .hero {
-    padding-block: 32px 24px;
+    padding-block: 24px 8px;
+  }
+  .heroTitle {
+    font-size: 36px;
+  }
+  .heroSub {
+    font-size: 16px;
+    margin-bottom: 20px;
   }
   .heroBullets {
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 11px;
     margin-bottom: 22px;
   }
-  .heroNote {
+  .heroBullets li {
     font-size: 16px;
   }
-  .trust {
-    margin-top: 28px;
-  }
-  .priceGrid {
-    grid-template-columns: 1fr;
-  }
-  .priceCardHi {
-    order: -1;
+  .heroNote {
+    font-size: 17px;
+    margin-bottom: 20px;
   }
   .heroCtas {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
     width: 100%;
+    margin-top: 4px;
   }
-  .heroCtas .btn {
-    flex: 1;
+  .heroCtas .btn--primary {
+    width: 100%;
+    height: 52px;
+    border-radius: 12px;
   }
+  /* Secondary CTA becomes a centred text link on mobile */
+  .heroCtas :global(.btn--ghost) {
+    border: none;
+    background: none;
+    min-height: 0;
+    height: auto;
+    padding: 8px;
+    color: var(--primary);
+  }
+  .trust {
+    margin-top: 24px;
+  }
+  .journey {
+    margin-top: 24px;
+    max-width: 100%;
+  }
+
+  /* Works — image on top (4:3), trimmed to essentials */
+  .worksHead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .worksLink {
+    display: none;
+  }
+  .workCard {
+    grid-template-columns: 1fr;
+  }
+  .workMedia {
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+    border-right: none;
+    border-bottom: 1px solid rgba(23, 18, 31, 0.07);
+  }
+  .workBody {
+    padding: 16px 18px 18px;
+    gap: 10px;
+  }
+  .workHeadRow {
+    align-items: center;
+    gap: 10px;
+  }
+  .workFacts,
+  .workTech {
+    display: none;
+  }
+  .workPills li:nth-child(n + 4) {
+    display: none;
+  }
+  .workFooter {
+    padding-top: 0;
+  }
+
+  /* Services — featured card stacks; supporting cards become compact rows */
   .svcFeatured {
-    padding: 26px 20px;
-    gap: 20px;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 20px;
   }
   .svcFeaturedDesc,
   .svcFeaturedTicks li,
@@ -795,22 +913,41 @@
   }
   .svcGrid {
     grid-template-columns: 1fr;
-  }
-  .svcSecondaryLabel {
-    margin: 28px 0 14px;
+    gap: 12px;
   }
   .svcCard {
-    padding: 22px 20px;
+    padding: 16px 18px;
+    gap: 6px;
   }
-  .workBody {
-    padding: 22px 20px 20px;
+  .svcCardTicks,
+  .svcTech {
+    display: none;
   }
-  .workHeadRow {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+  .svcSecondaryLabel {
+    margin: 24px 0 12px;
   }
-  .workBadge {
-    text-align: left;
+
+  /* Pricing — horizontal swipe carousel */
+  .priceHead {
+    margin-bottom: 16px;
+  }
+  .priceGrid {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 10px var(--gutter) 6px;
+  }
+  .priceGrid::-webkit-scrollbar {
+    display: none;
+  }
+  .priceCard {
+    flex: 0 0 86%;
+    scroll-snap-align: start;
+  }
+  .priceSwipeHint {
+    display: flex;
   }
 }

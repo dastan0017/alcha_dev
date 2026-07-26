@@ -274,7 +274,7 @@ a.pill:hover {
 .section-title {
   /* Design 2a sets section h2 at 34px. No ch cap, so long headings use the
      container width; `balance` keeps the wrap even once they must wrap. */
-  font-size: clamp(26px, 3.2vw, 34px);
+  font-size: clamp(28px, 3.2vw, 34px);
   letter-spacing: -0.01em;
   text-wrap: balance;
 }
