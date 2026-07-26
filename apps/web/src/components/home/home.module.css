@@ -656,27 +656,28 @@
 /* Swipe affordance — only shown on the mobile carousel. */
 .priceSwipeHint {
   display: none;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
+  gap: 9px;
   padding-top: 14px;
-  font-family: var(--font-mono-stack);
-  font-size: 11px;
-  color: var(--faint);
+  font-family: var(--font-sans-stack);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
 }
 .priceDots {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
 }
 .priceDots span {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #d9d3e2;
 }
 .priceDotActive {
-  width: 18px !important;
+  width: 22px !important;
   border-radius: 999px !important;
   background: var(--primary) !important;
 }
@@ -892,6 +893,16 @@
   .workFacts,
   .workTech {
     display: none;
+  }
+  /* Card copy trimmed to a 2-line teaser (12a spec); full story stays on desktop */
+  .workMeta {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.5;
   }
   .workPills li:nth-child(n + 4) {
     display: none;
