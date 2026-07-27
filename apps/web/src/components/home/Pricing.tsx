@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { HomeContent, PricingPlan } from '@alcha/shared';
 import { ContactButton } from '../contact/ContactButton';
@@ -6,6 +9,47 @@ import styles from './home.module.css';
 export function Pricing({ content, plans }: { content: HomeContent; plans: PricingPlan[] }) {
   const nav = useTranslations('nav');
   const t = useTranslations('pricing');
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+
+  // Keep the swipe-hint dots in sync with the card nearest the carousel centre
+  // (mobile only — on desktop the grid isn't scrollable and the hint is hidden).
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
+      const cards = Array.from(grid.children) as HTMLElement[];
+      if (cards.length === 0) return;
+      const gridRect = grid.getBoundingClientRect();
+      const centre = gridRect.left + gridRect.width / 2;
+      let best = 0;
+      let bestDist = Infinity;
+      cards.forEach((card, i) => {
+        const rect = card.getBoundingClientRect();
+        const dist = Math.abs(rect.left + rect.width / 2 - centre);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = i;
+        }
+      });
+      setActive(best);
+    };
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(measure);
+    };
+
+    grid.addEventListener('scroll', onScroll, { passive: true });
+    measure();
+    return () => {
+      grid.removeEventListener('scroll', onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [plans.length]);
+
   if (plans.length === 0) return null;
 
   return (
@@ -21,7 +65,7 @@ export function Pricing({ content, plans }: { content: HomeContent; plans: Prici
           {content.pricingNote && <span className={styles.priceNote}>{content.pricingNote}</span>}
         </div>
 
-        <div className={styles.priceGrid}>
+        <div className={styles.priceGrid} ref={gridRef}>
           {plans.map((plan) => (
             <article
               key={plan.id}
@@ -57,7 +101,7 @@ export function Pricing({ content, plans }: { content: HomeContent; plans: Prici
         <div className={styles.priceSwipeHint} aria-hidden="true">
           <span className={styles.priceDots}>
             {plans.map((plan, i) => (
-              <span key={plan.id} className={i === 0 ? styles.priceDotActive : undefined} />
+              <span key={plan.id} className={i === active ? styles.priceDotActive : undefined} />
             ))}
           </span>
           {t('swipe')}

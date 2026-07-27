@@ -771,6 +771,7 @@
   height: 8px;
   border-radius: 50%;
   background: #d9d3e2;
+  transition: width 0.2s ease, background 0.2s ease;
 }
 .priceDotActive {
   width: 22px !important;
