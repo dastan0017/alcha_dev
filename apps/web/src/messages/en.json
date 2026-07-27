@@ -35,7 +35,22 @@
     "statusProgress": "In progress",
     "statusPaid": "Paid",
     "pillLaunched": "Site launched",
-    "pillYours": "The site and all access — yours"
+    "pillYours": "The site and all access — yours",
+    "mobile": {
+      "heading": "How a client becomes a lead",
+      "step1": "Finds you on Google",
+      "resultTitle": "Dentistry in Bishkek — tooth treatment",
+      "resultSub": "Treatment, prices and online booking",
+      "rating": "4.9",
+      "reviews": "128 reviews",
+      "comp2Name": "Clinic 2",
+      "comp2Desc": "Dental clinics in Bishkek — addresses and reviews…",
+      "comp3Name": "Clinic 3",
+      "comp3Desc": "Best dental clinics in Bishkek…",
+      "step2": "Lands on the site and sends a request",
+      "step3": "The lead appears in the CRM",
+      "pillYours": "The code and all access — yours"
+    }
   },
   "pricing": {
     "swipe": "Swipe to compare →"
