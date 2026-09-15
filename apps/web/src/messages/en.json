@@ -4,7 +4,9 @@
     "about": "About",
     "cta": "Discuss a project",
     "menu": "Menu",
-    "close": "Close"
+    "close": "Close",
+    "pricing": "Pricing",
+    "ctaShort": "Discuss"
   },
   "locale": {
     "ru": "RU",

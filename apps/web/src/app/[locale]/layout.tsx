@@ -64,7 +64,7 @@ export default async function LocaleLayout({
             <a href="#main" className="skip-link">
               {t('skipToContent')}
             </a>
-            <Header />
+            <Header email={settings.email} />
             <main id="main">{children}</main>
             <Footer settings={settings} />
             <EnLocaleHint locale={typedLocale} />

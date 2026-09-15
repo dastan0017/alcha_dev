@@ -12,7 +12,10 @@
   --primary-light: #f4f0f8;
   --own-gradient: linear-gradient(100deg, #7b2d8e, #d6336c 55%, #e8930c);
 
-  --page: #ffffff;
+  /* v3 review: tinted page so white cards, header and menu read as one system. */
+  --page: #faf8fc;
+  /* Shared "plate" behind every project screenshot (16:10, contain). */
+  --plate: #f4f0f8;
   --dark: #17121f;
   --on-dark-muted: #a99fb8;
   --on-dark-purple: #c4b0ff;
@@ -171,6 +174,12 @@ h4 {
 .btn--primary:hover {
   background: var(--primary-hover);
   transform: translateY(-1px);
+}
+/* Mobile header CTA: shorter so it fits beside the burger. */
+.btn--compact {
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 13.5px;
 }
 .btn--ghost {
   background: transparent;

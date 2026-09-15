@@ -38,6 +38,9 @@ export function Footer({ settings }: { settings: SiteSettings }) {
           <Link href="/#works" className="site-footer__link">
             {nav('works')}
           </Link>
+          <Link href="/#pricing" className="site-footer__link">
+            {nav('pricing')}
+          </Link>
           <Link href="/about" className="site-footer__link">
             {nav('about')}
           </Link>

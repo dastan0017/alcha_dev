@@ -6,6 +6,16 @@ import type { HomeContent, PricingPlan } from '@alcha/shared';
 import { ContactButton } from '../contact/ContactButton';
 import styles from './home.module.css';
 
+/**
+ * The design sets the "от" / "from" qualifier apart from the figure so the
+ * number carries the weight, but the CMS stores one label ("от $300"). Split a
+ * leading all-letters word off the front; anything else renders as-is.
+ */
+function splitPrice(label: string): { prefix: string | null; amount: string } {
+  const match = /^(\p{L}+)\s+(\S.*)$/u.exec(label.trim());
+  return match ? { prefix: match[1], amount: match[2] } : { prefix: null, amount: label };
+}
+
 export function Pricing({ content, plans }: { content: HomeContent; plans: PricingPlan[] }) {
   const nav = useTranslations('nav');
   const t = useTranslations('pricing');
@@ -53,49 +63,57 @@ export function Pricing({ content, plans }: { content: HomeContent; plans: Prici
   if (plans.length === 0) return null;
 
   return (
-    <section className="section" id="pricing">
+    <section className={styles.priceSection} id="pricing">
       <div className="container">
-        {content.pricingEyebrow && (
-          <p className={`eyebrow eyebrow--muted ${styles.priceEyebrow}`}>
-            {content.pricingEyebrow}
-          </p>
-        )}
-        <div className={styles.priceHead}>
-          <h2 className="section-title">{content.pricingHeading}</h2>
-          {content.pricingNote && <span className={styles.priceNote}>{content.pricingNote}</span>}
+        <div className={styles.sectionHead}>
+          <div>
+            {content.pricingEyebrow && (
+              <p className={`eyebrow eyebrow--muted ${styles.lockupEyebrow}`}>
+                {content.pricingEyebrow}
+              </p>
+            )}
+            <h2 className={`section-title ${styles.lockupTitle}`}>{content.pricingHeading}</h2>
+            {content.pricingNote && <p className={styles.lockupLede}>{content.pricingNote}</p>}
+          </div>
         </div>
 
         <div className={styles.priceGrid} ref={gridRef}>
-          {plans.map((plan) => (
-            <article
-              key={plan.id}
-              className={`${styles.priceCard} ${plan.highlighted ? styles.priceCardHi : ''}`}
-            >
-              {plan.highlighted && plan.highlightLabel && (
-                <span className={styles.priceBadge}>{plan.highlightLabel}</span>
-              )}
-              <div>
-                <div className={styles.priceName}>{plan.name}</div>
-                <div className={styles.priceValue}>{plan.priceLabel}</div>
-                {plan.termLine && <div className={styles.priceTerm}>{plan.termLine}</div>}
-              </div>
-              <p className={styles.priceDesc}>{plan.description}</p>
-              <ul className={styles.priceFeatures}>
-                {plan.features.map((feature) => (
-                  <li key={feature}>
-                    <span className={styles.check} aria-hidden="true">
-                      ✓
-                    </span>
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <ContactButton
-                label={nav('cta')}
-                className={`btn ${plan.highlighted ? 'btn--primary' : 'btn--ghost'} ${styles.priceCta}`}
-              />
-            </article>
-          ))}
+          {plans.map((plan) => {
+            const { prefix, amount } = splitPrice(plan.priceLabel);
+            return (
+              <article
+                key={plan.id}
+                className={`${styles.priceCard} ${plan.highlighted ? styles.priceCardHi : ''}`}
+              >
+                {plan.highlighted && plan.highlightLabel && (
+                  <span className={styles.badgeTop}>{plan.highlightLabel}</span>
+                )}
+                <div>
+                  <div className={styles.priceName}>{plan.name}</div>
+                  <div className={styles.priceAmountRow}>
+                    {prefix && <span className={styles.priceFrom}>{prefix}</span>}
+                    <span className={styles.priceValue}>{amount}</span>
+                  </div>
+                  {plan.termLine && <div className={styles.priceTerm}>{plan.termLine}</div>}
+                </div>
+                <p className={styles.priceDesc}>{plan.description}</p>
+                <ul className={styles.priceFeatures}>
+                  {plan.features.map((feature) => (
+                    <li key={feature}>
+                      <span className={styles.check} aria-hidden="true">
+                        ✓
+                      </span>
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <ContactButton
+                  label={nav('cta')}
+                  className={`btn ${plan.highlighted ? 'btn--primary' : 'btn--ghost'} ${styles.priceCta}`}
+                />
+              </article>
+            );
+          })}
         </div>
 
         <div className={styles.priceSwipeHint} aria-hidden="true">

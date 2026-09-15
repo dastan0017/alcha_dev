@@ -3,8 +3,9 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.86);
-  backdrop-filter: saturate(180%) blur(12px);
+  /* v3: the bar is the same tone as the page, so white cards are the only
+     white on screen. */
+  background: var(--page);
   border-bottom: 1px solid var(--border);
 }
 .site-header__inner {
@@ -34,8 +35,12 @@
   align-items: center;
   gap: 12px;
 }
-.site-header__cta-desktop {
+.site-header__cta-desktop,
+.site-header__locale {
   display: none;
+}
+.site-header__cta-mobile {
+  display: inline-flex;
 }
 
 .burger {
@@ -57,6 +62,12 @@
     transform 0.2s ease,
     opacity 0.2s ease;
 }
+.burger span:nth-child(3) {
+  width: 14px;
+}
+.burger--open span {
+  width: 22px;
+}
 .burger--open span:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
 }
@@ -67,37 +78,69 @@
   transform: translateY(-7px) rotate(-45deg);
 }
 
+/* v3 review: the menu is only as tall as its content and grows out of the
+   header, with the page dimmed behind it — not a full-screen takeover. */
 .mobile-menu {
-  position: fixed;
-  inset: 64px 0 0 0;
-  z-index: 90;
-  background: #fff;
-  padding: 24px var(--gutter) 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--page);
+  padding: 8px 0 22px;
+  border-bottom: 1px solid rgba(23, 18, 31, 0.1);
+  box-shadow: 0 18px 40px rgba(23, 18, 31, 0.12);
   animation: menuIn 0.18s ease;
 }
 .mobile-menu__nav {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 .mobile-menu__link {
-  font-size: 24px;
+  font-size: 19px;
   font-weight: 700;
   color: var(--ink);
   padding: 14px 0;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(23, 18, 31, 0.08);
 }
-.mobile-menu__actions {
+.mobile-menu__link:last-child {
+  border-bottom: none;
+}
+.mobile-menu__foot {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
 }
-.mobile-menu__actions .btn {
-  width: 100%;
+.mobile-menu__email {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--primary);
+  /* Addresses run much longer than the mock's — shrink rather than overflow. */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Larger, squared-off switch inside the menu (design 13c). */
+.mobile-menu__foot .locale-switch {
+  padding: 0;
+  border-radius: 9px;
+  overflow: hidden;
+}
+.mobile-menu__foot .locale-switch__btn {
+  padding: 11px 14px;
+  border-radius: 0;
+  min-height: 0;
+}
+
+/* Sits below the header (z-index 100) but above the page. */
+.mobile-menu__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(23, 18, 31, 0.45);
+  animation: scrimIn 0.18s ease;
 }
 @keyframes menuIn {
   from {
@@ -105,16 +148,36 @@
     transform: translateY(-8px);
   }
 }
+@keyframes scrimIn {
+  from {
+    opacity: 0;
+  }
+}
 
 @media (min-width: 769px) {
   .site-header__nav {
     display: flex;
   }
-  .site-header__cta-desktop {
+  .site-header__cta-desktop,
+  .site-header__locale {
     display: inline-flex;
   }
+  .site-header__cta-mobile,
   .burger {
     display: none;
+  }
+  /* Nothing to show if the viewport grows while the menu is open. */
+  .mobile-menu,
+  .mobile-menu__scrim {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Burger's 44px hit area reaches the edge; the logo keeps the gutter. */
+  .site-header__inner {
+    gap: 10px;
+    padding-inline-end: 8px;
   }
 }
 

@@ -24,23 +24,29 @@ export function Services({ content, services }: { content: HomeContent; services
   const rest = services.filter((s) => s.id !== featured.id);
 
   return (
-    <section className="section" id="services">
+    <section className={styles.svcSection} id="services">
       <div className="container">
-        <div className={styles.svcHead}>
-          {content.servicesEyebrow && (
-            <p className="eyebrow eyebrow--muted">{content.servicesEyebrow}</p>
-          )}
-          <h2 className="section-title">{content.servicesHeading}</h2>
-          {content.servicesLede && <p className={styles.svcLede}>{content.servicesLede}</p>}
+        <div className={styles.sectionHead}>
+          <div>
+            {content.servicesEyebrow && (
+              <p className={`eyebrow eyebrow--muted ${styles.lockupEyebrow}`}>
+                {content.servicesEyebrow}
+              </p>
+            )}
+            <h2 className={`section-title ${styles.lockupTitle}`}>{content.servicesHeading}</h2>
+            {content.servicesLede && (
+              <p className={`${styles.lockupLede} ${styles.svcLede}`}>{content.servicesLede}</p>
+            )}
+          </div>
         </div>
 
         <article className={styles.svcFeatured}>
-          <div className={styles.svcFeaturedMain}>
+          {featured.badge && <span className={styles.badgeTop}>{featured.badge}</span>}
+          <div>
             <div className={styles.svcFeaturedTop}>
               <span className={styles.svcNumFeatured}>{featured.number}</span>
-              {featured.badge && <span className={styles.svcBadge}>{featured.badge}</span>}
+              <h3 className={styles.svcFeaturedTitle}>{featured.title}</h3>
             </div>
-            <h3 className={styles.svcFeaturedTitle}>{featured.title}</h3>
             <p className={styles.svcFeaturedDesc}>{featured.description}</p>
           </div>
           <Ticks items={featured.bullets} className={styles.svcFeaturedTicks} />

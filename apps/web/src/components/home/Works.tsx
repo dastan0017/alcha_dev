@@ -7,13 +7,17 @@ export function Works({ content, projects }: { content: HomeContent; projects: P
   if (projects.length === 0) return null;
 
   return (
-    <section className="section" id="works">
+    <section className={styles.worksSection} id="works">
       <div className="container">
-        {content.worksEyebrow && <p className="eyebrow eyebrow--muted">{content.worksEyebrow}</p>}
-        <div className={styles.worksHead}>
+        <div className={styles.sectionHead}>
           <div>
-            <h2 className={`section-title ${styles.worksHeading}`}>{content.worksHeading}</h2>
-            {content.worksLede && <p className={styles.worksLede}>{content.worksLede}</p>}
+            {content.worksEyebrow && (
+              <p className={`eyebrow eyebrow--muted ${styles.lockupEyebrow}`}>
+                {content.worksEyebrow}
+              </p>
+            )}
+            <h2 className={`section-title ${styles.lockupTitle}`}>{content.worksHeading}</h2>
+            {content.worksLede && <p className={styles.lockupLede}>{content.worksLede}</p>}
           </div>
           {content.worksLinkLabel && (
             <Link href="/about" className={styles.worksLink}>

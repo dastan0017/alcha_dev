@@ -17,27 +17,36 @@ export function CtaBanner({
 }) {
   return (
     <section className={styles.cta}>
-      <div className={`container ${styles.inner}`}>
-        <div className={styles.copy}>
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.subtitle}>{subtitle}</p>
-        </div>
-        <div className={styles.actions}>
-          {telegramUrl && (
-            <a
-              className="btn btn--on-dark"
-              href={telegramUrl}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              {telegramLabel}
-            </a>
-          )}
-          {cvUrl && (
-            <a className="btn btn--on-dark-ghost" href={cvUrl} target="_blank" rel="noreferrer noopener">
-              {cvLabel}
-            </a>
-          )}
+      {/* The dark panel gets its own container so the gutter is the page's,
+          not the panel's padding (v3 review). */}
+      <div className="container">
+        <div className={styles.inner}>
+          <div className={styles.copy}>
+            <h2 className={styles.title}>{title}</h2>
+            <p className={styles.subtitle}>{subtitle}</p>
+          </div>
+          <div className={styles.actions}>
+            {telegramUrl && (
+              <a
+                className="btn btn--on-dark"
+                href={telegramUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {telegramLabel}
+              </a>
+            )}
+            {cvUrl && (
+              <a
+                className="btn btn--on-dark-ghost"
+                href={cvUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {cvLabel}
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </section>

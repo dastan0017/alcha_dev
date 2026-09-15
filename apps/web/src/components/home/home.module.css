@@ -4,39 +4,100 @@
   flex-direction: column;
 }
 
+/* ============================================= Section rhythm (design 13a) */
+/* v3 spacing: the hero closes with 72px, then every section contributes 64px
+   so the gap between two sections is a flat 64px rather than 88+88. Sections
+   carry their own padding instead of the global `.section` used elsewhere. */
+.svcSection {
+  padding-block: 64px;
+}
+.worksSection,
+.priceSection {
+  padding-block: 0 64px;
+}
+
+/* ============================================ Shared section-heading lockup */
+/* v3 review (nice-to-have): one lockup for every section head —
+   eyebrow → h2 34px → lede 16px — so services, works and pricing share a
+   rhythm. `.sectionHead` is the row an optional right-hand link sits in. */
+.sectionHead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+.lockupEyebrow {
+  margin-bottom: 8px;
+}
+.lockupTitle {
+  margin-bottom: 10px;
+}
+.lockupLede {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--body);
+  max-width: 560px;
+  text-wrap: pretty;
+}
+
+/* Badge that straddles the top border of a highlighted card. Shared by the
+   featured service and the highlighted pricing plan so both read as one
+   pattern (v3 review: "featured service in the pricing-card vocabulary"). */
+.badgeTop {
+  position: absolute;
+  top: -11px;
+  left: 24px;
+  font-family: var(--font-mono-stack);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--primary);
+  border-radius: var(--r-pill);
+  padding: 4px 10px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
 /* ==================================================================== Hero */
 .hero {
-  padding-block: 56px 40px;
+  padding-block: 64px 72px;
   overflow: hidden;
 }
 .heroInner {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 500px;
+  grid-template-columns: minmax(0, 1fr) 460px;
   gap: 56px;
-  align-items: center;
+  /* v3: both columns start at the top instead of centring the shorter one. */
+  align-items: start;
 }
 .heroCopy {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  padding-top: 8px;
 }
 .heroEyebrow {
   margin-bottom: 20px;
 }
 .heroTitle {
-  font-size: clamp(32px, 4.4vw, 44px);
+  font-size: clamp(34px, 4vw, 50px);
   font-weight: 800;
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  line-height: 1.06;
+  letter-spacing: -0.022em;
   margin-bottom: 22px;
-  /* Author-controlled line break from the CMS. */
+  /* Author-controlled line break from the CMS; `balance` evens out the rest. */
   white-space: pre-line;
+  text-wrap: balance;
 }
 .heroSub {
   font-size: 18px;
   line-height: 1.55;
   color: var(--body);
-  max-width: 520px;
+  max-width: 540px;
   margin-bottom: 24px;
   text-wrap: pretty;
 }
@@ -86,9 +147,9 @@
 }
 .jCard {
   background: #fff;
-  border: 1px solid rgba(23, 18, 31, 0.12);
+  border: 1px solid rgba(23, 18, 31, 0.1);
   border-radius: 13px;
-  box-shadow: 0 14px 34px rgba(23, 18, 31, 0.09);
+  box-shadow: 0 10px 28px rgba(23, 18, 31, 0.07);
   padding: 16px 18px;
 }
 .jLabel {
@@ -131,7 +192,7 @@
   color: #4a4453;
 }
 .jResult {
-  background: #faf8fc;
+  background: var(--page);
   border-radius: 9px;
   padding: 11px 14px;
   display: flex;
@@ -169,7 +230,7 @@
   padding: 7px 0;
 }
 .jBrowser {
-  border: 1px solid var(--border);
+  border: 1px solid rgba(23, 18, 31, 0.1);
   border-radius: 9px;
   overflow: hidden;
 }
@@ -179,7 +240,7 @@
   gap: 6px;
   padding: 7px 11px;
   border-bottom: 1px solid rgba(23, 18, 31, 0.08);
-  background: #faf8fc;
+  background: var(--page);
 }
 .jDot {
   width: 7px;
@@ -293,9 +354,12 @@
   color: #0b7a3e;
   background: #e7f5ec;
 }
+/* On the tinted page a flat lilac fill disappeared, so the neutral pill is
+   now white with a hairline border (design 13a). */
 .jPillNeutral {
   color: #4a4453;
-  background: var(--primary-light);
+  background: #fff;
+  border: 1px solid rgba(23, 18, 31, 0.1);
 }
 .jPillTick {
   font-weight: 800;
@@ -402,18 +466,8 @@
 }
 
 /* ================================================================ Services */
-.svcHead {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 36px;
-}
 .svcLede {
-  color: var(--body);
-  font-size: 16.5px;
-  line-height: 1.5;
   max-width: 620px;
-  text-wrap: pretty;
 }
 
 /* Shared tick marker */
@@ -425,50 +479,37 @@
 }
 
 /* ---------------------------------------------------- Featured service --- */
+/* v3 review: the featured service now speaks the highlighted-pricing-card
+   vocabulary — white fill, 2px purple border, purple glow, straddling badge —
+   instead of its old lilac gradient. It is not clickable, so it has no hover. */
 .svcFeatured {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
   gap: 36px;
   align-items: center;
-  padding: 32px 36px;
-  margin-bottom: 22px;
-  border: 1.5px solid var(--primary);
-  border-radius: var(--r-card);
-  background: linear-gradient(135deg, #faf8fe, #f4effc);
-  transition: all 0.18s ease;
-}
-.svcFeatured:hover {
+  padding: 30px 34px;
+  margin-bottom: 20px;
+  background: #fff;
+  border: 2px solid var(--primary);
+  border-radius: 14px;
   box-shadow: 0 16px 40px rgba(91, 52, 201, 0.14);
-  transform: translateY(-3px);
 }
 .svcFeaturedTop {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 .svcNumFeatured {
   font-family: var(--font-mono-stack);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--primary);
-}
-.svcBadge {
-  font-family: var(--font-mono-stack);
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #fff;
-  background: var(--primary);
-  border-radius: var(--r-pill);
-  padding: 4px 10px;
-  line-height: 1.4;
 }
 .svcFeaturedTitle {
   font-size: 23px;
   font-weight: 800;
-  margin-bottom: 10px;
 }
 .svcFeaturedDesc {
   color: var(--body);
@@ -502,22 +543,17 @@
 .svcGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
+  gap: 20px;
 }
+/* No hover: a service card leads nowhere (v3 review). */
 .svcCard {
   display: flex;
   flex-direction: column;
   gap: 11px;
   padding: 24px 26px;
   background: #fff;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(23, 18, 31, 0.1);
   border-radius: 14px;
-  transition: all 0.18s ease;
-}
-.svcCard:hover {
-  border-color: var(--primary);
-  box-shadow: 0 12px 30px rgba(91, 52, 201, 0.1);
-  transform: translateY(-3px);
 }
 .svcCardHead {
   display: flex;
@@ -562,24 +598,6 @@
 }
 
 /* =================================================================== Works */
-.worksHead {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 26px;
-  flex-wrap: wrap;
-}
-.worksHeading {
-  margin-bottom: 6px;
-}
-.worksLede {
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--body);
-  max-width: 560px;
-  text-wrap: pretty;
-}
 .worksLink {
   flex: none;
   font-size: 14.5px;
@@ -593,14 +611,17 @@
 .worksStack {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 20px;
 }
 
+/* A work card is a single link target, so it keeps its hover lift and the
+   whole card is clickable via the stretched `.workLink::after` below. */
 .workCard {
+  position: relative;
   display: grid;
   grid-template-columns: 380px minmax(0, 1fr);
   background: #fff;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(23, 18, 31, 0.1);
   border-radius: 14px;
   overflow: hidden;
   transition: all 0.18s ease;
@@ -609,19 +630,22 @@
   box-shadow: 0 12px 32px rgba(23, 18, 31, 0.1);
   transform: translateY(-2px);
 }
+/* v3 review: one plate for every screenshot — 16:10, `contain`, lilac fill —
+   so cards line up whatever the source image's aspect ratio is. */
 .workMedia {
   position: relative;
-  min-height: 250px;
+  aspect-ratio: 16 / 10;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   text-align: center;
-  background: var(--stripes);
-  border-right: 1px solid rgba(23, 18, 31, 0.07);
+  background: var(--plate);
+  border-right: 1px solid rgba(23, 18, 31, 0.1);
+  overflow: hidden;
 }
 .workImg {
-  object-fit: cover;
+  object-fit: contain;
 }
 .workShot {
   font-family: var(--font-mono-stack);
@@ -668,9 +692,11 @@
   color: #0b7a3e;
   background: #e7f5ec;
 }
+/* v3 review: the amber client-project tag is gone — purple stays the card's
+   single accent, so this tag is neutral. */
 .workTagWork {
-  color: #a06603;
-  background: #fdf3e0;
+  color: var(--body);
+  background: var(--plate);
 }
 .workBadge {
   flex: none;
@@ -686,22 +712,24 @@
   color: var(--body);
   text-wrap: pretty;
 }
+/* Was purple; the card now spends its one purple on the case link. */
 .workFacts {
   font-family: var(--font-mono-stack);
   font-size: 12px;
   font-weight: 500;
-  color: var(--primary);
+  color: var(--body);
 }
 .workPills {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
+/* Outline pills, not filled lilac (v3 review). */
 .workPills li {
   font-size: 12px;
-  font-weight: 600;
-  color: var(--primary);
-  background: var(--primary-light);
+  font-weight: 500;
+  color: #4a4453;
+  border: 1px solid var(--border-strong);
   border-radius: var(--r-pill);
   padding: 5px 12px;
 }
@@ -720,30 +748,22 @@
 }
 .workLink {
   flex: none;
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 600;
   color: var(--primary);
 }
-.workLink:hover {
+/* Stretches the case link over the whole card so the card's `cursor:pointer`
+   is honest, while the accessible name stays on this one link. */
+.workLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.workCard:hover .workLink {
   color: var(--primary-hover);
 }
 
 /* ================================================================= Pricing */
-.priceEyebrow {
-  margin-bottom: 6px;
-}
-.priceHead {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
-  margin-bottom: 26px;
-}
-.priceNote {
-  font-size: 14px;
-  color: var(--muted);
-}
 .priceFootnote {
   margin-top: 18px;
   font-size: 13px;
@@ -771,7 +791,9 @@
   height: 8px;
   border-radius: 50%;
   background: #d9d3e2;
-  transition: width 0.2s ease, background 0.2s ease;
+  transition:
+    width 0.2s ease,
+    background 0.2s ease;
 }
 .priceDotActive {
   width: 22px !important;
@@ -782,35 +804,36 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
-  align-items: stretch;
 }
+/* v3 review: each card spans the same four implicit rows via `subgrid`, so
+   the price, blurb, feature list and button line up across all three plans
+   regardless of how long any one block is. */
 .priceCard {
   position: relative;
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 4;
+  gap: 16px;
   background: #fff;
-  border: 1px solid rgba(23, 18, 31, 0.12);
+  border: 1px solid rgba(23, 18, 31, 0.1);
   border-radius: 14px;
   padding: 26px 26px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  transition: all 0.18s ease;
 }
-/* Design keeps the highlighted plan white — a 2px purple border plus glow. */
+.priceCard:hover {
+  box-shadow: 0 12px 32px rgba(23, 18, 31, 0.1);
+  transform: translateY(-2px);
+}
+/* Highlighted plan stays white — a 2px purple border plus glow. Padding drops
+   1px on each side so the thicker border doesn't shift the content. */
 .priceCardHi {
   border: 2px solid var(--primary);
+  padding: 25px 25px 23px;
   box-shadow: 0 16px 40px rgba(91, 52, 201, 0.14);
 }
-.priceBadge {
-  position: absolute;
-  top: -11px;
-  left: 24px;
-  font-family: var(--font-mono-stack);
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: #fff;
-  background: var(--primary);
-  border-radius: var(--r-pill);
-  padding: 4px 10px;
+.priceCardHi:hover {
+  box-shadow: 0 20px 44px rgba(91, 52, 201, 0.2);
+  transform: translateY(-2px);
 }
 .priceName {
   font-size: 17px;
@@ -818,9 +841,21 @@
   color: var(--ink);
   margin-bottom: 6px;
 }
+/* "от" is set apart from the figure so the number carries the weight. */
+.priceAmountRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.priceFrom {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+}
 .priceValue {
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 800;
+  letter-spacing: -0.01em;
   color: var(--ink);
 }
 .priceTerm {
@@ -855,8 +890,9 @@
   font-weight: 600;
   color: var(--primary);
 }
+/* Sits in the last subgrid row, pinned to its bottom. */
 .priceCta {
-  margin-top: auto;
+  align-self: end;
   width: 100%;
 }
 
@@ -867,21 +903,20 @@
     gap: 40px;
   }
   .journey {
-    max-width: 500px;
+    max-width: 460px;
     width: 100%;
   }
   .workCard {
     grid-template-columns: 1fr;
   }
   .workMedia {
-    min-height: 200px;
     border-right: none;
-    border-bottom: 1px solid rgba(23, 18, 31, 0.07);
+    border-bottom: 1px solid rgba(23, 18, 31, 0.1);
   }
   .svcFeatured {
     grid-template-columns: 1fr;
     gap: 26px;
-    padding: 32px 28px;
+    padding: 30px 28px;
   }
   .svcGrid {
     grid-template-columns: 1fr 1fr;
@@ -904,45 +939,63 @@
     order: 4;
   }
 
-  /* ~64px rhythm between sections */
-  .section {
+  /* ~64px rhythm between sections; works leads, so it carries the top pad. */
+  .worksSection {
     padding-block: 34px;
+  }
+  .svcSection,
+  .priceSection {
+    padding-block: 0 34px;
+  }
+  .sectionHead {
+    margin-bottom: 20px;
   }
 
   /* Hero */
   .hero {
     padding-block: 24px 8px;
   }
+  .heroCopy {
+    padding-top: 0;
+  }
+  /* v3 review: price and CTA move above the bullet list on mobile, so the
+     offer and the action are both reachable without scrolling past proof. */
+  .heroEyebrow {
+    order: 1;
+    font-size: 11px;
+    margin-bottom: 14px;
+  }
   .heroTitle {
-    font-size: 36px;
+    order: 2;
+    font-size: 34px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+    /* The CMS line break is tuned for the wide measure; let it re-wrap here. */
+    white-space: normal;
   }
   .heroSub {
+    order: 3;
     font-size: 16px;
-    margin-bottom: 20px;
-  }
-  .heroBullets {
-    grid-template-columns: 1fr;
-    gap: 11px;
-    margin-bottom: 22px;
-  }
-  .heroBullets li {
-    font-size: 16px;
+    margin-bottom: 18px;
   }
   .heroNote {
+    order: 4;
     font-size: 17px;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
   }
   .heroCtas {
+    order: 5;
     flex-direction: column;
     align-items: stretch;
-    gap: 6px;
+    gap: 0;
     width: 100%;
-    margin-top: 4px;
   }
-  .heroCtas .btn--primary {
+  .heroCtas :global(.btn--primary) {
     width: 100%;
     height: 52px;
     border-radius: 12px;
+    font-size: 16px;
   }
   /* Secondary CTA becomes a centred text link on mobile */
   .heroCtas :global(.btn--ghost) {
@@ -950,10 +1003,27 @@
     background: none;
     min-height: 0;
     height: auto;
-    padding: 8px;
+    padding: 14px 0 22px;
     color: var(--primary);
+    font-size: 15px;
+  }
+  /* The bullets become a white proof card beneath the action. */
+  .heroBullets {
+    order: 6;
+    grid-template-columns: 1fr;
+    gap: 11px;
+    width: 100%;
+    margin-bottom: 0;
+    padding: 16px 18px;
+    background: #fff;
+    border: 1px solid rgba(23, 18, 31, 0.1);
+    border-radius: 14px;
+  }
+  .heroBullets li {
+    font-size: 15.5px;
   }
   .trust {
+    order: 7;
     margin-top: 24px;
   }
   /* Swap the desktop journey (8a) for the leaner mobile illustration (12a v2) */
@@ -966,23 +1036,12 @@
     max-width: 100%;
   }
 
-  /* Works — image on top (4:3), trimmed to essentials */
-  .worksHead {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
+  /* Works — image on top, trimmed to essentials */
   .worksLink {
     display: none;
   }
   .workCard {
     grid-template-columns: 1fr;
-  }
-  .workMedia {
-    min-height: 0;
-    aspect-ratio: 4 / 3;
-    border-right: none;
-    border-bottom: 1px solid rgba(23, 18, 31, 0.07);
   }
   .workBody {
     padding: 16px 18px 18px;
@@ -1021,7 +1080,8 @@
   }
   .svcFeaturedDesc,
   .svcFeaturedTicks li,
-  .svcLede {
+  .svcLede,
+  .lockupLede {
     font-size: 15px;
   }
   .svcGrid {
@@ -1040,10 +1100,7 @@
     margin: 24px 0 12px;
   }
 
-  /* Pricing — horizontal swipe carousel */
-  .priceHead {
-    margin-bottom: 16px;
-  }
+  /* Pricing — horizontal swipe carousel (subgrid reset above at 980px) */
   .priceGrid {
     display: flex;
     gap: 12px;
@@ -1056,9 +1113,18 @@
   .priceGrid::-webkit-scrollbar {
     display: none;
   }
+  /* The carousel is flex, so the cards stop being grid items — drop subgrid
+     and go back to a plain column with the button pinned to the bottom. */
   .priceCard {
+    display: flex;
+    flex-direction: column;
+    grid-row: auto;
+    grid-template-rows: none;
     flex: 0 0 86%;
     scroll-snap-align: start;
+  }
+  .priceCta {
+    margin-top: auto;
   }
   .priceSwipeHint {
     display: flex;
