@@ -10,6 +10,8 @@ export const envSchema = z.object({
   JWT_REFRESH_SECRET: z.string().min(1),
   JWT_ACCESS_TTL: z.string().default('15m'),
   JWT_REFRESH_TTL: z.string().default('30d'),
+  /** Lifetime of visual-editor preview tokens (docs/visual-editor.md §3). */
+  PREVIEW_TOKEN_TTL: z.string().default('2h'),
 
   CORS_ORIGINS: z.string().default('http://localhost:3000,http://localhost:5173'),
 
