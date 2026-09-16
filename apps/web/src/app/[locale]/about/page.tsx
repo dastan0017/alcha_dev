@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { isLocale, type Locale } from '@alcha/shared';
-import { getAbout } from '@/lib/content';
+import { getAbout, getChrome } from '@/lib/content';
+import { getPreview } from '@/lib/preview';
 import { buildMetadata } from '@/lib/seo';
 import { AboutHero } from '@/components/about/AboutHero';
 import { ExperienceList } from '@/components/about/ExperienceList';
@@ -37,17 +38,52 @@ export default async function AboutPage({ params }: Params) {
   }
   setRequestLocale(locale);
   const typed: Locale = locale;
-  const about = await getAbout(typed);
-  const { profile } = about;
+  const [about, chrome, { enabled: preview }] = await Promise.all([
+    getAbout(typed),
+    getChrome(typed),
+    getPreview(),
+  ]);
+  const { profile, hiddenSections } = about;
 
   return (
     <>
       <AboutJsonLd about={about} locale={typed} />
-      <AboutHero profile={profile} settings={about.settings} cvLabel={about.cta.cvLabel} />
-      <ExperienceList heading={profile.experienceHeading} experiences={about.experiences} />
-      <AboutProjects heading={profile.projectsHeading} projects={about.projects} />
-      <StackTable heading={profile.stackHeading} stack={about.stack} />
-      <Hobbies heading={profile.hobbiesHeading} hobbies={about.hobbies} />
+      <AboutHero
+        profile={profile}
+        settings={about.settings}
+        cvLabel={about.cta.cvLabel}
+        preview={preview}
+        locale={typed}
+      />
+      <ExperienceList
+        heading={profile.experienceHeading}
+        experiences={about.experiences}
+        hidden={hiddenSections.includes('experience')}
+        preview={preview}
+        locale={typed}
+      />
+      <AboutProjects
+        heading={profile.projectsHeading}
+        projects={about.projects}
+        chrome={chrome}
+        hidden={hiddenSections.includes('projects')}
+        preview={preview}
+        locale={typed}
+      />
+      <StackTable
+        heading={profile.stackHeading}
+        stack={about.stack}
+        hidden={hiddenSections.includes('stack')}
+        preview={preview}
+        locale={typed}
+      />
+      <Hobbies
+        heading={profile.hobbiesHeading}
+        hobbies={about.hobbies}
+        hidden={hiddenSections.includes('hobbies')}
+        preview={preview}
+        locale={typed}
+      />
       <CtaBanner
         title={about.cta.title}
         subtitle={about.cta.subtitle}
@@ -55,6 +91,8 @@ export default async function AboutPage({ params }: Params) {
         cvLabel={about.cta.cvLabel}
         telegramUrl={about.settings.telegram}
         cvUrl={about.settings.cvUrl}
+        preview={preview}
+        locale={typed}
       />
     </>
   );

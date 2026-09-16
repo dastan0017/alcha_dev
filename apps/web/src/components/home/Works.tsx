@@ -1,35 +1,82 @@
-import type { HomeContent, Project } from '@alcha/shared';
+import type { HomeContent, Locale, Project, SiteChrome } from '@alcha/shared';
 import { Link } from '@/i18n/navigation';
+import { cmsAttrs } from '@/lib/cms';
+import { CmsAddSlot } from '../preview/CmsAddSlot';
+import { CmsHiddenSection } from '../preview/CmsHiddenSection';
 import { WorkCard } from './WorkCard';
 import styles from './home.module.css';
 
-export function Works({ content, projects }: { content: HomeContent; projects: Project[] }) {
-  if (projects.length === 0) return null;
+export function Works({
+  content,
+  projects,
+  chrome,
+  hidden,
+  preview,
+  locale,
+}: {
+  content: HomeContent;
+  projects: Project[];
+  chrome: SiteChrome;
+  hidden: boolean;
+  preview: boolean;
+  locale: Locale;
+}) {
+  const cms = cmsAttrs(preview, locale);
+  if (hidden) return cms.enabled ? <CmsHiddenSection section="works" variant="hidden" /> : null;
+  if (projects.length === 0) {
+    return cms.enabled ? (
+      <CmsHiddenSection section="works" variant="empty" collection="projects" />
+    ) : null;
+  }
 
   return (
-    <section className={styles.worksSection} id="works">
+    <section
+      className={styles.worksSection}
+      id="works"
+      {...cms.section('works', { hideable: true })}
+    >
       <div className="container">
         <div className={styles.sectionHead}>
           <div>
             {content.worksEyebrow && (
-              <p className={`eyebrow eyebrow--muted ${styles.lockupEyebrow}`}>
+              <p
+                className={`eyebrow eyebrow--muted ${styles.lockupEyebrow}`}
+                {...cms.field(cms.home('worksEyebrow'))}
+              >
                 {content.worksEyebrow}
               </p>
             )}
-            <h2 className={`section-title ${styles.lockupTitle}`}>{content.worksHeading}</h2>
-            {content.worksLede && <p className={styles.lockupLede}>{content.worksLede}</p>}
+            <h2
+              className={`section-title ${styles.lockupTitle}`}
+              {...cms.field(cms.home('worksHeading'))}
+            >
+              {content.worksHeading}
+            </h2>
+            {content.worksLede && (
+              <p
+                className={styles.lockupLede}
+                {...cms.field(cms.home('worksLede'), { multiline: true })}
+              >
+                {content.worksLede}
+              </p>
+            )}
           </div>
           {content.worksLinkLabel && (
-            <Link href="/about" className={styles.worksLink}>
+            <Link
+              href="/about"
+              className={styles.worksLink}
+              {...cms.field(cms.home('worksLinkLabel'))}
+            >
               {content.worksLinkLabel}
             </Link>
           )}
         </div>
 
-        <div className={styles.worksStack}>
+        <div className={styles.worksStack} {...cms.list('projects', 'stack')}>
           {projects.map((project) => (
-            <WorkCard key={project.id} project={project} />
+            <WorkCard key={project.id} project={project} chrome={chrome} cms={cms} />
           ))}
+          {cms.enabled && <CmsAddSlot collection="projects" />}
         </div>
       </div>
     </section>
