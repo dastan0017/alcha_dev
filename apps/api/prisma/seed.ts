@@ -15,6 +15,7 @@
  */
 import { PrismaClient, ProjectBadge } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
+import { DEFAULT_CHROME } from '@alcha/shared';
 
 const prisma = new PrismaClient();
 
@@ -42,7 +43,10 @@ async function wipeContent(): Promise<void> {
     prisma.seoMeta.deleteMany(),
     prisma.homeContent.deleteMany(),
     prisma.aboutProfile.deleteMany(),
+    prisma.siteChrome.deleteMany(),
     prisma.siteSettings.deleteMany(),
+    // A visual-editor draft forked from the old content would republish it.
+    prisma.contentDraft.deleteMany(),
   ]);
 }
 
@@ -65,6 +69,20 @@ async function seedSettings(): Promise<void> {
     },
   });
   console.log('✓ Site settings');
+}
+
+async function seedChrome(): Promise<void> {
+  await prisma.siteChrome.create({
+    data: {
+      translations: {
+        create: [
+          { locale: 'ru', ...DEFAULT_CHROME.ru },
+          { locale: 'en', ...DEFAULT_CHROME.en },
+        ],
+      },
+    },
+  });
+  console.log('✓ Site chrome');
 }
 
 async function seedHome(): Promise<void> {
@@ -943,6 +961,7 @@ async function main(): Promise<void> {
   await seedAdmin();
   await wipeContent();
   await seedSettings();
+  await seedChrome();
   await seedHome();
   await seedServices();
   await seedPricing();

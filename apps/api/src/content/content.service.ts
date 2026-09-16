@@ -1,58 +1,77 @@
-import { Injectable } from '@nestjs/common';
-import type { AboutResponse, HomeResponse, Locale, SiteSettings } from '@alcha/shared';
-import { HomeContentService } from '../home-content/home-content.service';
-import { ServicesService } from '../services/services.service';
-import { ProjectsService } from '../projects/projects.service';
-import { PricingService } from '../pricing/pricing.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import type {
+  AboutResponse,
+  HomeResponse,
+  Locale,
+  Project,
+  SiteChrome,
+  SiteSettings,
+  SiteTree,
+} from '@alcha/shared';
 import { SettingsService } from '../settings/settings.service';
-import { AboutService } from '../about/about.service';
-import { ExperienceService } from '../experience/experience.service';
-import { StackService } from '../stack/stack.service';
-import { HobbyService } from '../hobby/hobby.service';
 import { SeoService } from '../seo/seo.service';
+import { DraftService } from './draft.service';
+import { TreeRepository } from './tree/tree.repository';
+import {
+  projectAbout,
+  projectChrome,
+  projectHome,
+  projectProject,
+  projectProjects,
+} from './tree/projection';
 
+/** `published` reads the content tables; `draft` the editor's working copy (preview mode). */
+type ContentSource = 'published' | 'draft';
+
+/** Page reads for the web, projected from a content tree. */
 @Injectable()
 export class ContentService {
   constructor(
-    private readonly homeContent: HomeContentService,
-    private readonly services: ServicesService,
-    private readonly projects: ProjectsService,
-    private readonly pricing: PricingService,
+    private readonly trees: TreeRepository,
+    private readonly drafts: DraftService,
     private readonly settings: SettingsService,
-    private readonly about: AboutService,
-    private readonly experience: ExperienceService,
-    private readonly stack: StackService,
-    private readonly hobby: HobbyService,
     private readonly seo: SeoService,
   ) {}
 
-  async getHome(locale: Locale): Promise<HomeResponse> {
-    const [content, services, projects, pricingPlans, settings, seo] = await Promise.all([
-      this.homeContent.get(locale),
-      this.services.listPublic(locale),
-      this.projects.listHome(locale),
-      this.pricing.listPublic(locale),
+  async getHome(source: ContentSource, locale: Locale): Promise<HomeResponse> {
+    const [tree, settings, seo] = await Promise.all([
+      this.load(source),
       this.settings.get(),
       this.seo.resolve('home', locale),
     ]);
-    return { content, services, projects, pricingPlans, settings, seo };
+    return projectHome(tree, locale, { settings, seo });
   }
 
-  async getAbout(locale: Locale): Promise<AboutResponse> {
-    const [profile, experiences, projects, stack, hobbies, cta, settings, seo] = await Promise.all([
-      this.about.get(locale),
-      this.experience.listPublic(locale),
-      this.projects.listAbout(locale),
-      this.stack.listPublic(locale),
-      this.hobby.listPublic(locale),
-      this.homeContent.getCta(locale),
+  async getAbout(source: ContentSource, locale: Locale): Promise<AboutResponse> {
+    const [tree, settings, seo] = await Promise.all([
+      this.load(source),
       this.settings.get(),
       this.seo.resolve('about', locale),
     ]);
-    return { profile, experiences, projects, stack, hobbies, cta, settings, seo };
+    return projectAbout(tree, locale, { settings, seo });
+  }
+
+  async getChrome(source: ContentSource, locale: Locale): Promise<SiteChrome> {
+    return projectChrome(await this.load(source), locale);
+  }
+
+  async listProjects(locale: Locale): Promise<Project[]> {
+    return projectProjects(await this.trees.loadPublishedTree(), locale);
+  }
+
+  async getProject(source: ContentSource, slug: string, locale: Locale): Promise<Project> {
+    const project = projectProject(await this.load(source), slug, locale);
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+    return project;
   }
 
   getSettings(): Promise<SiteSettings> {
     return this.settings.get();
+  }
+
+  private load(source: ContentSource): Promise<SiteTree> {
+    return source === 'draft' ? this.drafts.currentTree() : this.trees.loadPublishedTree();
   }
 }

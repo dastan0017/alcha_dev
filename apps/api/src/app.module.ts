@@ -12,14 +12,6 @@ import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { ContentModule } from './content/content.module';
 import { SettingsModule } from './settings/settings.module';
-import { HomeContentModule } from './home-content/home-content.module';
-import { ServicesModule } from './services/services.module';
-import { ProjectsModule } from './projects/projects.module';
-import { PricingModule } from './pricing/pricing.module';
-import { ExperienceModule } from './experience/experience.module';
-import { AboutModule } from './about/about.module';
-import { StackModule } from './stack/stack.module';
-import { HobbyModule } from './hobby/hobby.module';
 import { SeoModule } from './seo/seo.module';
 import { LeadsModule } from './leads/leads.module';
 import { MediaModule } from './media/media.module';
@@ -38,14 +30,6 @@ import { PublishModule } from './publish/publish.module';
     AuthModule,
     ContentModule,
     SettingsModule,
-    HomeContentModule,
-    ServicesModule,
-    ProjectsModule,
-    PricingModule,
-    ExperienceModule,
-    AboutModule,
-    StackModule,
-    HobbyModule,
     SeoModule,
     LeadsModule,
     MediaModule,

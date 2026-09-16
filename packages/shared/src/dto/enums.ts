@@ -23,6 +23,16 @@ export const LEAD_STATUS_COLORS: Record<LeadStatus, string> = {
 export const projectBadgeSchema = z.enum(['work', 'own']);
 export type ProjectBadge = z.infer<typeof projectBadgeSchema>;
 
+/** Homepage sections the owner can hide in the visual editor. */
+export const homeSectionKeySchema = z.enum(['services', 'works', 'pricing']);
+export type HomeSectionKey = z.infer<typeof homeSectionKeySchema>;
+export const HOME_SECTION_KEYS = homeSectionKeySchema.options;
+
+/** About-page sections the owner can hide in the visual editor. */
+export const aboutSectionKeySchema = z.enum(['experience', 'projects', 'stack', 'hobbies']);
+export type AboutSectionKey = z.infer<typeof aboutSectionKeySchema>;
+export const ABOUT_SECTION_KEYS = aboutSectionKeySchema.options;
+
 export const userRoleSchema = z.enum(['ADMIN']);
 export type UserRole = z.infer<typeof userRoleSchema>;
 

@@ -2,15 +2,33 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import type { HomeSectionKey, Locale, SiteChrome } from '@alcha/shared';
 import { Link } from '@/i18n/navigation';
+import { cmsAttrs } from '@/lib/cms';
 import { Logo } from './Logo';
 import { LocaleSwitch } from './LocaleSwitch';
 import { ContactButton } from './contact/ContactButton';
 
-export function Header({ email }: { email?: string }) {
+export function Header({
+  email,
+  chrome,
+  hiddenSections,
+  preview,
+  locale,
+}: {
+  email?: string;
+  chrome: SiteChrome;
+  /** Home sections the owner hid: their anchors would lead nowhere, so their links go too. */
+  hiddenSections: HomeSectionKey[];
+  preview: boolean;
+  locale: Locale;
+}) {
   const t = useTranslations('nav');
   const [menuOpen, setMenuOpen] = useState(false);
   const close = () => setMenuOpen(false);
+  const cms = cmsAttrs(preview, locale);
+  const showWorks = !hiddenSections.includes('works');
+  const showPricing = !hiddenSections.includes('pricing');
 
   // The menu is a disclosure, not a modal: Escape closes it and the page
   // behind the scrim is held still while it is open.
@@ -30,21 +48,25 @@ export function Header({ email }: { email?: string }) {
 
   return (
     <>
-      <header className="site-header">
+      <header className="site-header" {...cms.section('header')}>
         <div className="container site-header__inner">
           <Link href="/" aria-label="alcha.dev" onClick={close}>
             <Logo />
           </Link>
 
           <nav className="site-header__nav" aria-label="Primary">
-            <Link href="/#works" className="nav-link">
-              {t('works')}
-            </Link>
-            <Link href="/#pricing" className="nav-link">
-              {t('pricing')}
-            </Link>
-            <Link href="/about" className="nav-link">
-              {t('about')}
+            {showWorks && (
+              <Link href="/#works" className="nav-link" {...cms.field(cms.chrome('navWorks'))}>
+                {chrome.navWorks}
+              </Link>
+            )}
+            {showPricing && (
+              <Link href="/#pricing" className="nav-link" {...cms.field(cms.chrome('navPricing'))}>
+                {chrome.navPricing}
+              </Link>
+            )}
+            <Link href="/about" className="nav-link" {...cms.field(cms.chrome('navAbout'))}>
+              {chrome.navAbout}
             </Link>
           </nav>
 
@@ -55,10 +77,14 @@ export function Header({ email }: { email?: string }) {
               <LocaleSwitch />
             </span>
             <span className="site-header__cta-desktop">
-              <ContactButton label={t('cta')} />
+              <ContactButton label={chrome.navCta} labelAttrs={cms.field(cms.chrome('navCta'))} />
             </span>
             <span className="site-header__cta-mobile">
-              <ContactButton label={t('ctaShort')} className="btn btn--primary btn--compact" />
+              <ContactButton
+                label={chrome.navCtaShort}
+                labelAttrs={cms.field(cms.chrome('navCtaShort'))}
+                className="btn btn--primary btn--compact"
+              />
             </span>
             <button
               type="button"
@@ -79,14 +105,33 @@ export function Header({ email }: { email?: string }) {
           <div className="mobile-menu" id="mobile-menu">
             <div className="container">
               <nav className="mobile-menu__nav" aria-label={t('menu')}>
-                <Link href="/#works" className="mobile-menu__link" onClick={close}>
-                  {t('works')}
-                </Link>
-                <Link href="/#pricing" className="mobile-menu__link" onClick={close}>
-                  {t('pricing')}
-                </Link>
-                <Link href="/about" className="mobile-menu__link" onClick={close}>
-                  {t('about')}
+                {showWorks && (
+                  <Link
+                    href="/#works"
+                    className="mobile-menu__link"
+                    onClick={close}
+                    {...cms.field(cms.chrome('navWorks'))}
+                  >
+                    {chrome.navWorks}
+                  </Link>
+                )}
+                {showPricing && (
+                  <Link
+                    href="/#pricing"
+                    className="mobile-menu__link"
+                    onClick={close}
+                    {...cms.field(cms.chrome('navPricing'))}
+                  >
+                    {chrome.navPricing}
+                  </Link>
+                )}
+                <Link
+                  href="/about"
+                  className="mobile-menu__link"
+                  onClick={close}
+                  {...cms.field(cms.chrome('navAbout'))}
+                >
+                  {chrome.navAbout}
                 </Link>
               </nav>
               <div className="mobile-menu__foot">

@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import Image from 'next/image';
-import type { AboutProfile, SiteSettings } from '@alcha/shared';
+import type { AboutProfile, Locale, SiteSettings } from '@alcha/shared';
+import { cmsAttrs } from '@/lib/cms';
 import styles from './about.module.css';
 
 interface Social {
@@ -17,11 +18,16 @@ export function AboutHero({
   profile,
   settings,
   cvLabel,
+  preview,
+  locale,
 }: {
   profile: AboutProfile;
   settings: SiteSettings;
   cvLabel: string;
+  preview: boolean;
+  locale: Locale;
 }) {
+  const cms = cmsAttrs(preview, locale);
   const socials: Social[] = [
     settings.github && {
       label: 'GitHub',
@@ -54,12 +60,18 @@ export function AboutHero({
   ].filter(Boolean) as Social[];
 
   return (
-    <section className={`section ${styles.hero}`}>
+    <section className={`section ${styles.hero}`} {...cms.section('aboutHero')}>
       <div className={`container ${styles.heroInner}`}>
         <div className={styles.heroCopy}>
-          <h1 className={styles.name}>{profile.name}</h1>
+          <h1 className={styles.name} {...cms.field(cms.about('name'))}>
+            {profile.name}
+          </h1>
           {/* Admin-authored rich text (bold highlights) from the CRM. */}
-          <div className={styles.bio} dangerouslySetInnerHTML={{ __html: profile.bioHtml }} />
+          <div
+            className={styles.bio}
+            {...cms.field(cms.about('bioHtml'), { rich: true })}
+            dangerouslySetInnerHTML={{ __html: profile.bioHtml }}
+          />
           <div className={styles.heroActions}>
             {settings.cvUrl && (
               <a
@@ -67,6 +79,7 @@ export function AboutHero({
                 href={settings.cvUrl}
                 target="_blank"
                 rel="noreferrer noopener"
+                {...cms.field(cms.home('ctaCvLabel'))}
               >
                 {cvLabel}
               </a>
@@ -91,7 +104,7 @@ export function AboutHero({
           </div>
         </div>
 
-        <figure className={styles.photoCard}>
+        <figure className={styles.photoCard} {...cms.image(cms.aboutNeutral('photoUrl'))}>
           {profile.photoUrl ? (
             <Image
               src={profile.photoUrl}
@@ -105,7 +118,12 @@ export function AboutHero({
             <div className={`screenshot-placeholder ${styles.photoPlaceholder}`}>{profile.name}</div>
           )}
           {profile.photoCaption && (
-            <figcaption className={styles.caption}>{profile.photoCaption}</figcaption>
+            <figcaption
+              className={styles.caption}
+              {...cms.field(cms.about('photoCaption'), { multiline: true })}
+            >
+              {profile.photoCaption}
+            </figcaption>
           )}
         </figure>
       </div>

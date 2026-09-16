@@ -3,6 +3,7 @@ import type { AboutResponse, HomeResponse, Locale, SiteSettings } from '@alcha/s
 /**
  * Safe empty content so `next build` never hard-fails if the API is briefly
  * unreachable at build time. At runtime, ISR revalidation fills real content in.
+ * Chrome labels fall back to the seeded DEFAULT_CHROME instead (lib/content.ts).
  */
 export const EMPTY_SETTINGS: SiteSettings = {
   email: '',
@@ -48,6 +49,7 @@ export function emptyHome(locale: Locale): HomeResponse {
       ctaTelegramLabel: '',
       ctaCvLabel: '',
     },
+    hiddenSections: [],
     services: [],
     projects: [],
     pricingPlans: [],
@@ -68,6 +70,7 @@ export function emptyAbout(locale: Locale): AboutResponse {
       stackHeading: '',
       hobbiesHeading: '',
     },
+    hiddenSections: [],
     experiences: [],
     projects: [],
     stack: [],

@@ -6,6 +6,8 @@ export const env = {
   apiInternalUrl:
     process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000',
   revalidateSecret: process.env.REVALIDATE_SECRET ?? '',
+  /** The CRM that embeds draft previews; its origin is the only one the preview bridge talks to. */
+  crmUrl: process.env.CRM_URL ?? 'http://localhost:5173',
   analytics: {
     gaId: process.env.NEXT_PUBLIC_GA_ID ?? '',
     yandexMetrikaId: process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID ?? '',

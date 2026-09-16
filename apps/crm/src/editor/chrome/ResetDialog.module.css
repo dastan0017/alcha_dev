@@ -1,0 +1,22 @@
+.panel {
+  width: min(420px, 100%);
+  padding: 22px 22px 16px;
+}
+
+.title {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font: 800 18px/1.25 var(--font-sans);
+}
+
+.text {
+  margin: 0 0 18px;
+  color: var(--body);
+  font: 400 14.5px/1.5 var(--font-sans);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

@@ -21,6 +21,14 @@ export * from './dto/lead';
 export * from './dto/media';
 export * from './dto/auth';
 export * from './dto/publish';
+export * from './dto/chrome';
+export * from './dto/content-draft';
+
+// Visual editor contract (content tree, paths, patches, iframe bridge)
+export * from './cms/tree';
+export * from './cms/paths';
+export * from './cms/patch';
+export * from './cms/bridge';
 
 // Typed API client
 export * from './client/api-client';

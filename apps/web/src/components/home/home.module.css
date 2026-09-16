@@ -40,6 +40,8 @@
   color: var(--body);
   max-width: 560px;
   text-wrap: pretty;
+  /* Multiline CMS copy: line breaks typed in the editor render as-is. */
+  white-space: pre-line;
 }
 
 /* Badge that straddles the top border of a highlighted card. Shared by the
@@ -100,6 +102,7 @@
   max-width: 540px;
   margin-bottom: 24px;
   text-wrap: pretty;
+  white-space: pre-line;
 }
 .heroBullets {
   display: grid;
@@ -516,6 +519,7 @@
   font-size: 15.5px;
   line-height: 1.55;
   text-wrap: pretty;
+  white-space: pre-line;
 }
 .svcFeaturedTicks {
   display: flex;
@@ -576,6 +580,7 @@
   font-size: 14px;
   line-height: 1.5;
   text-wrap: pretty;
+  white-space: pre-line;
 }
 .svcCardTicks {
   display: flex;
@@ -711,6 +716,7 @@
   line-height: 1.55;
   color: var(--body);
   text-wrap: pretty;
+  white-space: pre-line;
 }
 /* Was purple; the card now spends its one purple on the case link. */
 .workFacts {
@@ -768,6 +774,7 @@
   margin-top: 18px;
   font-size: 13px;
   color: var(--muted);
+  white-space: pre-line;
 }
 /* Swipe affordance — only shown on the mobile carousel. */
 .priceSwipeHint {
@@ -869,6 +876,7 @@
   font-size: 13.5px;
   line-height: 1.5;
   color: var(--body);
+  white-space: pre-line;
 }
 .priceFeatures {
   display: flex;
@@ -894,6 +902,22 @@
 .priceCta {
   align-self: end;
   width: 100%;
+}
+
+/* =========================================================== Visual editor */
+/* Preview only — the CRM editor marks <html> with its mode. In edit mode the
+   stretched case link would swallow clicks meant for the card's fields, and
+   hover lifts would slide cards out from under the editor overlay. */
+:global(html[data-cms-mode='edit']) .workLink::after {
+  content: none;
+}
+:global(html[data-cms-mode='edit']) .workCard:hover,
+:global(html[data-cms-mode='edit']) .priceCard:hover {
+  transform: none;
+}
+/* The «+ Добавить тариф» slot spans a plan card's four subgrid rows. */
+.priceSlot {
+  grid-row: span 4;
 }
 
 /* ============================================================== Responsive */
@@ -925,17 +949,30 @@
 
 /* ------------------------------------------------------ Mobile (design 12a) */
 @media (max-width: 768px) {
-  /* Section order: hero → works → services → prices → cta */
-  .homeMain > :nth-child(2) {
-    order: 2;
-  }
-  .homeMain > :nth-child(3) {
+  /* Section order: hero → works → services → prices → cta. Keyed on each
+     section (or, in preview, the editor strip standing in for it) rather than
+     its position, so a hidden section doesn't reshuffle the rest. The preview
+     :has() selectors are separate rules: in a browser without :has() a shared
+     selector list would drop the production order too. */
+  .homeMain > .worksSection {
     order: 1;
   }
-  .homeMain > :nth-child(4) {
+  .homeMain > :has([data-cms-hidden='works'], [data-cms-add='projects']) {
+    order: 1;
+  }
+  .homeMain > .svcSection {
+    order: 2;
+  }
+  .homeMain > :has([data-cms-hidden='services'], [data-cms-add='services']) {
+    order: 2;
+  }
+  .homeMain > .priceSection {
     order: 3;
   }
-  .homeMain > :nth-child(5) {
+  .homeMain > :has([data-cms-hidden='pricing'], [data-cms-add='pricing']) {
+    order: 3;
+  }
+  .homeMain > :last-child {
     order: 4;
   }
 
@@ -1125,6 +1162,11 @@
   }
   .priceCta {
     margin-top: auto;
+  }
+  .priceSlot {
+    grid-row: auto;
+    flex: 0 0 86%;
+    scroll-snap-align: start;
   }
   .priceSwipeHint {
     display: flex;

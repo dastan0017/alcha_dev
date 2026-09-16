@@ -2,7 +2,8 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { LOCALES, type Locale } from '@alcha/shared';
-import { usePathname, useRouter } from '@/i18n/navigation';
+import { getPathname, usePathname, useRouter } from '@/i18n/navigation';
+import { LOCALE_NAV_ATTR } from '@/lib/cms';
 
 export function LocaleSwitch() {
   const active = useLocale();
@@ -24,6 +25,9 @@ export function LocaleSwitch() {
           type="button"
           className="locale-switch__btn"
           aria-pressed={active === locale}
+          {...(active === locale
+            ? {}
+            : { [LOCALE_NAV_ATTR]: getPathname({ href: pathname, locale }) })}
           onClick={() => switchTo(locale)}
         >
           {t(locale)}

@@ -1,12 +1,7 @@
 {
   "nav": {
-    "works": "Work",
-    "about": "About",
-    "cta": "Discuss a project",
     "menu": "Menu",
-    "close": "Close",
-    "pricing": "Pricing",
-    "ctaShort": "Discuss"
+    "close": "Close"
   },
   "locale": {
     "ru": "RU",
@@ -54,9 +49,6 @@
       "pillYours": "The code and all access — yours"
     }
   },
-  "pricing": {
-    "swipe": "Swipe to compare →"
-  },
   "contact": {
     "title": "Discuss a project",
     "subtitle": "Tell me about the task — I’ll reply within a day.",
@@ -74,22 +66,9 @@
     "required": "Please fill in this field"
   },
   "works": {
-    "viewCase": "View case",
-    "role": "Role",
-    "stack": "Stack",
-    "whatWasDone": "What was done",
-    "backToHome": "Home",
-    "allWorks": "Selected work",
     "screenshot": "Project screenshot",
     "prev": "Previous work",
     "next": "Next work"
-  },
-  "footer": {
-    "tagline": "Turnkey websites, CRMs and web apps.",
-    "rights": "All rights reserved",
-    "madeIn": "Bishkek, Kyrgyzstan",
-    "navHeading": "Navigation",
-    "contactsHeading": "Contacts"
   },
   "notFound": {
     "code": "404",

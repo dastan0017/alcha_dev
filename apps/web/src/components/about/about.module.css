@@ -97,6 +97,8 @@
   color: #fff;
   font-family: var(--font-mono-stack);
   font-size: 12px;
+  /* Multiline CMS copy: line breaks typed in the editor render as-is. */
+  white-space: pre-line;
 }
 
 /* =============================================================== Headings */
@@ -133,6 +135,7 @@
 .expDesc {
   color: var(--body);
   max-width: 66ch;
+  white-space: pre-line;
 }
 
 /* =============================================================== Projects */
@@ -204,6 +207,7 @@
 .projDesc {
   color: var(--body);
   font-size: 15px;
+  white-space: pre-line;
 }
 .projBullets {
   display: flex;
@@ -305,12 +309,19 @@
 .hobbyDesc {
   color: var(--body);
   font-size: 15px;
+  white-space: pre-line;
 }
 .hobbyHandle {
   display: inline-block;
   margin-top: 12px;
   color: var(--primary);
   font-size: 13px;
+}
+
+/* ========================================================== Visual editor */
+/* Preview only: the «+ Добавить …» slot in the ruled experience and stack lists. */
+.rowSlot {
+  padding-block: 20px;
 }
 
 /* ============================================================= Responsive */

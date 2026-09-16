@@ -286,6 +286,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  /* left: 50% alone would cap the shrink-to-fit width at half the viewport. */
+  width: max-content;
   max-width: calc(100vw - 24px);
   background: var(--ink);
   color: #fff;

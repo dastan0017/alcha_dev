@@ -25,6 +25,8 @@
   color: var(--on-dark-muted);
   margin-top: 8px;
   font-size: 15px;
+  /* Multiline CMS copy: line breaks typed in the editor render as-is. */
+  white-space: pre-line;
 }
 .actions {
   display: flex;

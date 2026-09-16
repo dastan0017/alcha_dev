@@ -1,0 +1,119 @@
+.bar {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  min-height: 56px;
+  padding: 6px 18px;
+  background: var(--dark);
+  color: #fff;
+}
+
+.crumbs {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.root {
+  color: var(--on-dark-muted);
+  font: 500 13px/1.3 var(--font-sans);
+  white-space: nowrap;
+}
+
+.slash {
+  color: var(--body);
+}
+
+.page {
+  overflow: hidden;
+  margin: 0;
+  color: #fff;
+  font: 600 13.5px/1.3 var(--font-sans);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+}
+
+.controls {
+  margin-left: auto;
+}
+
+.select {
+  max-width: 220px;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--r-btn-sm);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font: 600 12.5px/1.2 var(--font-sans);
+  cursor: pointer;
+}
+
+.select option {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.undo {
+  position: relative;
+  min-height: 36px;
+  padding: 0 11px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--r-btn-sm);
+  background: transparent;
+  color: #fff;
+  font: 600 12.5px/1.2 var(--font-sans);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+/* 44px tall hit area without growing the button. */
+.undo::before {
+  content: '';
+  position: absolute;
+  inset: -5px 0;
+}
+
+.undo:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.undo:disabled {
+  color: var(--body);
+  cursor: default;
+  opacity: 0.55;
+}
+
+.select:focus-visible,
+.undo:focus-visible {
+  outline: 2px solid var(--on-dark-purple);
+  outline-offset: 2px;
+}
+
+.status {
+  padding: 6px 11px;
+  border-radius: var(--r-pill);
+  font: 600 11.5px/1.2 var(--font-mono);
+  white-space: nowrap;
+}
+
+.statusDraft {
+  background: rgba(217, 138, 0, 0.18);
+  color: #ffc766;
+}
+
+.statusLive {
+  background: rgba(11, 122, 62, 0.22);
+  color: #8fe0b0;
+}

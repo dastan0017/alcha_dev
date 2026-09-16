@@ -41,77 +41,119 @@ enum SeoPage {
 // ----------------------------------------------------------------- Auth ------
 
 model User {
-  id                  String   @id @default(cuid())
-  email               String   @unique
-  passwordHash        String
-  role                UserRole @default(ADMIN)
-  hashedRefreshToken  String?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  email              String   @unique
+  passwordHash       String
+  role               UserRole @default(ADMIN)
+  hashedRefreshToken String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }
 
 // ------------------------------------------------------- Site settings --------
 
 // Singleton — language-neutral contacts, socials, CV and analytics.
 model SiteSettings {
-  id               String   @id @default(cuid())
-  email            String   @default("hello@alcha.dev")
-  telegram         String   @default("")
-  whatsapp         String   @default("")
-  github           String   @default("")
-  linkedin         String   @default("")
-  instagram        String   @default("")
-  cvUrl            String   @default("")
-  addressLocality  String   @default("Bishkek")
-  addressRegion    String   @default("Chuy")
-  addressCountry   String   @default("KG")
-  priceRange       String   @default("$300+")
-  gaId             String?
-  yandexMetrikaId  String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id              String   @id @default(cuid())
+  email           String   @default("hello@alcha.dev")
+  telegram        String   @default("")
+  whatsapp        String   @default("")
+  github          String   @default("")
+  linkedin        String   @default("")
+  instagram       String   @default("")
+  cvUrl           String   @default("")
+  addressLocality String   @default("Bishkek")
+  addressRegion   String   @default("Chuy")
+  addressCountry  String   @default("KG")
+  priceRange      String   @default("$300+")
+  gaId            String?
+  yandexMetrikaId String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// --------------------------------------------------------- Site chrome --------
+
+// Singleton — nav, footer and shared button labels rendered on every page.
+model SiteChrome {
+  id           String                  @id @default(cuid())
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
+  translations SiteChromeTranslation[]
+}
+
+model SiteChromeTranslation {
+  id                    String     @id @default(cuid())
+  siteChrome            SiteChrome @relation(fields: [siteChromeId], references: [id], onDelete: Cascade)
+  siteChromeId          String
+  locale                Locale
+  navWorks              String     @default("")
+  navPricing            String     @default("")
+  navAbout              String     @default("")
+  navCta                String     @default("")
+  /// Compact header CTA on narrow screens.
+  navCtaShort           String     @default("")
+  footerTagline         String     @default("")
+  footerNavHeading      String     @default("")
+  footerContactsHeading String     @default("")
+  footerRights          String     @default("")
+  footerMadeIn          String     @default("")
+  /// Works card link, e.g. "Смотреть кейс".
+  viewCaseLabel         String     @default("")
+  /// Case-page breadcrumb back to the works list.
+  allWorksLabel         String     @default("")
+  backToHomeLabel       String     @default("")
+  roleLabel             String     @default("")
+  stackLabel            String     @default("")
+  whatWasDoneLabel      String     @default("")
+  /// Hint under the pricing carousel on mobile.
+  pricingSwipeHint      String     @default("")
+
+  @@unique([siteChromeId, locale])
 }
 
 // ---------------------------------------------------- Home editorial ----------
 
 // Singleton — hero, section headings and the shared dark CTA banner.
 model HomeContent {
-  id           String                   @id @default(cuid())
-  published    Boolean                  @default(true)
-  createdAt    DateTime                 @default(now())
-  updatedAt    DateTime                 @updatedAt
-  translations HomeContentTranslation[]
+  id             String                   @id @default(cuid())
+  published      Boolean                  @default(true)
+  /// Sections the owner hid in the visual editor (HomeSectionKey values).
+  hiddenSections String[]                 @default([])
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+  translations   HomeContentTranslation[]
 }
 
 model HomeContentTranslation {
-  id                String      @id @default(cuid())
-  homeContent       HomeContent @relation(fields: [homeContentId], references: [id], onDelete: Cascade)
-  homeContentId     String
-  locale            Locale
-  eyebrow           String
-  heroTitle         String
-  heroSubtitle      String
-  heroBullets       String[]
-  heroNote          String      @default("")
-  heroCtaPrimary    String
-  heroCtaSecondary  String
-  trustLine         String
-  servicesEyebrow   String      @default("")
-  servicesHeading   String
-  servicesLede      String      @default("")
-  servicesSecondaryLabel String @default("")
-  worksEyebrow      String      @default("")
-  worksHeading      String
-  worksLede         String      @default("")
-  worksLinkLabel    String      @default("")
-  pricingEyebrow    String      @default("")
-  pricingHeading    String
-  pricingNote       String
-  pricingFootnote   String      @default("")
-  ctaTitle          String
-  ctaSubtitle       String
-  ctaTelegramLabel  String
-  ctaCvLabel        String
+  id                     String      @id @default(cuid())
+  homeContent            HomeContent @relation(fields: [homeContentId], references: [id], onDelete: Cascade)
+  homeContentId          String
+  locale                 Locale
+  eyebrow                String
+  heroTitle              String
+  heroSubtitle           String
+  heroBullets            String[]
+  heroNote               String      @default("")
+  heroCtaPrimary         String
+  heroCtaSecondary       String
+  trustLine              String
+  servicesEyebrow        String      @default("")
+  servicesHeading        String
+  servicesLede           String      @default("")
+  servicesSecondaryLabel String      @default("")
+  worksEyebrow           String      @default("")
+  worksHeading           String
+  worksLede              String      @default("")
+  worksLinkLabel         String      @default("")
+  pricingEyebrow         String      @default("")
+  pricingHeading         String
+  pricingNote            String
+  pricingFootnote        String      @default("")
+  ctaTitle               String
+  ctaSubtitle            String
+  ctaTelegramLabel       String
+  ctaCvLabel             String
 
   @@unique([homeContentId, locale])
 }
@@ -167,24 +209,24 @@ model Project {
 }
 
 model ProjectTranslation {
-  id             String  @id @default(cuid())
-  project        Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  id             String   @id @default(cuid())
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId      String
   locale         Locale
   title          String
   badge          String
   /// Product-type tag on the works card, e.g. "СОБСТВЕННЫЙ ПРОДУКТ" (empty = hidden).
-  typeTag        String  @default("")
+  typeTag        String   @default("")
   metaLine       String
   /// Mono highlight line of concrete facts on the works card.
-  factsLine      String  @default("")
-  role           String  @default("")
+  factsLine      String   @default("")
+  role           String   @default("")
   description    String
   pills          String[]
   bullets        String[]
   techChips      String[]
-  seoTitle       String  @default("")
-  seoDescription String  @default("")
+  seoTitle       String   @default("")
+  seoDescription String   @default("")
 
   @@unique([projectId, locale])
 }
@@ -244,11 +286,13 @@ model ExperienceTranslation {
 
 // Singleton — bio, photo and section headings for the About page.
 model AboutProfile {
-  id           String                    @id @default(cuid())
-  photoUrl     String?
-  createdAt    DateTime                  @default(now())
-  updatedAt    DateTime                  @updatedAt
-  translations AboutProfileTranslation[]
+  id             String                    @id @default(cuid())
+  photoUrl       String?
+  /// Sections the owner hid in the visual editor (AboutSectionKey values).
+  hiddenSections String[]                  @default([])
+  createdAt      DateTime                  @default(now())
+  updatedAt      DateTime                  @updatedAt
+  translations   AboutProfileTranslation[]
 }
 
 model AboutProfileTranslation {
@@ -312,6 +356,20 @@ model HobbyCardTranslation {
   description String
 
   @@unique([hobbyCardId, locale])
+}
+
+// ------------------------------------------------------- Visual editor --------
+
+// Singleton (id "site") — the CRM visual editor's working copy
+// (docs/visual-editor.md §3). `tree` is the edited SiteTree (both locales),
+// `base` the published tree it forked from. The content tables stay the
+// published copy; publishing writes `tree` into them and deletes the row.
+model ContentDraft {
+  id        String   @id @default("site")
+  tree      Json
+  base      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // ---------------------------------------------------------------- SEO ---------

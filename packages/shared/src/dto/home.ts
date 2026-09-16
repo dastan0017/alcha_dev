@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { translatedSchema } from './common';
 
 /**
  * Editorial singleton holding the homepage hero, section headings and the dark
@@ -43,25 +42,3 @@ export const homeContentSchema = z.object({
   ctaCvLabel: z.string(),
 });
 export type HomeContent = z.infer<typeof homeContentSchema>;
-
-/**
- * Write shape: the optional hero extras default so the CRM can submit a form
- * with an empty bullets field without failing validation.
- */
-export const homeContentTranslationInput = homeContentSchema.extend({
-  heroBullets: z.array(z.string()).default([]),
-  heroNote: z.string().default(''),
-  servicesEyebrow: z.string().default(''),
-  servicesLede: z.string().default(''),
-  servicesSecondaryLabel: z.string().default(''),
-  pricingEyebrow: z.string().default(''),
-  pricingFootnote: z.string().default(''),
-  worksEyebrow: z.string().default(''),
-  worksLede: z.string().default(''),
-  worksLinkLabel: z.string().default(''),
-});
-
-export const homeContentUpdateSchema = z.object({
-  translations: translatedSchema(homeContentTranslationInput),
-});
-export type HomeContentUpdate = z.infer<typeof homeContentUpdateSchema>;

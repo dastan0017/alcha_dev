@@ -41,6 +41,8 @@
 .lead {
   font-size: 18px;
   color: var(--body);
+  /* Multiline CMS copy: line breaks typed in the editor render as-is. */
+  white-space: pre-line;
 }
 
 .media {
@@ -98,6 +100,7 @@
   font-size: 18px;
   line-height: 1.65;
   color: var(--body);
+  white-space: pre-line;
 }
 .bullets {
   display: flex;

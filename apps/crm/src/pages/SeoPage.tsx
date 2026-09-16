@@ -78,7 +78,7 @@ export function SeoPage() {
         confirmLoading={save.isPending}
         okText="Сохранить"
         cancelText="Отмена"
-        destroyOnClose
+        destroyOnHidden
         afterOpenChange={(opened) => {
           if (opened) form.setFieldsValue(formValues);
         }}

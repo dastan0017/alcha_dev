@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import type { Locale } from '@alcha/shared';
-import { usePathname, useRouter } from '@/i18n/navigation';
+import { getPathname, usePathname, useRouter } from '@/i18n/navigation';
+import { LOCALE_NAV_ATTR } from '@/lib/cms';
 
 const DISMISS_KEY = 'alcha-locale-hint';
 
@@ -38,6 +39,7 @@ export function EnLocaleHint({ locale }: { locale: Locale }) {
       <button
         type="button"
         className="en-hint__action"
+        {...{ [LOCALE_NAV_ATTR]: getPathname({ href: pathname, locale: 'en' }) }}
         onClick={() => {
           dismiss();
           router.replace(pathname, { locale: 'en' });

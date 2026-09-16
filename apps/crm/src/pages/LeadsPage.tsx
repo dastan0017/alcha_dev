@@ -1,5 +1,20 @@
 import { useEffect, useState } from 'react';
-import { App, Button, Drawer, Form, Input, Select, Table, Tag, Typography } from 'antd';
+import {
+  App,
+  Button,
+  Card,
+  Col,
+  Drawer,
+  Form,
+  Input,
+  Row,
+  Select,
+  Statistic,
+  Table,
+  Tag,
+  Typography,
+  theme,
+} from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -7,6 +22,7 @@ import {
   LEAD_STATUS_LABELS,
   LEAD_STATUSES,
   type Lead,
+  type LeadStats,
   type LeadStatus,
 } from '@alcha/shared';
 import { http } from '../api/client';
@@ -14,12 +30,26 @@ import { PageHeader } from '../components/PageHeader';
 
 const statusOptions = LEAD_STATUSES.map((s) => ({ value: s, label: LEAD_STATUS_LABELS[s].ru }));
 
+/** Counter cards double as filters; the status-less one («Всего») clears the filter. */
+const counters: { label: string; status?: LeadStatus }[] = [
+  { label: 'Новые', status: 'new' },
+  { label: 'В работе', status: 'in_progress' },
+  { label: 'Оплачено', status: 'paid' },
+  { label: 'Всего' },
+];
+
 export function LeadsPage() {
   const qc = useQueryClient();
   const { message } = App.useApp();
+  const { token } = theme.useToken();
   const [statusFilter, setStatusFilter] = useState<LeadStatus | undefined>();
   const [active, setActive] = useState<Lead | null>(null);
   const [form] = Form.useForm();
+
+  const stats = useQuery({
+    queryKey: ['leadStats'],
+    queryFn: () => http.get<LeadStats>('/admin/leads/stats').then((r) => r.data),
+  });
 
   const list = useQuery({
     queryKey: ['leads', statusFilter],
@@ -78,6 +108,36 @@ export function LeadsPage() {
           />
         }
       />
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        {counters.map(({ label, status }) => {
+          const selected = statusFilter === status;
+          const select = () => setStatusFilter(status);
+          return (
+            <Col xs={12} md={6} key={label}>
+              <Card
+                hoverable
+                role="button"
+                tabIndex={0}
+                aria-pressed={selected}
+                onClick={select}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    select();
+                  }
+                }}
+                style={selected ? { borderColor: token.colorPrimary } : undefined}
+              >
+                <Statistic
+                  title={label}
+                  value={stats.data?.[status ?? 'total'] ?? 0}
+                  valueStyle={status ? { color: LEAD_STATUS_COLORS[status] } : undefined}
+                />
+              </Card>
+            </Col>
+          );
+        })}
+      </Row>
       <Table
         rowKey="id"
         loading={list.isLoading}

@@ -2,10 +2,12 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { isLocale, type Locale } from '@alcha/shared';
+import { cmsItemRef, isLocale, type Locale } from '@alcha/shared';
 import { routing } from '@/i18n/routing';
 import { Link } from '@/i18n/navigation';
-import { getProject, getProjects, getSettings } from '@/lib/content';
+import { cmsAttrs } from '@/lib/cms';
+import { getChrome, getHome, getProject, getProjects, getSettings } from '@/lib/content';
+import { getPreview } from '@/lib/preview';
 import { buildMetadata } from '@/lib/seo';
 import { WorkJsonLd } from '@/components/seo/JsonLd';
 import { ContactButton } from '@/components/contact/ContactButton';
@@ -50,40 +52,73 @@ export default async function WorkPage({ params }: Params) {
   setRequestLocale(locale);
   const typed: Locale = locale;
 
-  const [project, settings, t, nav] = await Promise.all([
+  const [project, settings, chrome, home, { enabled: preview }, t] = await Promise.all([
     getProject(slug, typed),
     getSettings(typed),
+    getChrome(typed),
+    getHome(typed),
+    getPreview(),
     getTranslations('works'),
-    getTranslations('nav'),
   ]);
 
   if (!project) {
     notFound();
   }
 
+  const cms = cmsAttrs(preview, typed);
+  // TODO(dastan): with «Работы» hidden the breadcrumb goes to the top of home and the
+  // «Все работы» button is dropped — there is no list left to return to.
+  const worksHidden = home.hiddenSections.includes('works');
+
   return (
     <>
       <WorkJsonLd project={project} settings={settings} locale={typed} />
 
-      <article className={styles.page}>
+      <article
+        className={styles.page}
+        {...cms.section('case', { item: cmsItemRef('projects', project.id) })}
+      >
         <div className="container">
           <nav className={styles.breadcrumb} aria-label="Breadcrumb">
-            <Link href="/#works">{t('backToHome')}</Link>
+            <Link
+              href={worksHidden ? '/' : '/#works'}
+              {...cms.field(cms.chrome('backToHomeLabel'))}
+            >
+              {chrome.backToHomeLabel}
+            </Link>
             <span aria-hidden="true">/</span>
-            <span>{project.title}</span>
+            <span {...cms.field(cms.itemLocale('projects', project.id, 'title'))}>
+              {project.title}
+            </span>
           </nav>
 
           <header className={styles.header}>
             <span
               className={`${styles.badge} ${project.badgeType === 'own' ? styles.badgeOwn : ''}`}
+              {...cms.field(cms.itemLocale('projects', project.id, 'badge'))}
             >
               {project.badge}
             </span>
-            <h1 className={styles.title}>{project.title}</h1>
-            <p className={styles.lead}>{project.metaLine}</p>
+            <h1
+              className={styles.title}
+              {...cms.field(cms.itemLocale('projects', project.id, 'title'))}
+            >
+              {project.title}
+            </h1>
+            <p
+              className={styles.lead}
+              {...cms.field(cms.itemLocale('projects', project.id, 'metaLine'), {
+                multiline: true,
+              })}
+            >
+              {project.metaLine}
+            </p>
           </header>
 
-          <div className={styles.media}>
+          <div
+            className={styles.media}
+            {...cms.image(cms.itemField('projects', project.id, 'coverImage'))}
+          >
             {project.coverImage ? (
               <Image
                 src={project.coverImage}
@@ -103,7 +138,11 @@ export default async function WorkPage({ params }: Params) {
           {project.screenshots.length > 0 && (
             <div className={styles.gallery}>
               {project.screenshots.map((src, i) => (
-                <div key={src} className={styles.galleryItem}>
+                <div
+                  key={i}
+                  className={styles.galleryItem}
+                  {...cms.image(cms.itemField('projects', project.id, 'screenshots', i))}
+                >
                   <Image
                     src={src}
                     alt={`${project.title} — ${t('screenshot')} ${i + 1}`}
@@ -120,14 +159,31 @@ export default async function WorkPage({ params }: Params) {
             <div className={styles.main}>
               {project.role && (
                 <p className={styles.role}>
-                  <span className={styles.roleLabel}>{t('role')}</span> {project.role}
+                  <span className={styles.roleLabel} {...cms.field(cms.chrome('roleLabel'))}>
+                    {chrome.roleLabel}
+                  </span>{' '}
+                  <span {...cms.field(cms.itemLocale('projects', project.id, 'role'))}>
+                    {project.role}
+                  </span>
                 </p>
               )}
-              <p className={styles.description}>{project.description}</p>
+              <p
+                className={styles.description}
+                {...cms.field(cms.itemLocale('projects', project.id, 'description'), {
+                  multiline: true,
+                })}
+              >
+                {project.description}
+              </p>
               {project.bullets.length > 0 && (
                 <ul className={styles.bullets}>
-                  {project.bullets.map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
+                  {project.bullets.map((bullet, i) => (
+                    <li
+                      key={i}
+                      {...cms.field(cms.itemLocale('projects', project.id, 'bullets', i))}
+                    >
+                      {bullet}
+                    </li>
                   ))}
                 </ul>
               )}
@@ -136,10 +192,16 @@ export default async function WorkPage({ params }: Params) {
             <aside className={styles.aside}>
               {project.pills.length > 0 && (
                 <div className={styles.asideBlock}>
-                  <p className={styles.asideHeading}>{t('whatWasDone')}</p>
+                  <p className={styles.asideHeading} {...cms.field(cms.chrome('whatWasDoneLabel'))}>
+                    {chrome.whatWasDoneLabel}
+                  </p>
                   <ul className={styles.pills}>
-                    {project.pills.map((pill) => (
-                      <li key={pill} className="pill">
+                    {project.pills.map((pill, i) => (
+                      <li
+                        key={i}
+                        className="pill"
+                        {...cms.field(cms.itemLocale('projects', project.id, 'pills', i))}
+                      >
                         {pill}
                       </li>
                     ))}
@@ -148,10 +210,16 @@ export default async function WorkPage({ params }: Params) {
               )}
               {project.techChips.length > 0 && (
                 <div className={styles.asideBlock}>
-                  <p className={styles.asideHeading}>{t('stack')}</p>
+                  <p className={styles.asideHeading} {...cms.field(cms.chrome('stackLabel'))}>
+                    {chrome.stackLabel}
+                  </p>
                   <ul className={styles.chips}>
-                    {project.techChips.map((chip) => (
-                      <li key={chip} className="chip">
+                    {project.techChips.map((chip, i) => (
+                      <li
+                        key={i}
+                        className="chip"
+                        {...cms.field(cms.itemLocale('projects', project.id, 'techChips', i))}
+                      >
                         {chip}
                       </li>
                     ))}
@@ -162,10 +230,16 @@ export default async function WorkPage({ params }: Params) {
           </div>
 
           <div className={styles.footerCta}>
-            <ContactButton label={nav('cta')} />
-            <Link href="/#works" className="btn btn--ghost">
-              {t('allWorks')}
-            </Link>
+            <ContactButton label={chrome.navCta} labelAttrs={cms.field(cms.chrome('navCta'))} />
+            {!worksHidden && (
+              <Link
+                href="/#works"
+                className="btn btn--ghost"
+                {...cms.field(cms.chrome('allWorksLabel'))}
+              >
+                {chrome.allWorksLabel}
+              </Link>
+            )}
           </div>
         </div>
       </article>

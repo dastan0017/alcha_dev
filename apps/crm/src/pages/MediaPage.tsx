@@ -2,51 +2,29 @@ import { App, Card, Col, Empty, Popconfirm, Row, Upload } from 'antd';
 import type { UploadProps } from 'antd';
 import { CopyOutlined, DeleteOutlined, InboxOutlined } from '@ant-design/icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { MediaAsset, PresignResponse } from '@alcha/shared';
-import { http } from '../api/client';
+import { deleteMedia, listMedia, MEDIA_QUERY_KEY, uploadMedia } from '../api/media';
 import { PageHeader } from '../components/PageHeader';
 
 export function MediaPage() {
   const qc = useQueryClient();
   const { message } = App.useApp();
 
-  const list = useQuery({
-    queryKey: ['media'],
-    queryFn: () => http.get<MediaAsset[]>('/media').then((r) => r.data),
-  });
+  const list = useQuery({ queryKey: MEDIA_QUERY_KEY, queryFn: listMedia });
 
   const remove = useMutation({
-    mutationFn: (id: string) => http.delete(`/media/${id}`),
+    mutationFn: deleteMedia,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['media'] });
+      qc.invalidateQueries({ queryKey: MEDIA_QUERY_KEY });
       message.success('Удалено');
     },
   });
 
   const customRequest: UploadProps['customRequest'] = async (options) => {
-    const file = options.file as File;
-    const contentType = file.type || 'application/octet-stream';
     try {
-      const presign = (
-        await http.post<PresignResponse>('/media/presign', {
-          filename: file.name,
-          contentType,
-          size: file.size,
-        })
-      ).data;
-      await fetch(presign.uploadUrl, { method: 'PUT', headers: presign.headers, body: file });
-      await http.post('/media', {
-        key: presign.key,
-        url: presign.publicUrl,
-        filename: file.name,
-        mimeType: contentType,
-        size: file.size,
-        width: null,
-        height: null,
-      });
-      qc.invalidateQueries({ queryKey: ['media'] });
+      const asset = await uploadMedia(options.file as File);
+      qc.invalidateQueries({ queryKey: MEDIA_QUERY_KEY });
       message.success('Загружено');
-      options.onSuccess?.({});
+      options.onSuccess?.(asset);
     } catch (error) {
       message.error('Ошибка загрузки');
       options.onError?.(error as Error);

@@ -6,15 +6,7 @@ import { AuthProvider, useAuth } from './auth/AuthContext';
 import { antdTheme } from './lib/theme';
 import { AppLayout } from './layout/AppLayout';
 import { LoginPage } from './pages/LoginPage';
-import { DashboardPage } from './pages/DashboardPage';
-import { HomeContentPage } from './pages/HomeContentPage';
-import { ServicesPage } from './pages/ServicesPage';
-import { PricingPage } from './pages/PricingPage';
-import { ProjectsPage } from './pages/ProjectsPage';
-import { AboutPage } from './pages/AboutPage';
-import { ExperiencePage } from './pages/ExperiencePage';
-import { StackPage } from './pages/StackPage';
-import { HobbiesPage } from './pages/HobbiesPage';
+import { SitePage } from './editor/SitePage';
 import { SettingsPage } from './pages/SettingsPage';
 import { SeoPage } from './pages/SeoPage';
 import { LeadsPage } from './pages/LeadsPage';
@@ -43,22 +35,15 @@ function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route element={<RequireAuth />}>
         <Route element={<AppLayout />}>
-          <Route index element={<DashboardPage />} />
-          <Route path="home" element={<HomeContentPage />} />
-          <Route path="services" element={<ServicesPage />} />
-          <Route path="pricing" element={<PricingPage />} />
-          <Route path="projects" element={<ProjectsPage />} />
-          <Route path="about" element={<AboutPage />} />
-          <Route path="experience" element={<ExperiencePage />} />
-          <Route path="stack" element={<StackPage />} />
-          <Route path="hobbies" element={<HobbiesPage />} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="seo" element={<SeoPage />} />
+          <Route index element={<Navigate to="/leads" replace />} />
+          <Route path="site" element={<SitePage />} />
           <Route path="leads" element={<LeadsPage />} />
           <Route path="media" element={<MediaPage />} />
+          <Route path="seo" element={<SeoPage />} />
+          <Route path="settings" element={<SettingsPage />} />
         </Route>
       </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/leads" replace />} />
     </Routes>
   );
 }
