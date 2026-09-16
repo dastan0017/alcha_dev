@@ -45,6 +45,7 @@ describe('validateTree', () => {
   it('ignores blank optional fields', () => {
     const tree = treeFixture();
     tree.home.ru.eyebrow = '';
+    tree.home.ru.heroSubtitleMobile = '';
     tree.home.en.heroBullets = [];
     tree.about.photoUrl = null;
     tree.services[0].ru.badge = '';

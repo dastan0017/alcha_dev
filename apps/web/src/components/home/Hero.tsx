@@ -1,8 +1,7 @@
 import type { HomeContent, Locale } from '@alcha/shared';
 import { cmsAttrs } from '@/lib/cms';
 import { ContactButton } from '../contact/ContactButton';
-import { HeroJourney } from './HeroJourney';
-import { HeroJourneyMobile } from './HeroJourneyMobile';
+import { HeroStack } from './HeroStack';
 import styles from './home.module.css';
 
 export function Hero({
@@ -37,6 +36,12 @@ export function Hero({
             {...cms.field(cms.home('heroSubtitle'), { multiline: true })}
           >
             {content.heroSubtitle}
+          </p>
+          <p
+            className={styles.heroSubMobile}
+            {...cms.field(cms.home('heroSubtitleMobile'), { multiline: true })}
+          >
+            {content.heroSubtitleMobile}
           </p>
 
           {content.heroBullets.length > 0 && (
@@ -73,14 +78,9 @@ export function Hero({
               </a>
             )}
           </div>
-
-          <p className={`mono ${styles.trust}`} {...cms.field(cms.home('trustLine'))}>
-            {content.trustLine}
-          </p>
         </div>
 
-        <HeroJourney />
-        <HeroJourneyMobile />
+        <HeroStack />
       </div>
     </section>
   );

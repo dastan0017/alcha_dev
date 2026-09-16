@@ -104,6 +104,17 @@
   text-wrap: pretty;
   white-space: pre-line;
 }
+/* A shorter rewrite of the lead for phones — its own CMS field, so the two are
+   swapped rather than truncated. Hidden above 768px, where `.heroSub` shows. */
+.heroSubMobile {
+  display: none;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--body);
+  margin-bottom: 18px;
+  text-wrap: pretty;
+  white-space: pre-line;
+}
 .heroBullets {
   display: grid;
   grid-template-columns: auto auto;
@@ -136,215 +147,443 @@
   gap: 14px;
   flex-wrap: wrap;
 }
-.trust {
-  margin-top: 40px;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--muted);
-}
 
-/* ------------------------------------------- Hero illustration (journey) -- */
-.journey {
+/* -------------------------------------- Hero illustration (design 13a) --- */
+/* Three stacked window mocks — the finished site, the owner's panel, the CRM —
+   joined by ↓ arrows, then the two reassurance pills. `align-self: stretch`
+   plus `space-between` let the column fill the hero row, so the free space
+   lands in the gaps between the cards instead of pooling under the last one. */
+.hsCol {
   display: flex;
   flex-direction: column;
+  gap: 0;
+  align-self: stretch;
+  justify-content: space-between;
 }
-.jCard {
+/* The design sets every label, chip, pill and mono string with the `font:`
+   shorthand, which resets the omitted line-height component to `normal`. These
+   longhand ports would otherwise inherit `body { line-height: 1.55 }` and each
+   grow a few px, so the mock would render noticeably looser than design 13a —
+   density is the whole point of a 460px product mock. Rules the design sets
+   with `font-size:` instead (.hsCaption, .hsPriceName, .hsLeadName) keep the
+   inherited line-height, and .hsSiteTitle / .hsTitle* keep their explicit 1.18. */
+.hsLabel,
+.hsUrl,
+.hsWinName,
+.hsSiteMeta,
+.hsSiteCta,
+.hsPriceVal,
+.hsPublishLabel,
+.hsPublishDone,
+.hsPriceOld,
+.hsPriceNew,
+.hsChip,
+.hsNavItem,
+.hsStatus,
+.hsPill {
+  line-height: normal;
+}
+.hsCard {
   background: #fff;
   border: 1px solid rgba(23, 18, 31, 0.1);
   border-radius: 13px;
   box-shadow: 0 10px 28px rgba(23, 18, 31, 0.07);
-  padding: 16px 18px;
+  padding: 10px 12px;
 }
-.jLabel {
+.hsHead {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.hsLabel {
   font-family: var(--font-mono-stack);
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-  margin-bottom: 12px;
+  letter-spacing: 0.11em;
+  color: var(--primary);
+  white-space: nowrap;
 }
-.jSearch {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid rgba(23, 18, 31, 0.12);
-  border-radius: var(--r-pill);
-  padding: 7px 14px;
-  margin-bottom: 12px;
+.hsCaption {
+  font-size: 11.5px;
+  color: var(--body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.jGlass {
-  position: relative;
-  flex: none;
-  width: 12px;
-  height: 12px;
-  border: 2px solid var(--muted);
-  border-radius: 50%;
-}
-.jGlass::after {
-  content: '';
-  position: absolute;
-  left: 11px;
-  top: 9px;
-  width: 2px;
-  height: 5px;
-  background: var(--muted);
-  transform: rotate(-45deg);
-}
-.jQuery {
-  font-size: 13px;
-  color: #4a4453;
-}
-.jResult {
-  background: var(--page);
-  border-radius: 9px;
-  padding: 11px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-.jResultTitle {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: #1a0dab;
-  margin-bottom: 2px;
-}
-.jResultUrl {
-  font-family: var(--font-mono-stack);
-  font-size: 10.5px;
-  font-weight: 500;
-  color: #0b7a3e;
-}
-.jRank {
-  flex: none;
-  font-family: var(--font-mono-stack);
-  font-size: 11px;
-  font-weight: 700;
-  color: #fff;
-  background: var(--primary);
-  border-radius: 6px;
-  padding: 4px 8px;
-}
-.jArrow {
+.hsArrow {
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1;
   color: #b3a8c9;
-  padding: 7px 0;
+  padding: 3px 0;
 }
-.jBrowser {
+
+/* --- The window mock, shared by all three cards -------------------------- */
+.hsWindow {
   border: 1px solid rgba(23, 18, 31, 0.1);
   border-radius: 9px;
   overflow: hidden;
 }
-.jBrowserBar {
+/* Card 2 only: the ripple and the cursor are positioned against the window. */
+.hsWindowLive {
+  position: relative;
+}
+.hsChrome {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 11px;
-  border-bottom: 1px solid rgba(23, 18, 31, 0.08);
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border);
   background: var(--page);
 }
-.jDot {
-  width: 7px;
-  height: 7px;
+.hsDot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #d9d3e2;
 }
-.jBrowserUrl {
+.hsUrl {
   margin-left: 6px;
   font-family: var(--font-mono-stack);
   font-size: 9.5px;
   font-weight: 500;
   color: var(--muted);
 }
-.jBrowserBody {
-  padding: 13px 14px;
-}
-.jSiteTitle {
-  font-size: 13.5px;
-  font-weight: 800;
+/* Chrome title of the panel (card 2) and of the CRM (card 3). */
+.hsWinName {
+  font-family: var(--font-mono-stack);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   color: var(--ink);
-  margin-bottom: 2px;
+  white-space: nowrap;
 }
-.jSiteSub {
-  font-size: 11.5px;
-  color: var(--muted);
-  margin-bottom: 10px;
+.hsChromeEnd {
+  margin-left: auto;
 }
-.jForm {
-  display: grid;
-  grid-template-columns: 1fr 1.3fr auto;
+
+/* --- Site preview, cards 1 and 2 ----------------------------------------- */
+.hsBody {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 11px 12px 12px;
+}
+.hsSite {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 7px;
 }
-.jField {
-  font-size: 11px;
-  font-weight: 500;
+.hsSiteTitle {
+  font-size: 13.5px;
+  font-weight: 800;
+  line-height: 1.18;
   color: var(--ink);
-  border: 1px solid rgba(23, 18, 31, 0.16);
-  border-radius: 6px;
-  padding: 6px 9px;
-  white-space: nowrap;
-  overflow: hidden;
 }
-.jSubmit {
-  font-size: 11px;
+.hsSiteMeta {
+  font-family: var(--font-mono-stack);
+  font-size: 9.5px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.hsSiteCta {
+  font-size: 9.5px;
   font-weight: 600;
   color: #fff;
   background: var(--primary);
-  border-radius: 6px;
-  padding: 6px 11px;
+  border-radius: 5px;
+  padding: 4px 10px;
+  white-space: nowrap;
 }
-.jLeads {
+.hsPrices {
+  flex: none;
+  width: 142px;
   display: flex;
   flex-direction: column;
-  gap: 9px;
 }
-.jLead {
+.hsPriceRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+}
+/* Card 1 hangs the hairline under every row but the last, card 2 over every
+   row after the edited one — the design's own markup, same two lines. */
+.hsPriceRule {
+  border-bottom: 1px solid rgba(23, 18, 31, 0.07);
+}
+.hsPriceRuleTop {
+  border-top: 1px solid rgba(23, 18, 31, 0.07);
+}
+.hsPriceName {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.hsPriceVal {
+  font-family: var(--font-mono-stack);
+  font-size: 9.5px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* --- Card 2: the 8s "edit and publish" loop ------------------------------ */
+/* Every animated node's BASE state is the END of the story: the new headline
+   and the new price in place, «Опубликовано ✓» on a green button, no dashed
+   field, no caret, no cursor, no ripple. That is exactly what
+   `prefers-reduced-motion` renders — globals.css collapses animation-duration
+   to 0.001ms there, so each node freezes on its unanimated declarations — and
+   the keyframes drive away from that state at 0% and back into it at 100%. */
+.hsPublish {
+  position: relative;
+  margin-left: auto;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  height: 20px;
+  border-radius: 5px;
+  background: #0b7a3e;
+  animation: crmBtn 8s ease-in-out infinite;
+}
+.hsPublishLabel,
+.hsPublishDone {
+  position: absolute;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+}
+.hsPublishLabel {
+  opacity: 0;
+  animation: crmBtnLabel 8s ease-in-out infinite;
+}
+.hsPublishDone {
+  opacity: 1;
+  animation: crmBtnDone 8s ease-in-out infinite;
+}
+/* The geometry never moves: the dashed edge is always present and only its
+   colour and fill animate, with a negative margin cancelling the padding. */
+.hsEdit {
+  align-self: stretch;
+  border: 1.5px dashed transparent;
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin: -2px -6px;
+  background: transparent;
+  animation: crmEditText 8s ease-in-out infinite;
+}
+.hsSwap {
+  display: grid;
+}
+.hsTitleOld,
+.hsTitleNew {
+  grid-area: 1 / 1;
+  font-size: 13.5px;
+  font-weight: 800;
+  line-height: 1.18;
+  color: var(--ink);
+}
+.hsTitleOld {
+  opacity: 0;
+  animation: crmTitleOld 8s ease-in-out infinite;
+}
+.hsTitleNew {
+  opacity: 1;
+  clip-path: none;
+  animation: crmTitleNew 8s ease-out infinite;
+}
+.hsEditPrice {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
+  border: 1.5px dashed transparent;
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin: 0 -6px;
+  background: transparent;
+  animation: crmEditPrice 8s ease-in-out infinite;
 }
-.jLeadName {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--ink);
+.hsSwapPrice {
+  display: grid;
+  justify-items: end;
+  flex: none;
 }
-.jLeadMeta {
+.hsPriceOld,
+.hsPriceNew {
+  grid-area: 1 / 1;
   font-family: var(--font-mono-stack);
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--faint);
-  margin-top: 2px;
+  font-size: 9.5px;
+  white-space: nowrap;
 }
-.jStatus {
+.hsPriceOld {
+  font-weight: 500;
+  color: var(--muted);
+  opacity: 0;
+  animation: crmPriceOld 8s ease-in-out infinite;
+}
+.hsPriceNew {
+  font-weight: 700;
+  color: var(--primary);
+  opacity: 1;
+  clip-path: none;
+  animation: crmPriceNew 8s ease-out infinite;
+}
+/* Two animations at once: `crmCaret` blinks `opacity`, the window animation
+   gates `visibility` — different properties, so they coexist. */
+.hsCaret,
+.hsCaretPrice {
+  display: inline-block;
+  width: 1.5px;
+  vertical-align: -1px;
+  background: var(--primary);
+  visibility: hidden;
+}
+.hsCaret {
+  height: 12px;
+  margin-left: 4px;
+  animation:
+    crmCaret 0.9s steps(1, end) infinite,
+    crmShowText 8s linear infinite;
+}
+.hsCaretPrice {
+  height: 9px;
+  margin-left: 3px;
+  animation:
+    crmCaret 0.9s steps(1, end) infinite,
+    crmShowPrice 8s linear infinite;
+}
+.hsRipple {
+  position: absolute;
+  right: 12px;
+  top: 1px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  opacity: 0;
+  pointer-events: none;
+  animation: crmPulse 8s ease-in-out infinite;
+}
+.hsCursor {
+  position: absolute;
+  left: 14%;
+  top: 38%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50% 50% 50% 2px;
+  background: var(--ink);
+  box-shadow: 0 1px 3px rgba(23, 18, 31, 0.35);
+  transform: rotate(-18deg);
+  opacity: 0;
+  pointer-events: none;
+  animation: crmCursor 8s ease-in-out infinite;
+}
+
+/* --- Card 3: the CRM ----------------------------------------------------- */
+.hsChip {
   flex: none;
   font-family: var(--font-mono-stack);
-  font-size: 10.5px;
+  font-size: 9px;
   font-weight: 600;
-  border-radius: 6px;
-  padding: 3px 9px;
-}
-.jStatusNew {
+  letter-spacing: 0.06em;
   color: var(--primary);
   background: #f1ecfa;
+  border-radius: 4px;
+  padding: 2px 6px;
+  white-space: nowrap;
 }
-.jStatusProgress {
+.hsChipWa {
+  color: #0b6b46;
+  background: #e7f5ec;
+}
+.hsChipIg {
+  color: #a3286f;
+  background: #fdeaf4;
+}
+.hsCrm {
+  display: flex;
+}
+.hsNav {
+  flex: none;
+  width: 84px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 7px;
+  border-right: 1px solid var(--border);
+  background: var(--page);
+}
+.hsNavItem {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 3px 7px;
+}
+.hsNavItemActive {
+  font-weight: 600;
+  color: var(--ink);
+  background: #f1ecfa;
+  border-radius: 5px;
+}
+.hsLeads {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 10px;
+}
+.hsLead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hsLeadName {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hsStatus {
+  margin-left: auto;
+  flex: none;
+  font-family: var(--font-mono-stack);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--primary);
+  background: #f1ecfa;
+  border-radius: 5px;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+.hsStatusProgress {
   color: #a06603;
   background: #fdf3e0;
 }
-.jStatusPaid {
+.hsStatusPaid {
   color: #0b7a3e;
   background: #e7f5ec;
 }
-.jPills {
+
+/* --- The two reassurance pills ------------------------------------------- */
+.hsPills {
   display: flex;
   gap: 8px;
   margin-top: 14px;
-  flex-wrap: wrap;
 }
-.jPill {
+.hsPill {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -353,119 +592,298 @@
   border-radius: var(--r-pill);
   padding: 6px 13px;
 }
-.jPillGreen {
+.hsPillGreen {
   color: #0b7a3e;
   background: #e7f5ec;
 }
 /* On the tinted page a flat lilac fill disappeared, so the neutral pill is
-   now white with a hairline border (design 13a). */
-.jPillNeutral {
+   white with a hairline border (design 13a). */
+.hsPillNeutral {
   color: #4a4453;
   background: #fff;
   border: 1px solid rgba(23, 18, 31, 0.1);
 }
-.jPillTick {
+.hsTick {
   font-weight: 800;
 }
-.jPillTickPurple {
+.hsTickPurple {
   color: var(--primary);
   font-weight: 800;
 }
 
-/* --------------- Mobile hero journey (design 12a v2) — hidden until ≤768px */
-.journeyMobile {
-  display: none;
-  flex-direction: column;
+/* --- Keyframes ----------------------------------------------------------- */
+/* Copied stop-for-stop from the design file, names included; CSS modules scope
+   them locally. Do not re-derive the percentages — the cursor, the caret
+   gates, the dashed fields and the button are hand-tuned against each other. */
+@keyframes crmTitleOld {
+  0%,
+  19% {
+    opacity: 1;
+  }
+  23%,
+  93% {
+    opacity: 0;
+  }
+  97%,
+  100% {
+    opacity: 1;
+  }
 }
-.jmHeading {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--ink);
-  text-align: center;
-  margin-bottom: 14px;
+@keyframes crmTitleNew {
+  0%,
+  21% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  23% {
+    opacity: 1;
+    clip-path: inset(0 100% 0 0);
+  }
+  38%,
+  93% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+  96%,
+  100% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
 }
-.jmLabel {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 12px;
+@keyframes crmPriceOld {
+  0%,
+  44% {
+    opacity: 1;
+  }
+  47%,
+  93% {
+    opacity: 0;
+  }
+  97%,
+  100% {
+    opacity: 1;
+  }
 }
-.jmDot {
-  flex: none;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--primary);
+@keyframes crmPriceNew {
+  0%,
+  45% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  47% {
+    opacity: 1;
+    clip-path: inset(0 100% 0 0);
+  }
+  58%,
+  93% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+  96%,
+  100% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
 }
-.jmResultTop {
-  background: var(--primary-light);
-  border: 1px solid rgba(91, 52, 201, 0.22);
-  border-radius: 9px;
-  padding: 12px 14px;
-  margin-bottom: 10px;
+@keyframes crmCaret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
 }
-.jmResultSub {
-  font-size: 12.5px;
-  color: var(--muted);
-  margin: 3px 0 8px;
+@keyframes crmShowText {
+  0%,
+  2% {
+    visibility: hidden;
+  }
+  3%,
+  37% {
+    visibility: visible;
+  }
+  38%,
+  100% {
+    visibility: hidden;
+  }
 }
-.jmRatingRow {
-  display: flex;
-  align-items: center;
-  gap: 7px;
+@keyframes crmShowPrice {
+  0%,
+  43% {
+    visibility: hidden;
+  }
+  45%,
+  60% {
+    visibility: visible;
+  }
+  62%,
+  100% {
+    visibility: hidden;
+  }
 }
-.jmStars {
-  font-size: 12.5px;
-  color: #f5a623;
-  letter-spacing: 1px;
+@keyframes crmEditText {
+  0%,
+  1% {
+    border-color: transparent;
+    background: transparent;
+  }
+  4%,
+  36% {
+    border-color: #5b34c9;
+    background: rgba(91, 52, 201, 0.07);
+  }
+  40%,
+  100% {
+    border-color: transparent;
+    background: transparent;
+  }
 }
-.jmRatingNum {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--ink);
+@keyframes crmEditPrice {
+  0%,
+  42% {
+    border-color: transparent;
+    background: transparent;
+  }
+  45%,
+  60% {
+    border-color: #5b34c9;
+    background: rgba(91, 52, 201, 0.07);
+  }
+  64%,
+  100% {
+    border-color: transparent;
+    background: transparent;
+  }
 }
-.jmReviews {
-  font-size: 12px;
-  color: var(--faint);
+@keyframes crmBtn {
+  0%,
+  67% {
+    background: #5b34c9;
+  }
+  70% {
+    background: #452399;
+    transform: scale(0.95);
+  }
+  74% {
+    background: #0b7a3e;
+    transform: scale(1);
+  }
+  92% {
+    background: #0b7a3e;
+  }
+  96%,
+  100% {
+    background: #5b34c9;
+  }
 }
-.jmComp {
-  padding: 9px 2px;
-  border-top: 1px solid rgba(23, 18, 31, 0.07);
+@keyframes crmBtnLabel {
+  0%,
+  69% {
+    opacity: 1;
+  }
+  73%,
+  92% {
+    opacity: 0;
+  }
+  96%,
+  100% {
+    opacity: 1;
+  }
 }
-.jmCompName {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #6b6577;
+@keyframes crmBtnDone {
+  0%,
+  69% {
+    opacity: 0;
+  }
+  73%,
+  92% {
+    opacity: 1;
+  }
+  96%,
+  100% {
+    opacity: 0;
+  }
 }
-.jmCompDesc {
-  font-size: 12px;
-  color: var(--faint);
-  margin-top: 2px;
+@keyframes crmCursor {
+  0% {
+    left: 14%;
+    top: 38%;
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  34% {
+    left: 14%;
+    top: 38%;
+  }
+  42% {
+    left: 68%;
+    top: 54%;
+  }
+  54% {
+    left: 68%;
+    top: 54%;
+  }
+  66% {
+    left: 80%;
+    top: 5%;
+  }
+  70% {
+    transform: rotate(-18deg) scale(0.8);
+  }
+  75% {
+    transform: rotate(-18deg) scale(1);
+  }
+  92% {
+    left: 80%;
+    top: 5%;
+    opacity: 1;
+  }
+  97%,
+  100% {
+    opacity: 0;
+  }
 }
-.jmForm {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+@keyframes crmPulse {
+  0%,
+  68% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  71% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  80%,
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
 }
-.jmFormField {
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--ink);
-  border: 1px solid rgba(23, 18, 31, 0.16);
-  border-radius: 8px;
-  padding: 10px 13px;
-}
-.jmFormSubmit {
-  text-align: center;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #fff;
-  background: var(--primary);
-  border-radius: 8px;
-  padding: 11px 13px;
+
+/* The design's own gate. globals.css already forces a 0.001ms duration on
+   everything, but it never touches `animation-name`, so this class-level
+   `animation: none` wins whatever the stylesheet order and leaves every node
+   on the base (= final) state authored above. */
+@media (prefers-reduced-motion: reduce) {
+  .hsPublish,
+  .hsPublishLabel,
+  .hsPublishDone,
+  .hsEdit,
+  .hsTitleOld,
+  .hsTitleNew,
+  .hsEditPrice,
+  .hsPriceOld,
+  .hsPriceNew,
+  .hsCaret,
+  .hsCaretPrice,
+  .hsRipple,
+  .hsCursor {
+    animation: none !important;
+  }
 }
 
 /* ================================================================ Services */
@@ -921,12 +1339,31 @@
 }
 
 /* ============================================================== Responsive */
+/* The illustration keeps the design's fixed 460px track at ≥1200px. Below that
+   the track goes fluid so the copy column keeps a readable measure and the
+   cards shrink with it — the 142px price column inside them stays fixed. */
+@media (max-width: 1199px) {
+  .heroInner {
+    grid-template-columns: minmax(0, 1fr) clamp(320px, 36vw, 440px);
+    gap: 40px;
+  }
+  /* Room is tight: card captions wrap instead of being ellipsed, and the pills
+     may fall onto a second line. Nothing is lost to the window's overflow. */
+  .hsCaption {
+    white-space: normal;
+    overflow: visible;
+  }
+  .hsPills {
+    flex-wrap: wrap;
+  }
+}
+
 @media (max-width: 980px) {
   .heroInner {
     grid-template-columns: 1fr;
     gap: 40px;
   }
-  .journey {
+  .hsCol {
     max-width: 460px;
     width: 100%;
   }
@@ -1011,10 +1448,13 @@
     /* The CMS line break is tuned for the wide measure; let it re-wrap here. */
     white-space: normal;
   }
+  /* The two leads swap: the mobile rewrite takes `.heroSub`'s slot. */
   .heroSub {
+    display: none;
+  }
+  .heroSubMobile {
+    display: block;
     order: 3;
-    font-size: 16px;
-    margin-bottom: 18px;
   }
   .heroNote {
     order: 4;
@@ -1059,18 +1499,12 @@
   .heroBullets li {
     font-size: 15.5px;
   }
-  .trust {
-    order: 7;
+  /* One illustration serves both breakpoints now (13a). It is the second grid
+     item, so it already sits below the whole copy column — after the bullet
+     card — and it only has to stay fluid up to the 390px mobile measure. */
+  .hsCol {
+    max-width: 390px;
     margin-top: 24px;
-  }
-  /* Swap the desktop journey (8a) for the leaner mobile illustration (12a v2) */
-  .journey {
-    display: none;
-  }
-  .journeyMobile {
-    display: flex;
-    margin-top: 24px;
-    max-width: 100%;
   }
 
   /* Works — image on top, trimmed to essentials */

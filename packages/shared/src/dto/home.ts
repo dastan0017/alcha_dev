@@ -8,13 +8,14 @@ export const homeContentSchema = z.object({
   eyebrow: z.string(),
   heroTitle: z.string(),
   heroSubtitle: z.string(),
+  /** Shorter hero lead rendered instead of `heroSubtitle` on phones (may be blank). */
+  heroSubtitleMobile: z.string(),
   /** Short benefit bullets rendered under the hero subtitle. */
   heroBullets: z.array(z.string()),
   /** Closing price / timeline line under the bullets. */
   heroNote: z.string(),
   heroCtaPrimary: z.string(),
   heroCtaSecondary: z.string(),
-  trustLine: z.string(),
   /** Small label above the services heading, e.g. "УСЛУГИ". */
   servicesEyebrow: z.string(),
   servicesHeading: z.string(),

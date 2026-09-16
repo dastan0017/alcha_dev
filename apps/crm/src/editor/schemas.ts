@@ -567,6 +567,13 @@ export const SECTION_SCHEMAS: Record<CmsSectionKey, SectionSchema> = {
       },
       {
         scope: 'home',
+        key: 'heroSubtitleMobile',
+        label: 'Подзаголовок на телефоне',
+        type: 'textarea',
+        localized: true,
+      },
+      {
+        scope: 'home',
         key: 'heroBullets',
         label: 'Пункты',
         type: 'list',
@@ -594,7 +601,6 @@ export const SECTION_SCHEMAS: Record<CmsSectionKey, SectionSchema> = {
         type: 'text',
         localized: true,
       },
-      { scope: 'home', key: 'trustLine', label: 'Строка доверия', type: 'text', localized: true },
     ]),
   },
   services: {

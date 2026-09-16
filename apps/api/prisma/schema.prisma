@@ -133,11 +133,11 @@ model HomeContentTranslation {
   eyebrow                String
   heroTitle              String
   heroSubtitle           String
+  heroSubtitleMobile     String      @default("")
   heroBullets            String[]
   heroNote               String      @default("")
   heroCtaPrimary         String
   heroCtaSecondary       String
-  trustLine              String
   servicesEyebrow        String      @default("")
   servicesHeading        String
   servicesLede           String      @default("")

@@ -93,20 +93,21 @@ async function seedHome(): Promise<void> {
         create: [
           {
             locale: 'ru',
-            eyebrow: 'САЙТЫ · CRM · ПОД КЛЮЧ',
-            heroTitle: 'Сайт, который работает.\nА не просто существует.',
+            eyebrow: 'САЙТЫ · ЗАЯВКИ · ПОД КЛЮЧ',
+            heroTitle: 'Сайты, которые помогают бизнесу получать клиентов',
             heroSubtitle:
-              'Помогаю малому бизнесу получать клиентов из Google. Разрабатываю эффективные продающие сайты:',
+              'Вы получаете готовый сайт и простую панель, где сами меняете тексты, цены и фото. Заявки с сайта, WhatsApp и Instagram собираются в одном месте, чтобы ни один клиент не потерялся.',
+            heroSubtitleMobile:
+              'Готовый сайт и простая панель: тексты, цены и фото меняете сами. Заявки с сайта, WhatsApp и Instagram — в одном месте.',
             heroBullets: [
-              'Дизайн, вызывающий доверие',
-              'Тексты, которые продают',
-              'SEO — вас находят в Google',
-              'CRM — управляете сайтом сами',
+              'Дизайн и тексты, которым доверяют',
+              'Вас находят в Google (SEO)',
+              'Меняете сайт сами, без программиста (CMS)',
+              'Все заявки и клиенты в одном месте (CRM)',
             ],
-            heroNote: 'От $300. Запуск — от 1 недели.',
+            heroNote: 'От $300 · Запуск от 1 недели',
             heroCtaPrimary: 'Обсудить проект',
             heroCtaSecondary: 'Смотреть работы ↓',
-            trustLine: '5+ лет в продакшене — React · TypeScript · Next.js',
             servicesEyebrow: 'УСЛУГИ',
             servicesHeading: 'От первого макета до запуска и передачи ключей',
             servicesLede:
@@ -129,20 +130,21 @@ async function seedHome(): Promise<void> {
           },
           {
             locale: 'en',
-            eyebrow: 'WEBSITES · CRM · TURNKEY',
-            heroTitle: 'A website that works.\nNot one that merely exists.',
+            eyebrow: 'WEBSITES · LEADS · TURNKEY',
+            heroTitle: 'Websites that help your business win customers',
             heroSubtitle:
-              'I help small businesses win customers from Google. I build effective websites that sell:',
+              'You get a finished website and a simple panel where you change the texts, prices and photos yourself. Leads from the site, WhatsApp and Instagram all land in one place, so no customer gets lost.',
+            heroSubtitleMobile:
+              'A finished website and a simple panel: change texts, prices and photos yourself. Leads from the site, WhatsApp and Instagram — in one place.',
             heroBullets: [
-              'Design that earns trust',
-              'Copy that sells',
-              'SEO — clients find you in Google',
-              'CRM — manage the site yourself',
+              'Design and copy people trust',
+              'Clients find you in Google (SEO)',
+              'Edit the site yourself, no developer (CMS)',
+              'All leads and clients in one place (CRM)',
             ],
-            heroNote: 'From $300. Launch in as little as 1 week.',
+            heroNote: 'From $300 · Launch from 1 week',
             heroCtaPrimary: 'Discuss a project',
             heroCtaSecondary: 'See the work ↓',
-            trustLine: '5+ years in production — React · TypeScript · Next.js',
             servicesEyebrow: 'SERVICES',
             servicesHeading: 'From the first mockup to launch and handover',
             servicesLede:
