@@ -3,6 +3,8 @@ import type { Locale } from '../constants/locales';
 import { CacheTags, CONTENT_REVALIDATE_SECONDS } from '../constants/cache-tags';
 import { homeResponseSchema, aboutResponseSchema, type HomeResponse, type AboutResponse } from '../dto/content';
 import { siteSettingsSchema, type SiteSettings } from '../dto/settings';
+import { siteChromeSchema, type SiteChrome } from '../dto/chrome';
+import { draftVerifyResponseSchema, type DraftVerifyResponse } from '../dto/content-draft';
 import { projectSchema, type Project } from '../dto/project';
 import { createLeadSchema, type CreateLead } from '../dto/lead';
 import { okResponseSchema, type OkResponse } from '../dto/common';
@@ -55,7 +57,7 @@ export function createApiClient(options: ApiClientOptions) {
 
   async function request<T>(
     path: string,
-    schema: z.ZodType<T>,
+    schema: z.ZodType<T, z.ZodTypeDef, unknown>,
     init: FetchInit | undefined,
   ): Promise<T> {
     const res = await doFetch(`${base}${path}`, {
@@ -99,6 +101,11 @@ export function createApiClient(options: ApiClientOptions) {
     };
   }
 
+  /** Draft reads bypass every cache and authenticate with the preview token. */
+  function draftInit(token: string): FetchInit {
+    return { method: 'GET', cache: 'no-store', headers: { Authorization: `Bearer ${token}` } };
+  }
+
   return {
     getHome(locale: Locale, opts?: RequestOptions): Promise<HomeResponse> {
       return request(`/content/home?locale=${locale}`, homeResponseSchema, withTags(opts, [CacheTags.home]));
@@ -110,6 +117,10 @@ export function createApiClient(options: ApiClientOptions) {
 
     getSettings(locale: Locale, opts?: RequestOptions): Promise<SiteSettings> {
       return request(`/content/settings?locale=${locale}`, siteSettingsSchema, withTags(opts, [CacheTags.settings]));
+    },
+
+    getChrome(locale: Locale, opts?: RequestOptions): Promise<SiteChrome> {
+      return request(`/content/chrome?locale=${locale}`, siteChromeSchema, withTags(opts, [CacheTags.chrome]));
     },
 
     getProjects(locale: Locale, opts?: RequestOptions): Promise<Project[]> {
@@ -126,6 +137,30 @@ export function createApiClient(options: ApiClientOptions) {
         projectSchema,
         withTags(opts, [CacheTags.projects, CacheTags.project(slug)]),
       );
+    },
+
+    getDraftHome(locale: Locale, token: string): Promise<HomeResponse> {
+      return request(`/content/draft/home?locale=${locale}`, homeResponseSchema, draftInit(token));
+    },
+
+    getDraftAbout(locale: Locale, token: string): Promise<AboutResponse> {
+      return request(`/content/draft/about?locale=${locale}`, aboutResponseSchema, draftInit(token));
+    },
+
+    getDraftChrome(locale: Locale, token: string): Promise<SiteChrome> {
+      return request(`/content/draft/chrome?locale=${locale}`, siteChromeSchema, draftInit(token));
+    },
+
+    getDraftProject(slug: string, locale: Locale, token: string): Promise<Project> {
+      return request(
+        `/content/draft/projects/${encodeURIComponent(slug)}?locale=${locale}`,
+        projectSchema,
+        draftInit(token),
+      );
+    },
+
+    verifyPreviewToken(token: string): Promise<DraftVerifyResponse> {
+      return request(`/content/draft/verify`, draftVerifyResponseSchema, draftInit(token));
     },
 
     createLead(payload: CreateLead, opts?: RequestOptions): Promise<OkResponse> {

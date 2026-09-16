@@ -1,6 +1,12 @@
 import { z } from 'zod';
-import { translatedSchema } from './common';
 import { projectBadgeSchema } from './enums';
+
+/**
+ * Kebab-case slug (`/works/[slug]`, `project:<slug>` tags): lowercase words joined by single
+ * hyphens. The draft tree accepts any string; publish validation and the CRM slug input both
+ * check this pattern.
+ */
+export const PROJECT_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /** Localized project as returned by the public API (home cards + case pages). */
 export const projectSchema = z.object({
@@ -33,48 +39,3 @@ export const projectSchema = z.object({
   seoDescription: z.string(),
 });
 export type Project = z.infer<typeof projectSchema>;
-
-export const projectTranslationInput = z.object({
-  title: z.string().min(1),
-  badge: z.string().min(1),
-  typeTag: z.string().default(''),
-  metaLine: z.string().min(1),
-  factsLine: z.string().default(''),
-  role: z.string().default(''),
-  description: z.string().min(1),
-  pills: z.array(z.string()).default([]),
-  bullets: z.array(z.string()).default([]),
-  techChips: z.array(z.string()).default([]),
-  seoTitle: z.string().default(''),
-  seoDescription: z.string().default(''),
-});
-
-export const projectUpsertSchema = z.object({
-  slug: z
-    .string()
-    .min(1)
-    .regex(/^[a-z0-9-]+$/, 'slug must be kebab-case'),
-  badgeType: projectBadgeSchema,
-  sortOrder: z.number().int().default(0),
-  showOnHome: z.boolean().default(false),
-  showOnAbout: z.boolean().default(false),
-  published: z.boolean().default(false),
-  screenshots: z.array(z.string()).default([]),
-  coverImage: z.string().nullable().default(null),
-  translations: translatedSchema(projectTranslationInput),
-});
-export type ProjectUpsert = z.infer<typeof projectUpsertSchema>;
-
-export const projectAdminSchema = z.object({
-  id: z.string(),
-  slug: z.string(),
-  badgeType: projectBadgeSchema,
-  sortOrder: z.number(),
-  showOnHome: z.boolean(),
-  showOnAbout: z.boolean(),
-  published: z.boolean(),
-  screenshots: z.array(z.string()),
-  coverImage: z.string().nullable(),
-  translations: translatedSchema(projectTranslationInput),
-});
-export type ProjectAdmin = z.infer<typeof projectAdminSchema>;

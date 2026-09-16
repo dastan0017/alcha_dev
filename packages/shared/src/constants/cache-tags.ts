@@ -8,6 +8,8 @@ export const CacheTags = {
   about: 'content:about',
   settings: 'content:settings',
   projects: 'content:projects',
+  /** Nav / footer / button labels (SiteChrome). */
+  chrome: 'content:chrome',
   /** Per-project page tag, e.g. `project:alcha-dev`. */
   project: (slug: string): `project:${string}` => `project:${slug}`,
 } as const;
@@ -16,7 +18,8 @@ export type StaticContentTag =
   | 'content:home'
   | 'content:about'
   | 'content:settings'
-  | 'content:projects';
+  | 'content:projects'
+  | 'content:chrome';
 
 export type ContentTag = StaticContentTag | `project:${string}`;
 
@@ -26,6 +29,7 @@ export const ALL_STATIC_CONTENT_TAGS: StaticContentTag[] = [
   CacheTags.about,
   CacheTags.settings,
   CacheTags.projects,
+  CacheTags.chrome,
 ];
 
 /** Time-based revalidation safety net (seconds) applied to all content fetches. */
