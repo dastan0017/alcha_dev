@@ -1,0 +1,102 @@
+.group {
+  position: relative;
+  display: inline-flex;
+}
+
+.input {
+  composes: srOnly from './tokens.module.css';
+}
+
+.option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: 600 13.5px/1.2 var(--font-sans);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color 0.15s,
+    box-shadow 0.15s,
+    color 0.15s;
+}
+
+.input:focus-visible + .option {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.input:disabled + .option {
+  cursor: default;
+  opacity: 0.5;
+}
+
+/* Light: a form control as tall as the inputs. */
+.light {
+  display: flex;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-btn);
+  background: var(--page);
+}
+
+.light .option {
+  flex: 1 1 0;
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: var(--r-btn-sm);
+  color: var(--body);
+}
+
+.light .option:hover {
+  color: var(--ink);
+}
+
+.light .input:checked + .option {
+  background: var(--primary-soft);
+  box-shadow: inset 0 0 0 1.5px var(--primary);
+  color: var(--primary);
+}
+
+/* Dark: the prototype's top-bar tabs. */
+.dark {
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--r-btn);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dark .option {
+  position: relative;
+  padding: 6px 12px;
+  border-radius: 7px;
+  color: var(--on-dark-muted);
+  font-size: 12.5px;
+}
+
+/* The prototype's 27px tabs with a 45px tall hit area, reaching into the gaps and the group padding. */
+.dark .option::before {
+  content: '';
+  position: absolute;
+  inset: -9px -1px;
+}
+
+.dark .option:first-of-type::before {
+  left: -3px;
+}
+
+.dark .option:last-of-type::before {
+  right: -3px;
+}
+
+.dark .option:hover {
+  color: #fff;
+}
+
+.dark .input:checked + .option {
+  background: #fff;
+  color: var(--ink);
+}
+
+.dark .input:focus-visible + .option {
+  outline-color: var(--on-dark-purple);
+}

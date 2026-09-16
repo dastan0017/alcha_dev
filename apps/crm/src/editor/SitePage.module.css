@@ -1,0 +1,94 @@
+/* Fills the full-bleed /site content area (100vh, overflow hidden) and scrolls nothing itself. */
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--canvas);
+}
+
+.canvas {
+  position: relative;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  min-height: 0;
+  padding: 26px;
+}
+
+/* The iframe scrolls internally (docs/visual-editor.md D7); the overlay sits exactly on it. */
+.frame {
+  position: relative;
+  width: 1240px;
+  max-width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--page);
+  box-shadow: 0 18px 50px rgba(23, 18, 31, 0.15);
+}
+
+.phone {
+  width: 390px;
+}
+
+/* Focus lands here when a dialog closes after its opener (an overlay control) is gone. */
+.canvas:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.iframeLoading {
+  visibility: hidden;
+}
+
+/* Over the hidden iframe until its document is ready. */
+.frameState {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: var(--body);
+  font: 500 14px/1.4 var(--font-sans);
+}
+
+/* A failed background refetch: the preview stays usable. */
+.banner {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100% - 32px);
+  padding: 6px 6px 6px 14px;
+  border: 1px solid rgba(138, 85, 0, 0.22);
+  border-radius: 11px;
+  background: var(--warn-soft);
+  box-shadow: 0 10px 24px rgba(23, 18, 31, 0.12);
+  color: var(--warn);
+  font: 600 13.5px/1.4 var(--font-sans);
+  transform: translateX(-50%);
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: center;
+  gap: 12px;
+  margin: 0;
+  color: var(--body);
+  font: 500 14px/1.4 var(--font-sans);
+}

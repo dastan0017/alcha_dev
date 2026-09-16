@@ -1,0 +1,38 @@
+.button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-btn-sm);
+  background: transparent;
+  color: var(--body);
+  font: 500 16px/1 var(--font-sans);
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.button:hover:not(:disabled) {
+  background: rgba(23, 18, 31, 0.07);
+  color: var(--ink);
+}
+
+.danger:hover:not(:disabled) {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.button:disabled {
+  cursor: default;
+  opacity: 0.35;
+}

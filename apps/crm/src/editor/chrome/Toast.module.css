@@ -1,0 +1,82 @@
+/* Above the dialog layers (Dialog.module.css: 70, 85); the toast is centred inside. */
+.region {
+  position: fixed;
+  right: 0;
+  bottom: 24px;
+  z-index: 90;
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+  pointer-events: none;
+}
+
+.raised {
+  bottom: 88px;
+}
+
+/* Clear of the right-hand drawer (EditorDrawer.module.css `.panel`). */
+.besideDrawer {
+  right: min(430px, 100%);
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 100%;
+  padding: 8px 8px 8px 16px;
+  min-height: 48px;
+  border-radius: 11px;
+  background: var(--dark);
+  box-shadow: 0 14px 34px rgba(23, 18, 31, 0.34);
+  color: #fff;
+  font: 400 13.5px/1.4 var(--font-sans);
+  pointer-events: auto;
+  animation: up 0.18s ease-out;
+}
+
+.undo {
+  position: relative;
+  flex: none;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--on-dark-purple);
+  font: 600 13.5px/1.2 var(--font-sans);
+  cursor: pointer;
+}
+
+/* 44px tall hit area without growing the toast. */
+.undo::before {
+  content: '';
+  position: absolute;
+  inset: -4px 0;
+}
+
+.undo:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.undo:focus-visible {
+  outline: 2px solid var(--on-dark-purple);
+  outline-offset: 1px;
+}
+
+@keyframes up {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}
