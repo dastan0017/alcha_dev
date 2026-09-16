@@ -11,14 +11,14 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   if (ready && user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/leads" replace />;
   }
 
   const onFinish = async (values: LoginInput) => {
     setLoading(true);
     try {
       await login(values);
-      navigate('/', { replace: true });
+      navigate('/leads', { replace: true });
     } catch {
       message.error('Неверный email или пароль');
     } finally {
