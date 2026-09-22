@@ -71,7 +71,6 @@ export default async function HomePage({ params }: Params) {
       <Pricing
         content={home.content}
         plans={home.pricingPlans}
-        chrome={chrome}
         hidden={hiddenSections.includes('pricing')}
         preview={preview}
         locale={typed}

@@ -1,4 +1,5 @@
 import type { KeyboardEvent } from 'react';
+import type { ListMarker } from '../../schemas';
 import { Button, IconButton, cx, srOnly } from '../../ui';
 import { entryControl, moveEntry, useEntryFocus } from './entries';
 import styles from './fields.module.css';
@@ -7,10 +8,12 @@ import type { FieldProps } from './types';
 export interface StringListFieldProps extends FieldProps<string[]> {
   /** Add button text. */
   addLabel?: string;
+  /** Glyph before each entry: ✓ for included items, a grey + for optional ones. */
+  marker?: ListMarker;
 }
 
 /**
- * Ordered list of short strings (✓ bullets). Enter inserts an entry below, Backspace in an
+ * Ordered list of short strings (✓ or + bullets). Enter inserts an entry below, Backspace in an
  * empty entry removes it; ↑ ↓ ✕ per entry.
  */
 export function StringListField({
@@ -19,6 +22,7 @@ export function StringListField({
   value,
   onChange,
   addLabel = 'Добавить пункт',
+  marker = '✓',
 }: StringListFieldProps) {
   const { rootRef, focusAfterChange } = useEntryFocus<HTMLDivElement>(value);
   const labelId = `${id}:label`;
@@ -64,8 +68,11 @@ export function StringListField({
             const inputId = `${id}.${index}`;
             return (
               <li key={index} className={styles.entry}>
-                <span aria-hidden="true" className={styles.check}>
-                  ✓
+                <span
+                  aria-hidden="true"
+                  className={cx(styles.check, marker === '+' && styles.checkOptional)}
+                >
+                  {marker}
                 </span>
                 <label htmlFor={inputId} className={srOnly}>
                   {`Пункт ${index + 1}`}

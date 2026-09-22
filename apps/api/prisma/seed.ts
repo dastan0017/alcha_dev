@@ -120,7 +120,9 @@ async function seedHome(): Promise<void> {
             pricingEyebrow: 'ЦЕНЫ',
             pricingHeading: 'Сколько это стоит',
             pricingNote:
-              'Точная смета за 24 часа после первого разговора. Панель для правок входит в любой тариф, CRM — в третий.',
+              'Точная смета за 24 часа после первого разговора. Панель для правок входит в любой тариф, CRM — в «Сайт + CRM».',
+            pricingExamplesLabel: 'Например:',
+            pricingOptionalLabel: 'По желанию:',
             pricingFootnote:
               'Оплата в 3 этапа: 50% на старте, 30% после утверждения дизайна, 20% при запуске. Домен и хостинг оформляю на вас: платите провайдеру напрямую, без моей наценки.',
             ctaTitle: 'Опишите задачу в двух словах.',
@@ -163,7 +165,9 @@ async function seedHome(): Promise<void> {
             pricingEyebrow: 'PRICING',
             pricingHeading: 'How much it costs',
             pricingNote:
-              'A precise quote within 24 hours of our first conversation. The editing panel comes with every plan, the CRM with the third.',
+              'A precise quote within 24 hours of our first conversation. The editing panel comes with every plan, the CRM with “Website + CRM”.',
+            pricingExamplesLabel: 'For example:',
+            pricingOptionalLabel: 'Optional:',
             pricingFootnote:
               'Paid in 3 stages: 50% up front, 30% once the design is approved, 20% at launch. The domain and hosting are registered in your name: you pay the provider directly, with no markup from me.',
             ctaTitle: 'Describe your project in a few words.',
@@ -288,6 +292,10 @@ async function seedSteps(): Promise<void> {
 }
 
 async function seedPricing(): Promise<void> {
+  // «Цены» copy rules to keep when editing it (design «Pricing Section Options» 1a): no promise
+  // of leads or Google rankings; optional items go in `extras` (a «+», never a ✓, and the
+  // «По желанию:» label is added by the page); the badge says who the plan suits, not how
+  // popular it is; `termLine` is timing only — payment terms live in the section footnote.
   const plans = [
     {
       sortOrder: 0,
@@ -297,34 +305,38 @@ async function seedPricing(): Promise<void> {
         priceLabel: 'от $300',
         termLine: '1–2 НЕДЕЛИ',
         highlightLabel: '',
+        ctaLabel: 'Обсудить лендинг',
         description:
-          'Для запуска рекламы и быстрых продаж одной услуги: вся страница ведёт человека к одному действию.',
+          'Одно предложение: услуга, товар, курс или событие. Вы приводите людей из рекламы и Instagram, а сайт отвечает на вопросы и превращает интерес в заявку.',
+        examples: 'тур, мастер-класс, запуск курса, открытие кафе',
+        listHeading: 'Что входит:',
         features: [
-          'Пишу продающие тексты',
-          'SEO-база под Google: структура, скорость, мобильная версия',
-          'Заявки приходят в Telegram и WhatsApp',
-          'Панель: тексты, цены и фото меняете сами',
+          'Дизайн и продающие тексты',
+          'Готов к поиску в Google (SEO): быстро открывается и удобен на телефоне',
+          'Заявки приходят в Telegram или WhatsApp',
+          'Панель управления (CMS): тексты, цены и фото на сайте меняете сами',
           'Сервер и домен оформляю на вас: все доступы ваши',
         ],
         extras: [],
-        ctaLabel: 'Обсудить лендинг',
       },
       en: {
         name: 'Landing page',
         priceLabel: 'from $300',
         termLine: '1–2 WEEKS',
         highlightLabel: '',
+        ctaLabel: 'Discuss a landing page',
         description:
-          'For launching ads and selling one service fast: the whole page leads a visitor to a single action.',
+          'One offer: a service, a product, a course or an event. You bring people in from ads and Instagram, and the site answers their questions and turns interest into a lead.',
+        examples: 'a tour, a workshop, a course launch, a café opening',
+        listHeading: 'What’s included:',
         features: [
-          'I write copy that sells',
-          'SEO basics for Google: structure, speed, mobile version',
-          'Leads arrive in Telegram and WhatsApp',
-          'Panel: change texts, prices and photos yourself',
+          'Design and copy that sells',
+          'Ready for Google search (SEO): loads fast and is easy to use on a phone',
+          'Leads arrive in Telegram or WhatsApp',
+          'Site panel (CMS): change the texts, prices and photos on the site yourself',
           'Server and domain registered in your name: all access is yours',
         ],
         extras: [],
-        ctaLabel: 'Discuss a landing page',
       },
     },
     {
@@ -333,33 +345,42 @@ async function seedPricing(): Promise<void> {
       ru: {
         name: 'Сайт компании',
         priceLabel: 'от $700',
-        termLine: '3–6 НЕДЕЛЬ · ОПЛАТА В 3 ЭТАПА',
+        termLine: '3–6 НЕДЕЛЬ',
         highlightLabel: 'СОВЕТУЮ КОМПАНИЯМ',
+        ctaLabel: 'Обсудить сайт компании',
         description:
-          'Многостраничный сайт, который формирует доверие и приводит клиентов из поиска.',
+          'Несколько услуг или товаров, и вы хотите, чтобы клиенты находили вас в Google сами, а не только через рекламу.',
+        examples: 'клиника, автосервис, турфирма, гостевой дом',
+        listHeading: 'Всё из «Лендинга», плюс:',
         features: [
-          'Всё из тарифа «Лендинг»',
           'Отдельная страница под каждую услугу: так её проще найти в Google',
           'Страница о компании и раздел с работами',
           'Сами добавляете новые услуги и кейсы в панели: покажу, как',
         ],
-        extras: ['По желанию: блог для SEO (оцениваю отдельно)'],
-        ctaLabel: 'Обсудить сайт компании',
+        extras: [
+          'Блог для SEO (оцениваю отдельно)',
+          'интернет-магазин с корзиной и оплатой (оцениваю отдельно)',
+        ],
       },
       en: {
         name: 'Company website',
         priceLabel: 'from $700',
-        termLine: '3–6 WEEKS · PAID IN 3 STAGES',
-        highlightLabel: 'MY PICK FOR COMPANIES',
-        description: 'A multi-page site that builds trust and brings in clients from search.',
-        features: [
-          'Everything in “Landing page”',
-          'A separate page for each service, so it’s easier to find in Google',
-          'An about page and a portfolio section',
-          'Add new services and case studies in the panel yourself — I’ll show you how',
-        ],
-        extras: ['Optional: a blog for SEO (quoted separately)'],
+        termLine: '3–6 WEEKS',
+        highlightLabel: 'RECOMMENDED FOR COMPANIES',
         ctaLabel: 'Discuss a company website',
+        description:
+          'Several services or products, and you want customers to find you on Google on their own, not only through ads.',
+        examples: 'a clinic, a car repair shop, a travel agency, a guesthouse',
+        listHeading: 'Everything in “Landing page”, plus:',
+        features: [
+          'A separate page for each service, so it’s easier to find on Google',
+          'An about page and a portfolio section',
+          'Add new services and case studies in the panel yourself: I’ll show you how',
+        ],
+        extras: [
+          'a blog for SEO (quoted separately)',
+          'an online store with a cart and payments (quoted separately)',
+        ],
       },
     },
     {
@@ -368,34 +389,36 @@ async function seedPricing(): Promise<void> {
       ru: {
         name: 'Сайт + CRM',
         priceLabel: 'от $1 500',
-        termLine: 'СРОК И ОПЛАТА: ПОСЛЕ РАЗГОВОРА',
+        termLine: 'ОТ 6 НЕДЕЛЬ',
         highlightLabel: '',
-        description: 'Сайт и CRM, где видно каждую заявку и каждого клиента.',
+        ctaLabel: 'Обсудить сайт с CRM',
+        description:
+          'Заявки приходят с сайта, из Instagram, WhatsApp и Telegram. Вы хотите видеть их в одном окне, чтобы ни одна не потерялась.',
+        examples: 'турфирма с менеджерами, учебный центр, салон с онлайн-записью',
+        listHeading: 'Всё из «Сайта компании», плюс:',
         features: [
-          'Всё из тарифа «Сайт компании»',
           'CRM: заявки, клиенты, оплаты и отчёты в одном окне',
           'Заявки из Instagram, WhatsApp и Telegram попадают в CRM',
           'Интеграции: онлайн-оплата и Telegram-бот',
         ],
-        extras: [
-          'По желанию: мобильное приложение для App Store и Google Play (оцениваю отдельно)',
-        ],
-        ctaLabel: 'Обсудить сайт с CRM',
+        extras: ['Мобильное приложение для App Store и Google Play (оцениваю отдельно)'],
       },
       en: {
         name: 'Website + CRM',
         priceLabel: 'from $1,500',
-        termLine: 'TIMELINE & PAYMENT: AFTER WE TALK',
+        termLine: 'FROM 6 WEEKS',
         highlightLabel: '',
-        description: 'A website and a CRM where you see every lead and every client.',
+        ctaLabel: 'Discuss a website with a CRM',
+        description:
+          'Leads come in from the site, Instagram, WhatsApp and Telegram. You want to see them in one window so that none of them get lost.',
+        examples: 'a travel agency with managers, a training centre, a salon with online booking',
+        listHeading: 'Everything in “Company website”, plus:',
         features: [
-          'Everything in “Company website”',
           'CRM: leads, clients, payments and reports in one window',
           'Leads from Instagram, WhatsApp and Telegram land in the CRM',
           'Integrations: online payments and a Telegram bot',
         ],
-        extras: ['Optional: a mobile app for the App Store and Google Play (quoted separately)'],
-        ctaLabel: 'Discuss a website with a CRM',
+        extras: ['a mobile app for the App Store and Google Play (quoted separately)'],
       },
     },
   ];

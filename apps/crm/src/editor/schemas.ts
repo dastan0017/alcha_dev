@@ -27,6 +27,9 @@ import {
 export type FieldType =
   'text' | 'textarea' | 'list' | 'tags' | 'image' | 'images' | 'boolean' | 'select';
 
+/** Entry glyph of a `list` field: ✓ for included items, + for optional ones. */
+export type ListMarker = '✓' | '+';
+
 /** The singleton a section field is stored in. */
 export type SectionScope = 'home' | 'chrome';
 
@@ -47,6 +50,8 @@ export interface FieldSchema {
   hint?: string;
   /** `list`: text of the add button. */
   addLabel?: string;
+  /** `list`: the glyph before each entry, as the site shows it (defaults to ✓). */
+  marker?: ListMarker;
   /** `select`: the choices. */
   options?: readonly FieldOption[];
   /** `boolean`: switching it on switches it off on every other item (one main step, one highlighted plan). */
@@ -199,44 +204,68 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
     noun: 'Тариф',
     addLabel: 'Добавить тариф',
     title: (node, locale) => titleOrUntitled(node[locale].name),
+    // In the order the card shows them. Copy rules (docs/visual-editor.md D17): no promise
+    // of leads or rankings, payment terms only in the section footnote, the badge says who
+    // the plan suits rather than how popular it is.
     fields: [
       { key: 'name', label: 'Название тарифа', type: 'text', localized: true },
       { key: 'priceLabel', label: 'Цена', type: 'text', localized: true, hint: 'от $700' },
-      { key: 'termLine', label: 'Срок и условия', type: 'text', localized: true },
-      { key: 'description', label: 'Для кого', type: 'textarea', localized: true },
+      {
+        key: 'termLine',
+        label: 'Срок (условия оплаты — в сноске секции)',
+        type: 'text',
+        localized: true,
+        hint: '3–6 НЕДЕЛЬ',
+      },
+      {
+        key: 'ctaLabel',
+        label: 'Текст кнопки — с названием тарифа',
+        type: 'text',
+        localized: true,
+        hint: 'Обсудить лендинг',
+      },
+      { key: 'description', label: 'Кому подходит', type: 'textarea', localized: true },
+      {
+        key: 'examples',
+        label: 'Примеры бизнесов — строка «Например:»',
+        type: 'text',
+        localized: true,
+        hint: 'клиника, автосервис, турфирма',
+      },
+      {
+        key: 'listHeading',
+        label: 'Заголовок списка',
+        type: 'text',
+        localized: true,
+        hint: 'Всё из «Лендинга», плюс:',
+      },
       {
         key: 'features',
-        label: 'Что входит',
+        label: 'Что входит — пункты с галочкой',
         type: 'list',
         localized: true,
         addLabel: 'Добавить пункт',
       },
       {
         key: 'extras',
-        label: 'По желанию (со знаком «+»)',
+        label: 'По желанию — со знаком «+», подпись «По желанию:» добавится сама',
         type: 'list',
         localized: true,
         addLabel: 'Добавить опцию',
-      },
-      {
-        key: 'ctaLabel',
-        label: 'Текст кнопки',
-        type: 'text',
-        localized: true,
-        hint: 'Обсудить лендинг',
+        marker: '+',
       },
       {
         key: 'highlighted',
-        label: 'Выделить как популярный',
+        label: 'Выделить тариф',
         type: 'boolean',
         localized: false,
         exclusive: true,
-        onLabel: 'Да, выделить рамкой и бейджем',
+        onLabel: 'Да, выделить рамкой, бейджем и главной кнопкой',
         offLabel: 'Нет, обычный тариф',
       },
       {
         key: 'highlightLabel',
-        label: 'Текст бейджа',
+        label: 'Текст бейджа — кому подходит тариф',
         type: 'text',
         localized: true,
         hint: 'СОВЕТУЮ КОМПАНИЯМ',
@@ -251,18 +280,20 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
           name: 'Новый тариф',
           priceLabel: 'от $0',
           termLine: 'СРОК — ПО ЗАДАЧЕ',
-          description: 'Для кого этот тариф.',
-          features: ['Что входит'],
           ctaLabel: 'Обсудить тариф',
+          description: 'Кому подходит этот тариф.',
+          listHeading: 'Что входит:',
+          features: ['Пункт списка'],
         },
         en: {
           ...node.en,
           name: 'New plan',
           priceLabel: 'from $0',
           termLine: 'TIMELINE — BY SCOPE',
-          description: 'Who this plan is for.',
-          features: ['What is included'],
           ctaLabel: 'Discuss this plan',
+          description: 'Who this plan is for.',
+          listHeading: 'What’s included:',
+          features: ['List item'],
         },
       };
     },
@@ -587,22 +618,31 @@ export const SECTION_SCHEMAS: Record<CmsSectionKey, SectionSchema> = {
       {
         scope: 'home',
         key: 'pricingNote',
-        label: 'Примечание под заголовком',
+        label: 'Подзаголовок',
         type: 'textarea',
         localized: true,
       },
       {
         scope: 'home',
-        key: 'pricingFootnote',
-        label: 'Сноска под тарифами',
-        type: 'textarea',
+        key: 'pricingExamplesLabel',
+        label: 'Подпись «Например:» в карточках',
+        type: 'text',
         localized: true,
+        hint: 'Например:',
       },
       {
-        scope: 'chrome',
-        key: 'pricingSwipeHint',
-        label: 'Подсказка «листайте» на телефоне',
+        scope: 'home',
+        key: 'pricingOptionalLabel',
+        label: 'Подпись «По желанию:» у опций со знаком «+»',
         type: 'text',
+        localized: true,
+        hint: 'По желанию:',
+      },
+      {
+        scope: 'home',
+        key: 'pricingFootnote',
+        label: 'Сноска под тарифами — условия оплаты (только здесь)',
+        type: 'textarea',
         localized: true,
       },
     ]),

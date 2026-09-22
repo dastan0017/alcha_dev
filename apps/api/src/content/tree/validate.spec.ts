@@ -12,20 +12,24 @@ describe('validateTree', () => {
     tree.home.ru.heroTitle = '';
     tree.chrome.ru.navWorks = '  \n';
     tree.pricing[0].ru.name = '';
+    tree.pricing[1].ru.listHeading = '';
     tree.home.en.heroSubtitle = '';
     tree.chrome.en.footerRights = '';
     tree.steps[1].en.description = '';
+    tree.pricing[0].en.listHeading = ' ';
 
     const { errors, warnings } = validateTree(tree);
     expect(errors.map(({ path, locale }) => [path, locale])).toEqual([
       ['home.ru.heroTitle', 'ru'],
       ['chrome.ru.navWorks', 'ru'],
       ['pricing.p1.ru.name', 'ru'],
+      ['pricing.p2.ru.listHeading', 'ru'],
     ]);
     expect(warnings.map(({ path, locale }) => [path, locale])).toEqual([
       ['home.en.heroSubtitle', 'en'],
       ['chrome.en.footerRights', 'en'],
       ['steps.s2.en.description', 'en'],
+      ['pricing.p1.en.listHeading', 'en'],
     ]);
     for (const issue of [...errors, ...warnings]) expect(issue.message).toMatch(/[а-яё]/i);
   });
@@ -70,6 +74,9 @@ describe('validateTree', () => {
     tree.projects[0].ru.seoTitle = '';
     tree.projects[0].screenshots = [];
     tree.pricing[0].en.highlightLabel = '';
+    tree.pricing[0].ru.examples = '';
+    tree.pricing[1].en.extras = [];
+    tree.home.ru.pricingOptionalLabel = '';
 
     expect(validateTree(tree)).toEqual({ errors: [], warnings: [] });
   });

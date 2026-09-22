@@ -21,8 +21,6 @@ export const siteChromeSchema = z.object({
   roleLabel: z.string(),
   stackLabel: z.string(),
   whatWasDoneLabel: z.string(),
-  /** Hint under the pricing carousel on mobile. */
-  pricingSwipeHint: z.string(),
 });
 export type SiteChrome = z.infer<typeof siteChromeSchema>;
 
@@ -44,7 +42,6 @@ export const DEFAULT_CHROME: Record<Locale, SiteChrome> = {
     roleLabel: 'Роль',
     stackLabel: 'Стек',
     whatWasDoneLabel: 'Что сделано',
-    pricingSwipeHint: 'Листайте, чтобы сравнить →',
   },
   en: {
     navWorks: 'Work',
@@ -62,6 +59,5 @@ export const DEFAULT_CHROME: Record<Locale, SiteChrome> = {
     roleLabel: 'Role',
     stackLabel: 'Stack',
     whatWasDoneLabel: 'What was done',
-    pricingSwipeHint: 'Swipe to compare →',
   },
 };

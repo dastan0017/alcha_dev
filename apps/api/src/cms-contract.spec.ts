@@ -273,7 +273,7 @@ describe('parseCmsPath', () => {
     ['home.ru.heroTitle', field('home', 'ru', 'heroTitle', 'string')],
     ['home.en.heroBullets', field('home', 'en', 'heroBullets', 'stringList')],
     ['home.en.heroBullets.12', field('home', 'en', 'heroBullets', 'stringList', 12)],
-    ['chrome.en.pricingSwipeHint', field('chrome', 'en', 'pricingSwipeHint', 'string')],
+    ['chrome.en.whatWasDoneLabel', field('chrome', 'en', 'whatWasDoneLabel', 'string')],
     ['steps', { kind: 'collection', collection: 'steps' }],
     ['pricing.Ab_9-x', { kind: 'item', collection: 'pricing', id: 'Ab_9-x' }],
     ['projects.pr1.coverImage', itemField('projects', 'pr1', null, 'coverImage', 'nullableString')],

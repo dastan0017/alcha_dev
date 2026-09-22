@@ -1253,136 +1253,167 @@
 }
 
 /* ================================================================= Pricing */
-.priceFootnote {
-  margin-top: 18px;
-  font-size: 13px;
-  color: var(--muted);
-  white-space: pre-line;
+/* Design «Pricing Section Options» 1a. Mono labels port the design's `font:`
+   shorthand, so they reset `line-height` to `normal` like the mock does. Text
+   stays at --body (#5F5768) or darker — never --muted, #8A8494 fails contrast
+   here — and the muted optional rows bottom out at #6F6878 (5.35:1). */
+/* Overrides of the global `.eyebrow` are scoped under .priceIntro: a lone module
+   class ties with it, and the build loads the globals last. */
+.priceIntro .priceEyebrow {
+  color: var(--body);
+  line-height: normal;
 }
-/* Swipe affordance — only shown on the mobile carousel. */
-.priceSwipeHint {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  gap: 9px;
-  padding-top: 14px;
-  font-family: var(--font-sans-stack);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--muted);
+.priceTitle {
+  font-weight: 800;
+  line-height: normal;
 }
-.priceDots {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
+.priceLede {
+  max-width: 660px;
 }
-.priceDots span {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #d9d3e2;
-  transition:
-    width 0.2s ease,
-    background 0.2s ease;
-}
-.priceDotActive {
-  width: 22px !important;
-  border-radius: 999px !important;
-  background: var(--primary) !important;
-}
+
+/* ≥1024px: three columns. Each card spans the list's five rows through
+   `subgrid` (price, button, «кому», rule, feature list), so the buttons, rules
+   and list headings line up across the plans and every card ends level. */
 .priceGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
+  align-items: stretch;
 }
-/* v3 review: each card spans the same four implicit rows via `subgrid`, so
-   the price, blurb, feature list and button line up across all three plans
-   regardless of how long any one block is. */
 .priceCard {
   position: relative;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: subgrid;
-  grid-row: span 4;
-  gap: 16px;
+  grid-row: span 5;
+  row-gap: 16px;
+  padding: 26px;
   background: #fff;
   border: 1px solid rgba(23, 18, 31, 0.1);
   border-radius: 14px;
-  padding: 26px 26px 24px;
-  transition: all 0.18s ease;
+  transition:
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
 }
-.priceCard:hover {
-  box-shadow: 0 12px 32px rgba(23, 18, 31, 0.1);
-  transform: translateY(-2px);
-}
-/* Highlighted plan stays white — a 2px purple border plus glow. Padding drops
-   1px on each side so the thicker border doesn't shift the content. */
+/* The highlighted plan stays white — a 2px purple border plus glow. Its padding
+   drops 1px so the thicker border doesn't shift the content off the grid. */
 .priceCardHi {
+  padding: 25px;
   border: 2px solid var(--primary);
-  padding: 25px 25px 23px;
   box-shadow: 0 16px 40px rgba(91, 52, 201, 0.14);
 }
-.priceCardHi:hover {
-  box-shadow: 0 20px 44px rgba(91, 52, 201, 0.2);
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .priceCard:hover {
+    box-shadow: 0 12px 32px rgba(23, 18, 31, 0.1);
+    transform: translateY(-2px);
+  }
+  .priceCardHi:hover {
+    box-shadow: 0 20px 44px rgba(91, 52, 201, 0.2);
+  }
 }
-/* Badge that straddles the top border of the highlighted plan. */
+/* Straddles the top border of the highlighted plan. */
 .badgeTop {
   position: absolute;
   top: -11px;
   left: 24px;
+  max-width: calc(100% - 48px);
+  padding: 4px 10px;
   font-family: var(--font-mono-stack);
   font-size: 10.5px;
   font-weight: 600;
+  line-height: normal;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #fff;
   background: var(--primary);
   border-radius: var(--r-pill);
-  padding: 4px 10px;
-  line-height: 1.4;
-  white-space: nowrap;
 }
 .priceName {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 6px;
+  margin-bottom: 10px;
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--body);
 }
 /* "от" is set apart from the figure so the number carries the weight. */
 .priceAmountRow {
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 7px;
+  line-height: normal;
 }
 .priceFrom {
   font-size: 14px;
   font-weight: 500;
-  color: var(--muted);
+  color: var(--body);
 }
 .priceValue {
-  font-size: 32px;
+  font-size: 34px;
   font-weight: 800;
   letter-spacing: -0.01em;
   color: var(--ink);
+  white-space: nowrap;
 }
 .priceTerm {
+  margin-top: 6px;
   font-family: var(--font-mono-stack);
   font-size: 12px;
   font-weight: 500;
+  line-height: normal;
   letter-spacing: 0.04em;
   color: var(--body);
-  margin-top: 5px;
+}
+/* Scoped under .priceCard to beat the global .btn sizes, which load last. */
+.priceCard .priceCta {
+  width: 100%;
+  padding: 13px 18px;
+  font-size: 14px;
+  line-height: normal;
+  white-space: normal;
+  text-align: center;
+}
+/* The primary button has no border of its own: a transparent one gives it the
+   outline button's height, so all three labels sit on one baseline. */
+.priceCardHi .priceCta {
+  border: 1px solid transparent;
+}
+/* The deciding line, so it is set dark; the examples under it are grey. */
+.priceWho {
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink);
+  text-wrap: pretty;
 }
 .priceDesc {
-  font-size: 13.5px;
-  line-height: 1.5;
-  color: var(--body);
   white-space: pre-line;
+}
+.priceExamples {
+  margin-top: 7px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--body);
+}
+.priceRule {
+  height: 1px;
+  background: rgba(23, 18, 31, 0.09);
+}
+/* «Что входит:» / «Всё из «Лендинга», плюс:» heads the list, not a bullet in it. */
+.priceListHeading {
+  margin-bottom: 16px;
+  font-size: 14.5px;
+  font-weight: 700;
+  line-height: normal;
+  color: var(--ink);
 }
 .priceFeatures {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 9px;
 }
 .priceFeatures li {
   display: flex;
@@ -1398,20 +1429,34 @@
   font-family: var(--font-mono-stack);
   font-size: 11px;
   font-weight: 600;
+  line-height: normal;
   color: var(--primary);
 }
-/* Optional add-on («По желанию: …»): a grey «+» and slightly lighter copy, so it
-   reads as extra rather than included. */
+/* Optional add-on: a grey «+» and lighter copy, so it reads as extra rather
+   than included. */
 .plus {
-  color: var(--muted);
+  color: var(--body);
 }
 .priceFeatures .priceExtra {
   color: #6f6878;
 }
-/* Sits in the last subgrid row, pinned to its bottom. */
-.priceCta {
-  align-self: end;
-  width: 100%;
+.priceFootnote {
+  margin-top: 20px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--body);
+  text-wrap: pretty;
+  white-space: pre-line;
+}
+/* High-contrast mode paints every background Canvas: outline the badge and draw
+   the rule in text colour, or they vanish. */
+@media (forced-colors: active) {
+  .badgeTop {
+    border: 1px solid CanvasText;
+  }
+  .priceRule {
+    background: CanvasText;
+  }
 }
 
 /* =========================================================== Visual editor */
@@ -1425,9 +1470,9 @@
 :global(html[data-cms-mode='edit']) .priceCard:hover {
   transform: none;
 }
-/* The «+ Добавить тариф» slot spans a plan card's four subgrid rows. */
+/* The «+ Добавить тариф» slot spans a plan card's five subgrid rows. */
 .priceSlot {
-  grid-row: span 4;
+  grid-row: span 5;
 }
 /* The «+ Добавить шаг» slot takes a full row under the timeline. */
 .stepSlot {
@@ -1541,6 +1586,63 @@
   /* Lines up with the cards, past the 36px circle column and its 14px gap. */
   .stepSlot {
     margin-left: 50px;
+  }
+}
+
+/* Pricing, 640–1023px: two columns. The highlighted plan comes first on a row of
+   its own — price, button and «кому» beside its list — so no card is left alone
+   on a ragged last row; the other two plans share the next row. Nothing is hidden
+   behind a toggle or a carousel at any width: the full lists are the argument. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .priceGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .priceCardHi {
+    order: -1;
+    grid-column: 1 / -1;
+    grid-row: auto;
+    grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas:
+      'top rule list'
+      'cta rule list'
+      'who rule list';
+    column-gap: 28px;
+  }
+  .priceCardHi .priceTop {
+    grid-area: top;
+  }
+  .priceCardHi .priceCta {
+    grid-area: cta;
+  }
+  .priceCardHi .priceWho {
+    grid-area: who;
+  }
+  .priceCardHi .priceRule {
+    grid-area: rule;
+    height: auto;
+  }
+  .priceCardHi .priceList {
+    grid-area: list;
+  }
+}
+
+/* Pricing, <640px: one column in page order, full-width cards. The badge sits
+   11px above its card, so the highlighted card keeps extra room above it. */
+@media (max-width: 639px) {
+  .priceGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .priceCard {
+    padding: 22px 20px;
+  }
+  .priceCardHi {
+    margin-top: 8px;
+    padding: 21px 19px;
+  }
+  .badgeTop {
+    left: 18px;
+    max-width: calc(100% - 36px);
   }
 }
 
@@ -1713,40 +1815,5 @@
   .processPill {
     padding: 7px 13px;
     font-size: 10px;
-  }
-
-  /* Pricing — horizontal swipe carousel (subgrid reset above at 980px) */
-  .priceGrid {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    margin-inline: calc(-1 * var(--gutter));
-    padding: 10px var(--gutter) 6px;
-  }
-  .priceGrid::-webkit-scrollbar {
-    display: none;
-  }
-  /* The carousel is flex, so the cards stop being grid items — drop subgrid
-     and go back to a plain column with the button pinned to the bottom. */
-  .priceCard {
-    display: flex;
-    flex-direction: column;
-    grid-row: auto;
-    grid-template-rows: none;
-    flex: 0 0 86%;
-    scroll-snap-align: start;
-  }
-  .priceCta {
-    margin-top: auto;
-  }
-  .priceSlot {
-    grid-row: auto;
-    flex: 0 0 86%;
-    scroll-snap-align: start;
-  }
-  .priceSwipeHint {
-    display: flex;
   }
 }

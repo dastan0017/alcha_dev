@@ -314,6 +314,7 @@ function FieldControl({
           label={label}
           value={asList(value)}
           addLabel={field.addLabel}
+          marker={field.marker}
           onChange={set}
         />
       );

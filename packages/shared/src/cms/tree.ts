@@ -52,10 +52,12 @@ const pricingCopySchema = pricingPlanSchema
     priceLabel: true,
     termLine: true,
     highlightLabel: true,
+    ctaLabel: true,
     description: true,
+    examples: true,
+    listHeading: true,
     features: true,
     extras: true,
-    ctaLabel: true,
   })
   .strict();
 
@@ -225,6 +227,8 @@ export const CMS_FIELD_MODEL = {
       pricingEyebrow: 'string',
       pricingHeading: 'string',
       pricingNote: 'string',
+      pricingExamplesLabel: 'string',
+      pricingOptionalLabel: 'string',
       pricingFootnote: 'string',
       ctaTitle: 'string',
       ctaSubtitle: 'string',
@@ -250,7 +254,6 @@ export const CMS_FIELD_MODEL = {
       roleLabel: 'string',
       stackLabel: 'string',
       whatWasDoneLabel: 'string',
-      pricingSwipeHint: 'string',
     },
   },
   steps: {
@@ -269,10 +272,12 @@ export const CMS_FIELD_MODEL = {
       priceLabel: 'string',
       termLine: 'string',
       highlightLabel: 'string',
+      ctaLabel: 'string',
       description: 'string',
+      examples: 'string',
+      listHeading: 'string',
       features: 'stringList',
       extras: 'stringList',
-      ctaLabel: 'string',
     },
   },
   projects: {
@@ -353,7 +358,7 @@ export const CMS_REQUIRED_FIELDS: {
   steps: { neutral: [], localized: ['title', 'description'] },
   pricing: {
     neutral: [],
-    localized: ['name', 'priceLabel', 'termLine', 'description', 'ctaLabel'],
+    localized: ['name', 'priceLabel', 'termLine', 'ctaLabel', 'description', 'listHeading'],
   },
   projects: { neutral: ['slug'], localized: ['title', 'badge', 'metaLine', 'description'] },
 };

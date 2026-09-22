@@ -38,9 +38,13 @@ export const homeContentSchema = z.object({
   /** Small label above the pricing heading, e.g. "ЦЕНЫ". */
   pricingEyebrow: z.string(),
   pricingHeading: z.string(),
-  /** Sits beside the pricing heading. */
+  /** Intro paragraph under the pricing heading. */
   pricingNote: z.string(),
-  /** Instalment explanation under the pricing grid. */
+  /** Label before each plan's example businesses, e.g. "Например:". */
+  pricingExamplesLabel: z.string(),
+  /** Prefix of each optional add-on, e.g. "По желанию:". */
+  pricingOptionalLabel: z.string(),
+  /** Payment terms under the cards — the only place the section states them. */
   pricingFootnote: z.string(),
   ctaTitle: z.string(),
   ctaSubtitle: z.string(),

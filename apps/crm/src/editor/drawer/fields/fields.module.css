@@ -98,6 +98,10 @@
   color: var(--primary);
   font: 600 11px/1 var(--font-mono);
 }
+/* An optional add-on: the site's grey «+», never a ✓. */
+.checkOptional {
+  color: var(--body);
+}
 
 .entryInput {
   flex: 1;

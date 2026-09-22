@@ -47,6 +47,8 @@ export function emptyHome(locale: Locale): HomeResponse {
       pricingEyebrow: '',
       pricingHeading: '',
       pricingNote: '',
+      pricingExamplesLabel: '',
+      pricingOptionalLabel: '',
       pricingFootnote: '',
       ctaTitle: '',
       ctaSubtitle: '',
