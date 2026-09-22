@@ -46,7 +46,7 @@ export function emptyHome(locale: Locale): HomeResponse {
       ctaTitle: '',
       ctaSubtitle: '',
       ctaTelegramLabel: '',
-      ctaCvLabel: '',
+      ctaWhatsappLabel: '',
     },
     hiddenSections: [],
     services: [],

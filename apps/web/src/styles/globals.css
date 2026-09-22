@@ -198,13 +198,15 @@ h4 {
 .btn--on-dark:hover {
   background: #6d46db;
 }
-.btn--on-dark-ghost {
+/* WhatsApp action beside it: brand-green outline that fills with a green tint on hover. */
+.btn--on-dark-whatsapp {
   background: transparent;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #25d366;
+  border: 1px solid rgba(37, 211, 102, 0.45);
 }
-.btn--on-dark-ghost:hover {
-  border-color: #fff;
+.btn--on-dark-whatsapp:hover {
+  border-color: #25d366;
+  background: rgba(37, 211, 102, 0.12);
 }
 /* Declared last so the press state wins over the hover lift. */
 .btn:active {

@@ -116,10 +116,10 @@ async function seedHome(): Promise<void> {
             pricingNote: 'Точная смета — за 24 часа после первого разговора',
             pricingFootnote:
               'Рассрочка 50 / 30 / 20 — по этапам: 50% на старте, 30% после утверждения дизайна, 20% при запуске.',
-            ctaTitle: 'Нужен такой инженер в проект?',
-            ctaSubtitle: 'Фриланс, аутстафф или ваш продукт целиком — обсудим.',
+            ctaTitle: 'Опишите задачу в двух словах.',
+            ctaSubtitle: 'Отвечу сегодня. Смета и план — за 24 часа.',
             ctaTelegramLabel: 'Написать в Telegram',
-            ctaCvLabel: 'Скачать CV ↓',
+            ctaWhatsappLabel: 'Написать в WhatsApp',
           },
           {
             locale: 'en',
@@ -152,10 +152,10 @@ async function seedHome(): Promise<void> {
             pricingNote: 'A precise quote within 24 hours of our first conversation',
             pricingFootnote:
               '50 / 30 / 20 instalments — by stage: 50% up front, 30% once the design is approved, 20% at launch.',
-            ctaTitle: 'Need an engineer like this on your project?',
-            ctaSubtitle: 'Freelance, staff augmentation, or your product end to end — let’s talk.',
+            ctaTitle: 'Describe your project in a few words.',
+            ctaSubtitle: 'I’ll reply today. A quote and a plan — within 24 hours.',
             ctaTelegramLabel: 'Message on Telegram',
-            ctaCvLabel: 'Download CV ↓',
+            ctaWhatsappLabel: 'Message on WhatsApp',
           },
         ],
       },

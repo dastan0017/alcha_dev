@@ -150,7 +150,7 @@ model HomeContentTranslation {
   ctaTitle               String
   ctaSubtitle            String
   ctaTelegramLabel       String
-  ctaCvLabel             String
+  ctaWhatsappLabel       String
 
   @@unique([homeContentId, locale])
 }

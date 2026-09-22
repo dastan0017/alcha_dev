@@ -226,7 +226,7 @@ export const CMS_FIELD_MODEL = {
       ctaTitle: 'string',
       ctaSubtitle: 'string',
       ctaTelegramLabel: 'string',
-      ctaCvLabel: 'string',
+      ctaWhatsappLabel: 'string',
     },
   },
   chrome: {
@@ -333,7 +333,7 @@ export const CMS_REQUIRED_FIELDS: {
       'ctaTitle',
       'ctaSubtitle',
       'ctaTelegramLabel',
-      'ctaCvLabel',
+      'ctaWhatsappLabel',
     ],
   },
   chrome: {

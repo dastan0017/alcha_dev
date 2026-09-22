@@ -588,7 +588,13 @@ export const SECTION_SCHEMAS: Record<CmsSectionKey, SectionSchema> = {
         type: 'text',
         localized: true,
       },
-      { scope: 'home', key: 'ctaCvLabel', label: 'Кнопка резюме', type: 'text', localized: true },
+      {
+        scope: 'home',
+        key: 'ctaWhatsappLabel',
+        label: 'Кнопка WhatsApp',
+        type: 'text',
+        localized: true,
+      },
     ]),
   },
   footer: {

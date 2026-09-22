@@ -169,7 +169,7 @@ RU. `HomeResponse` gains `hiddenSections`. New public `GET /content/chrome?local
 `content:chrome`).
 
 Required fields (`CMS_REQUIRED_FIELDS`) — RU errors / EN warnings:
-home `heroTitle heroSubtitle heroCtaPrimary heroCtaSecondary servicesHeading worksHeading pricingHeading ctaTitle ctaSubtitle ctaTelegramLabel ctaCvLabel` ·
+home `heroTitle heroSubtitle heroCtaPrimary heroCtaSecondary servicesHeading worksHeading pricingHeading ctaTitle ctaSubtitle ctaTelegramLabel ctaWhatsappLabel` ·
 chrome all · services `title description` (+ `number`) · pricing `name priceLabel termLine description` ·
 projects `title badge metaLine description` (+ `slug`).
 

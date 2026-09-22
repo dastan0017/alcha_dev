@@ -7,18 +7,20 @@ export function CtaBanner({
   title,
   subtitle,
   telegramLabel,
-  cvLabel,
+  whatsappLabel,
   telegramUrl,
-  cvUrl,
+  whatsappUrl,
+  email,
   preview,
   locale,
 }: {
   title: string;
   subtitle: string;
   telegramLabel: string;
-  cvLabel: string;
+  whatsappLabel: string;
   telegramUrl: string;
-  cvUrl: string;
+  whatsappUrl: string;
+  email: string;
   preview: boolean;
   locale: Locale;
 }) {
@@ -41,27 +43,34 @@ export function CtaBanner({
               {subtitle}
             </p>
           </div>
-          <div className={styles.actions}>
-            {telegramUrl && (
-              <a
-                className="btn btn--on-dark"
-                href={telegramUrl}
-                target="_blank"
-                rel="noreferrer noopener"
-                {...cms.field(cms.home('ctaTelegramLabel'))}
-              >
-                {telegramLabel}
-              </a>
-            )}
-            {cvUrl && (
-              <a
-                className="btn btn--on-dark-ghost"
-                href={cvUrl}
-                target="_blank"
-                rel="noreferrer noopener"
-                {...cms.field(cms.home('ctaCvLabel'))}
-              >
-                {cvLabel}
+          <div className={styles.contact}>
+            <div className={styles.actions}>
+              {telegramUrl && (
+                <a
+                  className="btn btn--on-dark"
+                  href={telegramUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  {...cms.field(cms.home('ctaTelegramLabel'))}
+                >
+                  {telegramLabel}
+                </a>
+              )}
+              {whatsappUrl && (
+                <a
+                  className="btn btn--on-dark-whatsapp"
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  {...cms.field(cms.home('ctaWhatsappLabel'))}
+                >
+                  {whatsappLabel}
+                </a>
+              )}
+            </div>
+            {email && (
+              <a className={styles.email} href={`mailto:${email}`}>
+                {email}
               </a>
             )}
           </div>

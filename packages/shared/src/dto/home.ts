@@ -35,6 +35,6 @@ export const homeContentSchema = z.object({
   ctaTitle: z.string(),
   ctaSubtitle: z.string(),
   ctaTelegramLabel: z.string(),
-  ctaCvLabel: z.string(),
+  ctaWhatsappLabel: z.string(),
 });
 export type HomeContent = z.infer<typeof homeContentSchema>;

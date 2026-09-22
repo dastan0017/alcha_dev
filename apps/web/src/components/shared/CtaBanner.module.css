@@ -9,12 +9,13 @@
   padding: 44px 48px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 32px;
+  gap: 24px 32px;
   flex-wrap: wrap;
 }
+/* The copy takes whatever the buttons and email leave; once that drops below
+   ~22rem the buttons and email wrap onto their own row together. */
 .copy {
-  max-width: 46ch;
+  flex: 1 1 22rem;
 }
 .title {
   color: #fff;
@@ -28,10 +29,26 @@
   /* Multiline CMS copy: line breaks typed in the editor render as-is. */
   white-space: pre-line;
 }
+.contact {
+  display: flex;
+  align-items: center;
+  gap: 16px 32px;
+  flex-wrap: wrap;
+}
 .actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+}
+.email {
+  font-family: var(--font-mono-stack);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--on-dark-muted);
+  transition: color 0.15s ease;
+}
+.email:hover {
+  color: #fff;
 }
 
 @media (max-width: 768px) {
@@ -41,12 +58,20 @@
   .inner {
     padding: 32px 24px;
     flex-direction: column;
+    align-items: stretch;
+  }
+  .copy {
+    flex: none;
+  }
+  .contact {
+    flex-direction: column;
     align-items: flex-start;
   }
+  /* Buttons share a row while both fit, then stack full-width. */
   .actions {
     width: 100%;
   }
-  .actions .btn {
-    flex: 1;
+  .actions > a {
+    flex: 1 1 auto;
   }
 }

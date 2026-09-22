@@ -83,9 +83,10 @@ export default async function HomePage({ params }: Params) {
           title={home.content.ctaTitle}
           subtitle={home.content.ctaSubtitle}
           telegramLabel={home.content.ctaTelegramLabel}
-          cvLabel={home.content.ctaCvLabel}
+          whatsappLabel={home.content.ctaWhatsappLabel}
           telegramUrl={home.settings.telegram}
-          cvUrl={home.settings.cvUrl}
+          whatsappUrl={home.settings.whatsapp}
+          email={home.settings.email}
           preview={preview}
           locale={typed}
         />
