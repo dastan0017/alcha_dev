@@ -94,7 +94,7 @@ export function invertPatches(
   return inverses.reverse();
 }
 
-/** Keys of a collection's boolean fields, e.g. `featured`, `highlighted`. */
+/** Keys of a collection's boolean fields, e.g. `isMain`, `highlighted`. */
 export type CmsFlagField<C extends CollectionKey> = {
   [K in CmsNeutralField<C>]: (typeof CMS_FIELD_MODEL)[C]['neutral'][K] extends 'boolean'
     ? K

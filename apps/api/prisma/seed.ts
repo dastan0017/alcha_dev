@@ -32,7 +32,7 @@ async function seedAdmin(): Promise<void> {
 async function wipeContent(): Promise<void> {
   // Parent deletes cascade to their translation rows.
   await prisma.$transaction([
-    prisma.service.deleteMany(),
+    prisma.processStep.deleteMany(),
     prisma.project.deleteMany(),
     prisma.pricingPlan.deleteMany(),
     prisma.seoMeta.deleteMany(),
@@ -102,11 +102,17 @@ async function seedHome(): Promise<void> {
             heroNote: 'От $300 · Запуск от 1 недели',
             heroCtaPrimary: 'Обсудить проект',
             heroCtaSecondary: 'Смотреть работы ↓',
-            servicesEyebrow: 'УСЛУГИ',
-            servicesHeading: 'От первого макета до запуска и передачи ключей',
-            servicesLede:
-              'Сайт продают не технологии, а дизайн и тексты. Остальное уже включено: быстрый код, SEO, CRM и сервер.',
-            servicesSecondaryLabel: 'И ВСЕГДА В КОМПЛЕКТЕ',
+            processEyebrow: 'ПРОЦЕСС И УСЛУГИ',
+            processHeading: 'Понятный план работы над вашим проектом',
+            processSubheading:
+              'Ваше участие нужно только на старте — обсудить бизнес и утвердить макет. Всю техническую часть (скорость, SEO, панель и сервер) я беру на себя и отдаю вам готовый сайт.',
+            processPill: 'ОТ 1 ДО 6 НЕДЕЛЬ',
+            processFromLabel: 'ОТ ВАС',
+            processResultLabel: 'РЕЗУЛЬТАТ',
+            processMainLabel: 'ГЛАВНОЕ',
+            processAnnotationLabel: 'МОЯ ГЛАВНАЯ СИЛА',
+            processAnnotationText:
+              'Этим занимаюсь лично и глубже всего: моя работа — понятно показать сильные стороны вашего бизнеса и сделать так, чтобы сайт с первых секунд вызывал доверие.',
             worksEyebrow: 'РАБОТЫ',
             worksHeading: 'Работы',
             worksLede:
@@ -139,11 +145,17 @@ async function seedHome(): Promise<void> {
             heroNote: 'From $300 · Launch from 1 week',
             heroCtaPrimary: 'Discuss a project',
             heroCtaSecondary: 'See the work ↓',
-            servicesEyebrow: 'SERVICES',
-            servicesHeading: 'From the first mockup to launch and handover',
-            servicesLede:
-              'Websites aren’t sold by technology — they’re sold by design and copy. Everything else is already included: fast code, SEO, a CRM and the server.',
-            servicesSecondaryLabel: 'AND ALWAYS INCLUDED',
+            processEyebrow: 'PROCESS & SERVICES',
+            processHeading: 'A clear plan for your project',
+            processSubheading:
+              'You’re only needed at the start — to talk through your business and approve the design. I take on everything technical (speed, SEO, the panel and the server) and hand you a finished website.',
+            processPill: '1 TO 6 WEEKS',
+            processFromLabel: 'FROM YOU',
+            processResultLabel: 'RESULT',
+            processMainLabel: 'KEY STEP',
+            processAnnotationLabel: 'MY CORE STRENGTH',
+            processAnnotationText:
+              'I handle this personally and in the most depth: my job is to show your business’s strengths clearly and make the site earn trust from the very first seconds.',
             worksEyebrow: 'WORK',
             worksHeading: 'Selected work',
             worksLede:
@@ -166,105 +178,103 @@ async function seedHome(): Promise<void> {
   console.log('✓ Home content');
 }
 
-async function seedServices(): Promise<void> {
-  const services = [
+async function seedSteps(): Promise<void> {
+  // «Процесс и услуги» copy rules to keep when editing it: no promise of leads or Google
+  // rankings, no framework names, no Lighthouse scores, no untranslated acronyms in card titles.
+  // A step's number is its position, never stored.
+  const steps = [
     {
-      number: '01',
-      sortOrder: 0,
-      featured: true,
+      isMain: false,
       ru: {
-        title: 'Дизайн и тексты',
+        title: 'Разговор о бизнесе',
         description:
-          'Дизайн и тексты, которые превращают посетителей в клиентов, — а не просто «красиво». Этим занимаюсь лично и глубже всего.',
-        badge: 'МОЯ ГЛАВНАЯ СИЛА',
-        bullets: [
-          'Макет — до начала разработки',
-          'Тексты — на языке ваших клиентов',
-          'Правки — пока не скажете «да»',
-        ],
-        techLine: '',
+          'Задаю вопросы о вашем продукте, клиентах и конкурентах. Вместе находим, чем вы сильнее других и почему клиент должен выбрать именно вас. Отсюда и берутся тексты.',
+        from: '1 час времени',
+        result: 'Разбор бизнеса и структура страниц',
       },
       en: {
-        title: 'Design & copy',
+        title: 'Talking business',
         description:
-          'Design and copy that turn visitors into customers — not just something that “looks nice”. This is what I do personally, and go deepest on.',
-        badge: 'MY CORE STRENGTH',
-        bullets: [
-          'A mockup — before development starts',
-          'Copy — in your customers’ language',
-          'Revisions — until you say “yes”',
-        ],
-        techLine: '',
+          'I ask about your product, your customers and your competitors. Together we find where you’re stronger than the rest and why a customer should choose you. That’s where the copy comes from.',
+        from: '1 hour of your time',
+        result: 'Business breakdown and page structure',
       },
     },
     {
-      number: '02',
-      sortOrder: 1,
-      featured: false,
+      isMain: true,
       ru: {
-        title: 'Разработка + SEO',
-        description: 'Сайт грузится мгновенно и виден в Google — клиенты находят вас сами.',
-        badge: '',
-        bullets: ['Lighthouse 95+', 'Идеально на телефоне'],
-        techLine: 'React · Next.js · TypeScript',
+        title: 'Дизайн и продающие тексты',
+        description: 'Собираю макет и пишу продающие тексты. Правки вносим до утверждения макета.',
+        from: 'Примеры сайтов и согласование макета',
+        result: 'Макет всех страниц с текстами',
       },
       en: {
-        title: 'Development + SEO',
-        description: 'The site loads instantly and is visible in Google — clients find you themselves.',
-        badge: '',
-        bullets: ['Lighthouse 95+', 'Flawless on mobile'],
-        techLine: 'React · Next.js · TypeScript',
+        title: 'Design and sales copy',
+        description:
+          'I put together the design and write copy that sells. We make revisions until the design is approved.',
+        from: 'Example sites and design approval',
+        result: 'Design of every page, with copy',
       },
     },
     {
-      number: '03',
-      sortOrder: 2,
-      featured: false,
+      isMain: false,
       ru: {
-        title: 'CRM и контент',
+        title: 'Разработка и SEO',
         description:
-          'Меняете тексты, фото и цены сами — без программиста. CRM считает заявки и продажи.',
-        badge: '',
-        bullets: ['Обновления — без разработчика', 'Отчёты и цифры бизнеса'],
-        techLine: '',
+          'Переношу утверждённый макет в быстрый код и собираю к нему панель управления. Сайт загружается мгновенно, удобен на телефоне и правильно настроен для Google.',
+        from: 'Ничего',
+        result: 'Работающий сайт и панель на тестовом адресе',
       },
       en: {
-        title: 'CRM & content',
+        title: 'Development and SEO',
         description:
-          'Change text, photos and prices yourself — no developer needed. The CRM counts leads and sales.',
-        badge: '',
-        bullets: ['Updates — without a developer', 'Reports and business numbers'],
-        techLine: '',
+          'I turn the approved design into fast code and build the site panel to go with it. The site loads instantly, works well on phones and is set up properly for Google.',
+        from: 'Nothing',
+        result: 'Working site and panel on a test address',
       },
     },
     {
-      number: '04',
-      sortOrder: 3,
-      featured: false,
+      isMain: false,
       ru: {
-        title: 'Сервер и передача',
-        description: 'Запускаю на вашем домене и отдаю все доступы. Всё — ваше.',
-        badge: '',
-        bullets: ['Сервер и домен — на вас', 'Код и доступы — ваши'],
-        techLine: '',
+        title: 'Учу управлять сайтом',
+        description:
+          'Созваниваемся, и я показываю панель управления: как поменять текст или цену, заменить фото, добавить карточку или целый раздел. Остаётся короткое видео, чтобы потом вспомнить.',
+        from: '30 минут на созвон',
+        result: 'Панель управления, доступы и видеоинструкция',
       },
       en: {
-        title: 'Server & handover',
-        description: 'I launch on your domain and hand over every credential. Everything is yours.',
-        badge: '',
-        bullets: ['Server and domain — in your name', 'Code and access — yours'],
-        techLine: '',
+        title: 'Teaching you to run the site',
+        description:
+          'We get on a call and I walk you through the panel: how to change text or a price, replace a photo, add a card or a whole section. You keep a short video to look back on.',
+        from: '30 minutes for a call',
+        result: 'Site panel, logins and a video guide',
+      },
+    },
+    {
+      isMain: false,
+      ru: {
+        title: 'Запуск и передача прав',
+        description:
+          'Запускаю сайт на вашем домене: на существующем или зарегистрирую новый на вас. Отдаю исходный код, доступы к серверу и все настройки. Дальше сайт сможет вести любой разработчик.',
+        from: 'Домен, если он уже есть',
+        result: 'Сайт работает, код и все доступы у вас',
+      },
+      en: {
+        title: 'Launch and handover',
+        description:
+          'I launch the site on your domain — the one you already have, or a new one I register in your name. You get the source code, server access and every setting. From then on, any developer can run the site.',
+        from: 'Your domain, if you already have one',
+        result: 'The site is live; the code and all access are yours',
       },
     },
   ];
 
-  for (const s of services) {
-    await prisma.service.create({
+  for (const [sortOrder, s] of steps.entries()) {
+    await prisma.processStep.create({
       data: {
-        number: s.number,
-        sortOrder: s.sortOrder,
+        sortOrder,
         published: true,
-        featured: s.featured,
+        isMain: s.isMain,
         translations: {
           create: [
             { locale: 'ru', ...s.ru },
@@ -274,7 +284,7 @@ async function seedServices(): Promise<void> {
       },
     });
   }
-  console.log(`✓ Services (${services.length})`);
+  console.log(`✓ Process steps (${steps.length})`);
 }
 
 async function seedPricing(): Promise<void> {
@@ -646,7 +656,7 @@ async function main(): Promise<void> {
   await seedSettings();
   await seedChrome();
   await seedHome();
-  await seedServices();
+  await seedSteps();
   await seedPricing();
   await seedProjects();
   await seedSeo();

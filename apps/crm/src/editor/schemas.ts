@@ -49,7 +49,7 @@ export interface FieldSchema {
   addLabel?: string;
   /** `select`: the choices. */
   options?: readonly FieldOption[];
-  /** `boolean`: switching it on switches it off on every other item (one featured service, one highlighted plan). */
+  /** `boolean`: switching it on switches it off on every other item (one main step, one highlighted plan). */
   exclusive?: boolean;
   /** `boolean`: value text next to the switch (defaults «Да» / «Нет»). */
   onLabel?: string;
@@ -98,8 +98,6 @@ export type ItemDrawerTarget = Extract<DrawerTarget, { kind: 'item' }>;
 export interface BlankContext {
   /** The page the item is added on: projects added on the homepage show there. */
   page: 'home' | 'case';
-  /** The draft the item joins. */
-  tree: SiteTree;
 }
 
 export interface CollectionSchema<C extends CollectionKey = CollectionKey> {
@@ -124,14 +122,6 @@ const COPY_SUFFIX: Record<Locale, string> = { ru: ' — копия', en: ' — c
 
 const SLUG_ALPHABET = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
-/** The highest numeric service number plus one, zero-padded: «01», «02»… → «03». */
-function nextServiceNumber(tree: SiteTree): string {
-  const numbers = tree.services.flatMap(({ number }) =>
-    /^\d+$/.test(number) ? [Number(number)] : [],
-  );
-  return String(Math.max(0, ...numbers) + 1).padStart(2, '0');
-}
-
 function randomSlugPart(length: number): string {
   return Array.from(
     globalThis.crypto.getRandomValues(new Uint8Array(length)),
@@ -140,61 +130,55 @@ function randomSlugPart(length: number): string {
 }
 
 export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSchema<C> } = {
-  services: {
-    kind: 'УСЛУГА',
-    noun: 'Услуга',
-    addLabel: 'Добавить услугу',
+  steps: {
+    kind: 'ШАГ ПРОЦЕССА',
+    noun: 'Шаг',
+    addLabel: 'Добавить шаг',
     title: (node, locale) => titleOrUntitled(node[locale].title),
     fields: [
-      { key: 'number', label: 'Номер', type: 'text', localized: false, hint: '02' },
-      { key: 'title', label: 'Заголовок', type: 'text', localized: true },
+      { key: 'title', label: 'Название шага', type: 'text', localized: true },
       { key: 'description', label: 'Описание', type: 'textarea', localized: true },
       {
-        key: 'bullets',
-        label: 'Что входит',
-        type: 'list',
-        localized: true,
-        addLabel: 'Добавить пункт',
-      },
-      {
-        key: 'techLine',
-        label: 'Технологии (необязательно)',
+        key: 'from',
+        label: 'Строка «От вас» — что нужно от клиента',
         type: 'text',
         localized: true,
-        hint: 'React · Next.js',
+        hint: '1 час времени',
       },
       {
-        key: 'badge',
-        label: 'Плашка главной услуги',
+        key: 'result',
+        label: 'Строка «Результат» — что клиент получит',
         type: 'text',
         localized: true,
-        hint: 'МОЯ ГЛАВНАЯ СИЛА',
+        hint: 'Макет всех страниц с текстами',
       },
       {
-        key: 'featured',
-        label: 'Главная услуга — большая карточка',
+        key: 'isMain',
+        label: 'Главный шаг',
         type: 'boolean',
         localized: false,
         exclusive: true,
+        onLabel: 'Да, выделить рамкой, бейджем и подписью',
+        offLabel: 'Нет, обычный шаг',
       },
-    ] satisfies readonly DeclaredField<'services'>[],
-    blank: ({ tree }) => {
-      const node = newCollectionNode('services');
+    ] satisfies readonly DeclaredField<'steps'>[],
+    blank: () => {
+      const node = newCollectionNode('steps');
       return {
         ...node,
-        number: nextServiceNumber(tree),
         ru: {
           ...node.ru,
-          title: 'Новая услуга',
-          description: 'Коротко опишите, что входит и какую задачу это решает для клиента.',
-          bullets: ['Что получает клиент'],
+          title: 'Новый шаг',
+          description: 'Коротко опишите, что происходит на этом шаге.',
+          from: 'Что нужно от клиента',
+          result: 'Что клиент получит',
         },
         en: {
           ...node.en,
-          title: 'New service',
-          description:
-            'Briefly describe what is included and which problem it solves for the client.',
-          bullets: ['What the client gets'],
+          title: 'New step',
+          description: 'Briefly describe what happens at this step.',
+          from: 'What the client provides',
+          result: 'What the client gets',
         },
       };
     },
@@ -203,7 +187,7 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
       return {
         ...copy,
         id: newCmsId(),
-        featured: false,
+        isMain: false,
         ru: { ...copy.ru, title: copy.ru.title + COPY_SUFFIX.ru },
         en: { ...copy.en, title: copy.en.title + COPY_SUFFIX.en },
       };
@@ -509,31 +493,68 @@ export const SECTION_SCHEMAS: Record<CmsSectionKey, SectionSchema> = {
       },
     ]),
   },
-  services: {
-    label: CMS_SECTION_LABELS.services,
+  process: {
+    label: CMS_SECTION_LABELS.process,
     fields: sectionFields([
       {
         scope: 'home',
-        key: 'servicesEyebrow',
+        key: 'processEyebrow',
         label: 'Надзаголовок',
         type: 'text',
         localized: true,
       },
-      { scope: 'home', key: 'servicesHeading', label: 'Заголовок', type: 'text', localized: true },
+      { scope: 'home', key: 'processHeading', label: 'Заголовок', type: 'text', localized: true },
       {
         scope: 'home',
-        key: 'servicesLede',
-        label: 'Вступление',
+        key: 'processSubheading',
+        label: 'Подзаголовок',
         type: 'textarea',
         localized: true,
       },
       {
         scope: 'home',
-        key: 'servicesSecondaryLabel',
-        label: 'Подпись над остальными услугами',
+        key: 'processPill',
+        label: 'Плашка со сроком',
         type: 'text',
         localized: true,
-        hint: 'И ВСЕГДА В КОМПЛЕКТЕ',
+        hint: 'ОТ 1 ДО 6 НЕДЕЛЬ',
+      },
+      {
+        scope: 'home',
+        key: 'processFromLabel',
+        label: 'Подпись «От вас» в карточках',
+        type: 'text',
+        localized: true,
+      },
+      {
+        scope: 'home',
+        key: 'processResultLabel',
+        label: 'Подпись «Результат» в карточках',
+        type: 'text',
+        localized: true,
+      },
+      {
+        scope: 'home',
+        key: 'processMainLabel',
+        label: 'Бейдж главного шага',
+        type: 'text',
+        localized: true,
+        hint: 'ГЛАВНОЕ',
+      },
+      {
+        scope: 'home',
+        key: 'processAnnotationLabel',
+        label: 'Подпись под главным шагом — заголовок',
+        type: 'text',
+        localized: true,
+        hint: 'МОЯ ГЛАВНАЯ СИЛА',
+      },
+      {
+        scope: 'home',
+        key: 'processAnnotationText',
+        label: 'Подпись под главным шагом — текст',
+        type: 'textarea',
+        localized: true,
       },
     ]),
   },

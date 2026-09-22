@@ -10,8 +10,8 @@ import {
   type Locale,
   type PricingNode,
   type ProjectNode,
-  type ServiceNode,
   type SiteTree,
+  type StepNode,
 } from '@alcha/shared';
 import { PrismaService } from '../../prisma/prisma.service';
 
@@ -37,10 +37,10 @@ export class TreeRepository {
    * translation row reads as blank copy.
    */
   async loadPublishedTree(db: Db = this.prisma): Promise<SiteTree> {
-    const [home, chrome, services, pricing, projects] = await Promise.all([
+    const [home, chrome, steps, pricing, projects] = await Promise.all([
       db.homeContent.findFirst({ orderBy: oldestFirst, include }),
       db.siteChrome.findFirst({ orderBy: oldestFirst, include }),
-      db.service.findMany({ orderBy: byPosition, include }),
+      db.processStep.findMany({ orderBy: byPosition, include }),
       db.pricingPlan.findMany({ orderBy: byPosition, include }),
       db.project.findMany({ orderBy: byPosition, include }),
     ]);
@@ -53,7 +53,7 @@ export class TreeRepository {
         ...copyOf('home', home?.translations),
       },
       chrome: copyOf('chrome', chrome?.translations),
-      services: services.map((row) => toNode('services', row)),
+      steps: steps.map((row) => toNode('steps', row)),
       pricing: pricing.map((row) => toNode('pricing', row)),
       projects: projects.map((row) => toNode('projects', row)),
     });
@@ -66,7 +66,7 @@ export class TreeRepository {
    */
   async writeTree(tx: Db, tree: SiteTree): Promise<void> {
     await this.writeSingletons(tx, tree);
-    await this.writeServices(tx, tree.services);
+    await this.writeSteps(tx, tree.steps);
     await this.writePricing(tx, tree.pricing);
     await this.writeProjects(tx, tree.projects);
   }
@@ -110,18 +110,18 @@ export class TreeRepository {
     }
   }
 
-  private async writeServices(tx: Db, nodes: ServiceNode[]): Promise<void> {
-    await tx.service.deleteMany({ where: { id: { notIn: idsOf(nodes) } } });
+  private async writeSteps(tx: Db, nodes: StepNode[]): Promise<void> {
+    await tx.processStep.deleteMany({ where: { id: { notIn: idsOf(nodes) } } });
     for (const [sortOrder, node] of nodes.entries()) {
       const { id, ...columns } = columnsOf(node);
-      await tx.service.upsert({
+      await tx.processStep.upsert({
         where: { id },
         create: { id, sortOrder, ...columns, translations: { create: createCopy(node) } },
         update: {
           sortOrder,
           ...columns,
           translations: {
-            upsert: upsertCopy(node, (locale) => ({ serviceId_locale: { serviceId: id, locale } })),
+            upsert: upsertCopy(node, (locale) => ({ stepId_locale: { stepId: id, locale } })),
           },
         },
       });

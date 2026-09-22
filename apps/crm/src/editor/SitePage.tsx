@@ -262,7 +262,7 @@ export function SitePage() {
 
   const addItem = async (collection: CollectionKey) => {
     if (!tree) return;
-    const node = collectionSchema(collection).blank({ page: page?.kind ?? 'home', tree });
+    const node = collectionSchema(collection).blank({ page: page?.kind ?? 'home' });
     const label = `Новая карточка: ${collectionSchema(collection).noun}`;
     if (change([{ op: 'insert', path: collection, value: node }], label) === null) return;
     const key = cmsNodeKey.item(collection, node.id);

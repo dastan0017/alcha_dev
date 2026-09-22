@@ -4,16 +4,17 @@ import { CMS_ATTR, type CollectionKey } from '@alcha/shared';
 interface SlotCopy {
   label: string;
   hint?: string;
-  /** Stack lists get a one-row slot; grids a card-sized column. */
+  /** Stack lists and the row under the steps get a one-row slot; grids a card-sized column. */
   row?: boolean;
   minHeight: number;
 }
 
 const SLOTS: Record<CollectionKey, SlotCopy> = {
-  services: {
-    label: 'Добавить услугу',
-    hint: 'Карточка встанет следующей в этой сетке',
-    minHeight: 170,
+  steps: {
+    label: 'Добавить шаг',
+    hint: '— встанет последним, номера шагов пересчитаются сами',
+    row: true,
+    minHeight: 72,
   },
   projects: {
     label: 'Добавить работу',

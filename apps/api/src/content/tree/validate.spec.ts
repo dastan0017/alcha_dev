@@ -13,7 +13,7 @@ describe('validateTree', () => {
     tree.pricing[0].ru.name = '';
     tree.home.en.heroSubtitle = '';
     tree.chrome.en.footerRights = '';
-    tree.services[1].en.description = '';
+    tree.steps[1].en.description = '';
 
     const { errors, warnings } = validateTree(tree);
     expect(errors.map(({ path, locale }) => [path, locale])).toEqual([
@@ -24,21 +24,19 @@ describe('validateTree', () => {
     expect(warnings.map(({ path, locale }) => [path, locale])).toEqual([
       ['home.en.heroSubtitle', 'en'],
       ['chrome.en.footerRights', 'en'],
-      ['services.s2.en.description', 'en'],
+      ['steps.s2.en.description', 'en'],
     ]);
     for (const issue of [...errors, ...warnings]) expect(issue.message).toMatch(/[а-яё]/i);
   });
 
   it('reports blank required neutral fields as errors without a locale', () => {
     const tree = treeFixture();
-    tree.services[0].number = '';
-    tree.services[2].number = ' ';
-    tree.projects[1].slug = '';
+    tree.projects[0].slug = '';
+    tree.projects[2].slug = ' ';
 
     expect(validateTree(tree).errors.map(({ path, locale }) => [path, locale])).toEqual([
-      ['services.s1.number', null],
-      ['services.s3.number', null],
-      ['projects.pr2.slug', null],
+      ['projects.pr1.slug', null],
+      ['projects.pr3.slug', null],
     ]);
   });
 
@@ -47,7 +45,8 @@ describe('validateTree', () => {
     tree.home.ru.eyebrow = '';
     tree.home.ru.heroSubtitleMobile = '';
     tree.home.en.heroBullets = [];
-    tree.services[0].ru.badge = '';
+    tree.steps[0].ru.from = '';
+    tree.steps[0].en.result = '';
     tree.projects[0].ru.seoTitle = '';
     tree.projects[0].screenshots = [];
     tree.pricing[0].en.highlightLabel = '';

@@ -28,8 +28,8 @@ describe('countChanges', () => {
     expect(changesAfter([set('home.ru.heroBullets', ['a', 'b', 'c'])])).toBe(1);
     expect(
       changesAfter([
-        set('services.s1.ru.bullets.0', 'Vue'),
-        set('services.s1.ru.bullets.1', 'Nest'),
+        set('pricing.p1.ru.features.0', 'SEO'),
+        set('pricing.p1.ru.features.1', 'Hosting'),
       ]),
     ).toBe(1);
     expect(changesAfter([set('projects.pr1.screenshots', ['a.png', 'b.png'])])).toBe(1);
@@ -39,12 +39,12 @@ describe('countChanges', () => {
     const hidden = applyPatches(base, [set('home.hiddenSections', ['pricing', 'works'])]).tree;
     expect(changesAfter([set('home.hiddenSections', ['works', 'pricing'])], hidden)).toBe(0);
     expect(changesAfter([set('home.hiddenSections', ['works'])], hidden)).toBe(1);
-    expect(changesAfter([set('home.hiddenSections', ['works', 'services'])], hidden)).toBe(1);
+    expect(changesAfter([set('home.hiddenSections', ['works', 'process'])], hidden)).toBe(1);
   });
 
   it('counts one per added and per removed item, not their leaves', () => {
-    const added = newCollectionNode('services');
-    expect(changesAfter([{ op: 'insert', path: 'services', value: added }])).toBe(1);
+    const added = newCollectionNode('steps');
+    expect(changesAfter([{ op: 'insert', path: 'steps', value: added }])).toBe(1);
     expect(
       changesAfter([
         { op: 'remove', path: 'pricing.p1' },
@@ -56,35 +56,36 @@ describe('countChanges', () => {
   it('counts changed leaves of common items, `published` included', () => {
     expect(
       changesAfter([
-        set('services.s1.ru.title', 'x'),
-        set('services.s1.en.bullets', []),
-        set('services.s1.number', '9'),
+        set('steps.s1.ru.title', 'x'),
+        set('steps.s1.isMain', true),
+        set('pricing.p1.en.features', []),
+        set('projects.pr2.slug', 'x'),
         set('projects.pr2.showOnHome', true),
       ]),
-    ).toBe(4);
+    ).toBe(5);
     const unpublished = { ...base.pricing[0], published: false };
     expect(changesAfter([{ op: 'insert', path: 'pricing', value: unpublished }])).toBe(1);
   });
 
   it('adds one when the relative order of common items changed', () => {
-    expect(changesAfter([{ op: 'move', path: 'services.s3', value: 0 }])).toBe(1);
+    expect(changesAfter([{ op: 'move', path: 'steps.s3', value: 0 }])).toBe(1);
     expect(
       changesAfter([
-        { op: 'move', path: 'services.s3', value: 0 },
+        { op: 'move', path: 'steps.s3', value: 0 },
         { op: 'move', path: 'projects.pr1', value: 2 },
       ]),
     ).toBe(2);
     expect(
       changesAfter([
-        { op: 'move', path: 'services.s3', value: 0 },
-        { op: 'move', path: 'services.s1', value: 0 },
+        { op: 'move', path: 'steps.s3', value: 0 },
+        { op: 'move', path: 'steps.s1', value: 0 },
       ]),
     ).toBe(1);
   });
 
   it('does not count a removal or an insertion as a reorder', () => {
-    expect(changesAfter([{ op: 'remove', path: 'services.s1' }])).toBe(1);
-    const added = newCollectionNode('services');
-    expect(changesAfter([{ op: 'insert', path: 'services', value: added, index: 0 }])).toBe(1);
+    expect(changesAfter([{ op: 'remove', path: 'steps.s1' }])).toBe(1);
+    const added = newCollectionNode('steps');
+    expect(changesAfter([{ op: 'insert', path: 'steps', value: added, index: 0 }])).toBe(1);
   });
 });

@@ -4,7 +4,7 @@ import { translatedSchema } from '../dto/common';
 import { homeSectionKeySchema, projectBadgeSchema, type ProjectBadge } from '../dto/enums';
 import { homeContentSchema } from '../dto/home';
 import { siteChromeSchema } from '../dto/chrome';
-import { serviceSchema } from '../dto/service';
+import { processStepSchema } from '../dto/process-step';
 import { pricingPlanSchema } from '../dto/pricing';
 import { projectSchema } from '../dto/project';
 
@@ -12,7 +12,7 @@ import { projectSchema } from '../dto/project';
 export const CMS_ID_PATTERN = /^[A-Za-z0-9_-]+$/;
 export const cmsIdSchema = z.string().regex(CMS_ID_PATTERN);
 
-export const collectionKeySchema = z.enum(['services', 'pricing', 'projects']);
+export const collectionKeySchema = z.enum(['steps', 'pricing', 'projects']);
 export type CollectionKey = z.infer<typeof collectionKeySchema>;
 export const COLLECTION_KEYS = collectionKeySchema.options;
 
@@ -24,7 +24,7 @@ export function isCollectionKey(value: unknown): value is CollectionKey {
 export const cmsSectionKeySchema = z.enum([
   'header',
   'hero',
-  'services',
+  'process',
   'works',
   'pricing',
   'cta',
@@ -42,8 +42,8 @@ export type HomeCopy = z.infer<typeof homeCopySchema>;
 export const chromeCopySchema = siteChromeSchema.strict();
 export type ChromeCopy = z.infer<typeof chromeCopySchema>;
 
-const serviceCopySchema = serviceSchema
-  .pick({ title: true, description: true, badge: true, bullets: true, techLine: true })
+const stepCopySchema = processStepSchema
+  .pick({ title: true, description: true, from: true, result: true })
   .strict();
 
 const pricingCopySchema = pricingPlanSchema
@@ -81,15 +81,15 @@ const projectCopySchema = projectSchema
 /** `published` is a passthrough the editor never shows; new items are published. */
 const nodeBase = { id: cmsIdSchema, published: z.boolean() };
 
-export const serviceNodeSchema = z
+/** A step of the «Процесс и услуги» timeline; its number is its position, never stored. */
+export const stepNodeSchema = z
   .object({
     ...nodeBase,
-    number: z.string(),
-    featured: z.boolean(),
-    ...translatedSchema(serviceCopySchema).shape,
+    isMain: z.boolean(),
+    ...translatedSchema(stepCopySchema).shape,
   })
   .strict();
-export type ServiceNode = z.infer<typeof serviceNodeSchema>;
+export type StepNode = z.infer<typeof stepNodeSchema>;
 
 export const pricingNodeSchema = z
   .object({
@@ -114,17 +114,13 @@ export const projectNodeSchema = z
 export type ProjectNode = z.infer<typeof projectNodeSchema>;
 
 export const nodeSchemaByCollection = {
-  services: serviceNodeSchema,
+  steps: stepNodeSchema,
   pricing: pricingNodeSchema,
   projects: projectNodeSchema,
 } as const satisfies Record<CollectionKey, z.ZodTypeAny>;
 
 /** Any collection item (each node schema is strict, so a value matches at most one). */
-export const collectionNodeSchema = z.union([
-  serviceNodeSchema,
-  pricingNodeSchema,
-  projectNodeSchema,
-]);
+export const collectionNodeSchema = z.union([stepNodeSchema, pricingNodeSchema, projectNodeSchema]);
 
 // ─── Site tree ───────────────────────────────────────────────────────────────
 
@@ -159,7 +155,7 @@ export const siteTreeSchema = z
       })
       .strict(),
     chrome: translatedSchema(chromeCopySchema).strict(),
-    services: collectionSchema(serviceNodeSchema),
+    steps: collectionSchema(stepNodeSchema),
     pricing: collectionSchema(pricingNodeSchema),
     projects: collectionSchema(projectNodeSchema),
   })
@@ -214,10 +210,15 @@ export const CMS_FIELD_MODEL = {
       heroNote: 'string',
       heroCtaPrimary: 'string',
       heroCtaSecondary: 'string',
-      servicesEyebrow: 'string',
-      servicesHeading: 'string',
-      servicesLede: 'string',
-      servicesSecondaryLabel: 'string',
+      processEyebrow: 'string',
+      processHeading: 'string',
+      processSubheading: 'string',
+      processPill: 'string',
+      processFromLabel: 'string',
+      processResultLabel: 'string',
+      processMainLabel: 'string',
+      processAnnotationLabel: 'string',
+      processAnnotationText: 'string',
       worksEyebrow: 'string',
       worksHeading: 'string',
       worksLede: 'string',
@@ -252,14 +253,13 @@ export const CMS_FIELD_MODEL = {
       pricingSwipeHint: 'string',
     },
   },
-  services: {
-    neutral: { number: 'string', featured: 'boolean' },
+  steps: {
+    neutral: { isMain: 'boolean' },
     localized: {
       title: 'string',
       description: 'string',
-      badge: 'string',
-      bullets: 'stringList',
-      techLine: 'string',
+      from: 'string',
+      result: 'string',
     },
   },
   pricing: {
@@ -331,7 +331,7 @@ export const CMS_REQUIRED_FIELDS: {
       'heroSubtitle',
       'heroCtaPrimary',
       'heroCtaSecondary',
-      'servicesHeading',
+      'processHeading',
       'worksHeading',
       'pricingHeading',
       'ctaTitle',
@@ -344,7 +344,7 @@ export const CMS_REQUIRED_FIELDS: {
     neutral: [],
     localized: Object.keys(CMS_FIELD_MODEL.chrome.localized) as CmsLocalizedField<'chrome'>[],
   },
-  services: { neutral: ['number'], localized: ['title', 'description'] },
+  steps: { neutral: [], localized: ['title', 'description'] },
   pricing: {
     neutral: [],
     localized: ['name', 'priceLabel', 'termLine', 'description', 'ctaLabel'],

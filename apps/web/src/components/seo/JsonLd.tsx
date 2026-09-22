@@ -65,7 +65,7 @@ function personNode(settings: SiteSettings, locale: Locale) {
 }
 
 export function HomeJsonLd({ home, locale }: { home: HomeResponse; locale: Locale }) {
-  const { settings, services, pricingPlans, content, hiddenSections } = home;
+  const { settings, pricingPlans, hiddenSections } = home;
 
   // Offers of a hidden section are left out (undefined keys drop out of the JSON).
   const business = {
@@ -83,20 +83,6 @@ export function HomeJsonLd({ home, locale }: { home: HomeResponse; locale: Local
             price: extractPrice(plan.priceLabel),
           },
         })),
-    hasOfferCatalog: hiddenSections.includes('services')
-      ? undefined
-      : {
-          '@type': 'OfferCatalog',
-          name: content.servicesHeading,
-          itemListElement: services.map((service) => ({
-            '@type': 'Offer',
-            itemOffered: {
-              '@type': 'Service',
-              name: service.title,
-              description: service.description,
-            },
-          })),
-        },
   };
 
   const website = {

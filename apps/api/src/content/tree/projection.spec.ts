@@ -16,12 +16,11 @@ describe('projectHome', () => {
     expect(home.hiddenSections).toEqual(['pricing', 'works']);
     expect(home.settings).toBe(settings);
     expect(home.seo).toBe(seo);
-    expect(home.services[0]).toEqual({
-      id: 's1',
-      number: '01',
-      sortOrder: 0,
-      featured: true,
-      ...tree.services[0].ru,
+    expect(home.processSteps[1]).toEqual({
+      id: 's2',
+      sortOrder: 1,
+      isMain: true,
+      ...tree.steps[1].ru,
     });
     expect(home.pricingPlans.map((plan) => [plan.id, plan.highlighted])).toEqual([
       ['p1', false],
@@ -31,11 +30,11 @@ describe('projectHome', () => {
 
   it('keeps only published items, with sortOrder = index in the full collection', () => {
     const tree = treeFixture();
-    tree.services[0].published = false;
+    tree.steps[0].published = false;
     tree.pricing[1].published = false;
     const home = projectHome(tree, 'en', context);
 
-    expect(home.services.map((service) => [service.id, service.sortOrder])).toEqual([
+    expect(home.processSteps.map((step) => [step.id, step.sortOrder])).toEqual([
       ['s2', 1],
       ['s3', 2],
     ]);
@@ -92,8 +91,9 @@ describe('EN → RU fallback', () => {
     tree.home.en.heroTitle = '';
     tree.home.en.ctaTitle = '   ';
     tree.home.en.eyebrow = '';
-    tree.services[1].en.title = '';
-    tree.services[1].en.badge = '';
+    tree.steps[1].en.title = '';
+    tree.steps[1].en.from = '';
+    tree.steps[1].en.result = '';
     tree.projects[0].en.metaLine = '';
     tree.projects[0].en.seoTitle = '';
     tree.chrome.en.navCta = '';
@@ -102,7 +102,7 @@ describe('EN → RU fallback', () => {
     expect(home.content.heroTitle).toBe('home.ru.heroTitle');
     expect(home.content.ctaTitle).toBe('home.ru.ctaTitle');
     expect(home.content.eyebrow).toBe('');
-    expect(home.services[1]).toMatchObject({ title: 's2.ru.title', badge: '' });
+    expect(home.processSteps[1]).toMatchObject({ title: 's2.ru.title', from: '', result: '' });
     expect(home.projects[0]).toMatchObject({ metaLine: 'pr1.ru.metaLine', seoTitle: '' });
     expect(projectChrome(tree, 'en')).toEqual({ ...tree.chrome.en, navCta: 'chrome.ru.navCta' });
   });

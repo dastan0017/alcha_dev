@@ -6,12 +6,11 @@ import { getChrome, getHome } from '@/lib/content';
 import { getPreview } from '@/lib/preview';
 import { buildMetadata } from '@/lib/seo';
 import { Hero } from '@/components/home/Hero';
-import { Services } from '@/components/home/Services';
+import { Process } from '@/components/home/Process';
 import { Works } from '@/components/home/Works';
 import { Pricing } from '@/components/home/Pricing';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 import { HomeJsonLd } from '@/components/seo/JsonLd';
-import styles from '@/components/home/home.module.css';
 
 type Params = { params: Promise<{ locale: string }> };
 
@@ -48,49 +47,46 @@ export default async function HomePage({ params }: Params) {
   return (
     <>
       <HomeJsonLd home={home} locale={typed} />
-      {/* Flex column so the mobile breakpoint can reorder sections (works → services → prices). */}
-      <div className={styles.homeMain}>
-        <Hero
-          content={home.content}
-          worksHidden={hiddenSections.includes('works')}
-          preview={preview}
-          locale={typed}
-        />
-        <Services
-          content={home.content}
-          services={home.services}
-          hidden={hiddenSections.includes('services')}
-          preview={preview}
-          locale={typed}
-        />
-        <Works
-          content={home.content}
-          projects={home.projects}
-          chrome={chrome}
-          hidden={hiddenSections.includes('works')}
-          preview={preview}
-          locale={typed}
-        />
-        <Pricing
-          content={home.content}
-          plans={home.pricingPlans}
-          chrome={chrome}
-          hidden={hiddenSections.includes('pricing')}
-          preview={preview}
-          locale={typed}
-        />
-        <CtaBanner
-          title={home.content.ctaTitle}
-          subtitle={home.content.ctaSubtitle}
-          telegramLabel={home.content.ctaTelegramLabel}
-          whatsappLabel={home.content.ctaWhatsappLabel}
-          telegramUrl={home.settings.telegram}
-          whatsappUrl={home.settings.whatsapp}
-          email={home.settings.email}
-          preview={preview}
-          locale={typed}
-        />
-      </div>
+      <Hero
+        content={home.content}
+        worksHidden={hiddenSections.includes('works')}
+        preview={preview}
+        locale={typed}
+      />
+      <Process
+        content={home.content}
+        steps={home.processSteps}
+        hidden={hiddenSections.includes('process')}
+        preview={preview}
+        locale={typed}
+      />
+      <Works
+        content={home.content}
+        projects={home.projects}
+        chrome={chrome}
+        hidden={hiddenSections.includes('works')}
+        preview={preview}
+        locale={typed}
+      />
+      <Pricing
+        content={home.content}
+        plans={home.pricingPlans}
+        chrome={chrome}
+        hidden={hiddenSections.includes('pricing')}
+        preview={preview}
+        locale={typed}
+      />
+      <CtaBanner
+        title={home.content.ctaTitle}
+        subtitle={home.content.ctaSubtitle}
+        telegramLabel={home.content.ctaTelegramLabel}
+        whatsappLabel={home.content.ctaWhatsappLabel}
+        telegramUrl={home.settings.telegram}
+        whatsappUrl={home.settings.whatsapp}
+        email={home.settings.email}
+        preview={preview}
+        locale={typed}
+      />
     </>
   );
 }

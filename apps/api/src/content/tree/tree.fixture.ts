@@ -22,12 +22,11 @@ export function treeFixture(): SiteTree {
     version: 1,
     home: { hiddenSections: [], ...copy(M.home.localized, 'home') },
     chrome: copy(M.chrome.localized, 'chrome'),
-    services: ['s1', 's2', 's3'].map((id, i) => ({
+    steps: ['s1', 's2', 's3'].map((id, i) => ({
       id,
       published: true,
-      number: `0${i + 1}`,
-      featured: i === 0,
-      ...copy(M.services.localized, id),
+      isMain: i === 1,
+      ...copy(M.steps.localized, id),
     })),
     pricing: ['p1', 'p2'].map((id, i) => ({
       id,

@@ -62,12 +62,11 @@ const TREE: SiteTree = siteTreeSchema.parse({
   version: 1,
   home: { hiddenSections: ['works'], ...localized(M.home.localized, 'home') },
   chrome: localized(M.chrome.localized, 'chrome'),
-  services: ['s1', 's2', 's3'].map((id, i) => ({
+  steps: ['s1', 's2', 's3'].map((id, i) => ({
     id,
     published: true,
-    number: `0${i + 1}`,
-    featured: i === 0,
-    ...localized(M.services.localized, id),
+    isMain: i === 0,
+    ...localized(M.steps.localized, id),
   })),
   pricing: ['p1', 'p2', 'p3'].map((id, i) => ({
     id,
@@ -99,7 +98,7 @@ const apply = (patches: ContentPatch[], tree: SiteTree = TREE) => applyPatches(t
 const expectPatchError = (patches: ContentPatch[], tree: SiteTree = TREE) =>
   expect(() => applyPatches(tree, patches)).toThrow(CmsPatchError);
 
-const NEW_SERVICE: CollectionNode = { ...clone(TREE.services[0]), id: 'nNew', featured: false };
+const NEW_STEP: CollectionNode = { ...clone(TREE.steps[0]), id: 'nNew', isMain: false };
 
 // ─── Tree schema ─────────────────────────────────────────────────────────────
 
@@ -113,20 +112,24 @@ describe('siteTreeSchema', () => {
     ['extra home key', (t) => (t.home.extra = 1)],
     ['extra localized copy key', (t) => (t.home.ru.extra = '')],
     ['extra chrome key', (t) => (t.chrome.ru.extra = '')],
-    ['extra item key', (t) => (t.services[0].sortOrder = 0)],
+    ['extra item key', (t) => (t.steps[0].sortOrder = 0)],
     ['extra item copy key', (t) => (t.projects[0].en.extra = '')],
     ['missing localized field', (t) => delete t.chrome.en.navWorks],
     ['wrong version', (t) => (t.version = 2)],
     ['bad id charset', (t) => (t.pricing[0].id = 'a.b')],
     ['unknown hidden section', (t) => (t.home.hiddenSections = ['experience'])],
     ['bad badgeType', (t) => (t.projects[0].badgeType = 'client')],
-    ['duplicate item id', (t) => (t.services[2].id = 's1')],
+    ['duplicate item id', (t) => (t.steps[2].id = 's1')],
     ['duplicate home hidden section', (t) => (t.home.hiddenSections = ['works', 'works'])],
     ['removed about scope', (t) => (t.about = {})],
     ['removed hobbies collection', (t) => (t.hobbies = [])],
     ['removed showOnAbout flag', (t) => (t.projects[0].showOnAbout = true)],
     ['removed navAbout label', (t) => (t.chrome.ru.navAbout = 'Обо мне')],
     ['removed worksLinkLabel', (t) => (t.home.en.worksLinkLabel = '')],
+    ['removed services collection', (t) => (t.services = [])],
+    ['removed services hidden section', (t) => (t.home.hiddenSections = ['services'])],
+    ['removed servicesHeading', (t) => (t.home.ru.servicesHeading = '')],
+    ['stored step number', (t) => (t.steps[0].number = '01')],
   ];
   it.each(mutations)('rejects %s', (_, mutate) => {
     const tree = clone(TREE) as Record<string, any>;
@@ -149,7 +152,7 @@ describe('newCmsId', () => {
     const ids = Array.from({ length: 200 }, () => newCmsId());
     for (const id of ids) {
       expect(id).toMatch(/^n[0-9a-z]{24}$/);
-      expect(parseCmsPath(`services.${id}`)).toEqual({ kind: 'item', collection: 'services', id });
+      expect(parseCmsPath(`steps.${id}`)).toEqual({ kind: 'item', collection: 'steps', id });
     }
     expect(new Set(ids).size).toBe(ids.length);
   });
@@ -201,6 +204,8 @@ describe('CMS_REQUIRED_FIELDS', () => {
     }
     expect(CMS_REQUIRED_FIELDS.chrome.localized).toEqual(Object.keys(M.chrome.localized));
     expect(CMS_REQUIRED_FIELDS.projects.neutral).toEqual(['slug']);
+    expect(CMS_REQUIRED_FIELDS.steps.localized).toEqual(['title', 'description']);
+    expect(CMS_REQUIRED_FIELDS.home.localized).toContain('processHeading');
   });
 });
 
@@ -269,7 +274,7 @@ describe('parseCmsPath', () => {
     ['home.en.heroBullets', field('home', 'en', 'heroBullets', 'stringList')],
     ['home.en.heroBullets.12', field('home', 'en', 'heroBullets', 'stringList', 12)],
     ['chrome.en.pricingSwipeHint', field('chrome', 'en', 'pricingSwipeHint', 'string')],
-    ['services', { kind: 'collection', collection: 'services' }],
+    ['steps', { kind: 'collection', collection: 'steps' }],
     ['pricing.Ab_9-x', { kind: 'item', collection: 'pricing', id: 'Ab_9-x' }],
     ['projects.pr1.coverImage', itemField('projects', 'pr1', null, 'coverImage', 'nullableString')],
     ['projects.pr1.badgeType', itemField('projects', 'pr1', null, 'badgeType', 'badgeType')],
@@ -278,7 +283,9 @@ describe('parseCmsPath', () => {
       'projects.pr1.screenshots.0',
       itemField('projects', 'pr1', null, 'screenshots', 'stringList', 0),
     ],
-    ['services.s1.ru.title', itemField('services', 's1', 'ru', 'title', 'string')],
+    ['steps.s1.isMain', itemField('steps', 's1', null, 'isMain', 'boolean')],
+    ['steps.s1.ru.title', itemField('steps', 's1', 'ru', 'title', 'string')],
+    ['steps.s1.en.from', itemField('steps', 's1', 'en', 'from', 'string')],
     ['pricing.p1.en.features.0', itemField('pricing', 'p1', 'en', 'features', 'stringList', 0)],
     ['pricing.ru.ru.name', itemField('pricing', 'ru', 'ru', 'name', 'string')],
   ];
@@ -312,20 +319,24 @@ describe('parseCmsPath', () => {
     'projects.pr1.showOnAbout',
     'chrome.ru.navAbout',
     'home.ru.worksLinkLabel',
+    'services',
+    'services.s1.ru.title',
+    'home.ru.servicesHeading',
     'chrome.navCta',
     'chrome.ru.navCta.0',
     'widgets',
     'widgets.a',
-    'services.',
-    'services..ru.title',
-    'services.bad id',
-    'services.a:b',
-    'services.s1.id',
-    'services.s1.published',
-    'services.s1.ru',
-    'services.s1.title',
-    'services.s1.ru.number',
-    'services.s1.ru.title.0',
+    'steps.',
+    'steps..ru.title',
+    'steps.bad id',
+    'steps.a:b',
+    'steps.s1.id',
+    'steps.s1.published',
+    'steps.s1.number',
+    'steps.s1.ru',
+    'steps.s1.title',
+    'steps.s1.ru.isMain',
+    'steps.s1.ru.title.0',
     'projects.pr1.coverImage.0',
     'projects.pr1.screenshots.1.2',
     'pricing.p1.fr.name',
@@ -343,8 +354,9 @@ describe('parseCmsPath', () => {
       cmsPath.item('pricing', 'p1'),
       cmsPath.itemField('projects', 'pr1', 'screenshots', 2),
       cmsPath.itemField('projects', 'pr1', 'coverImage'),
+      cmsPath.itemField('steps', 's1', 'isMain'),
       cmsPath.itemLocale('pricing', 'p1', 'en', 'features', 0),
-      cmsPath.itemLocale('services', 's1', 'ru', 'title'),
+      cmsPath.itemLocale('steps', 's1', 'ru', 'title'),
     ];
     expect(built).toEqual([
       'home.ru.heroTitle',
@@ -355,8 +367,9 @@ describe('parseCmsPath', () => {
       'pricing.p1',
       'projects.pr1.screenshots.2',
       'projects.pr1.coverImage',
+      'steps.s1.isMain',
       'pricing.p1.en.features.0',
-      'services.s1.ru.title',
+      'steps.s1.ru.title',
     ]);
     for (const path of built) expect(parseCmsPath(path)).not.toBeNull();
   });
@@ -370,13 +383,13 @@ describe('getAtPath', () => {
     expect(getAtPath(TREE, 'pricing.p2.en.features.1')).toBe('p2.en.features.1');
     expect(getAtPath(TREE, 'projects.pr2.screenshots.0')).toBe('https://cdn/pr2-0.png');
     expect(getAtPath(TREE, 'projects.pr1.coverImage')).toBeNull();
-    expect(getAtPath(TREE, 'services.s2')).toBe(TREE.services[1]);
+    expect(getAtPath(TREE, 'steps.s2')).toBe(TREE.steps[1]);
     expect(getAtPath(TREE, 'pricing')).toBe(TREE.pricing);
   });
 
   it('is undefined for missing ids, indexes and invalid paths', () => {
-    expect(getAtPath(TREE, 'services.ghost')).toBeUndefined();
-    expect(getAtPath(TREE, 'services.ghost.ru.title')).toBeUndefined();
+    expect(getAtPath(TREE, 'steps.ghost')).toBeUndefined();
+    expect(getAtPath(TREE, 'steps.ghost.ru.title')).toBeUndefined();
     expect(getAtPath(TREE, 'projects.pr1.screenshots.9')).toBeUndefined();
     expect(getAtPath(TREE, 'home.ru.nope')).toBeUndefined();
   });
@@ -388,25 +401,26 @@ describe('applyPatches: set', () => {
   it('sets leaves of every kind', () => {
     const { tree, applied, skipped } = apply([
       set('home.ru.heroTitle', 'Новый'),
-      set('home.hiddenSections', ['services', 'pricing']),
+      set('home.hiddenSections', ['process', 'pricing']),
       set('chrome.en.navCta', 'Talk'),
-      set('services.s2.featured', true),
-      set('services.s2.number', '42'),
+      set('steps.s2.isMain', true),
+      set('steps.s2.en.result', 'Done'),
+      set('projects.pr2.slug', 'pr2-new'),
       set('projects.pr2.badgeType', 'own'),
       set('projects.pr2.coverImage', null),
       set('projects.pr1.coverImage', 'https://cdn/pr1.png'),
       set('pricing.p1.en.features', ['a']),
-      set('services.s3.ru.bullets.1', 'changed'),
+      set('pricing.p3.ru.features.1', 'changed'),
     ]);
-    expect({ applied, skipped }).toEqual({ applied: 10, skipped: 0 });
+    expect({ applied, skipped }).toEqual({ applied: 11, skipped: 0 });
     expect(tree.home.ru.heroTitle).toBe('Новый');
-    expect(tree.home.hiddenSections).toEqual(['services', 'pricing']);
+    expect(tree.home.hiddenSections).toEqual(['process', 'pricing']);
     expect(tree.chrome.en.navCta).toBe('Talk');
-    expect(tree.services[1]).toMatchObject({ featured: true, number: '42' });
-    expect(tree.projects[1]).toMatchObject({ badgeType: 'own', coverImage: null });
+    expect(tree.steps[1]).toMatchObject({ isMain: true, en: { result: 'Done' } });
+    expect(tree.projects[1]).toMatchObject({ slug: 'pr2-new', badgeType: 'own', coverImage: null });
     expect(tree.projects[0].coverImage).toBe('https://cdn/pr1.png');
     expect(tree.pricing[0].en.features).toEqual(['a']);
-    expect(tree.services[2].ru.bullets).toEqual(['s3.ru.bullets.0', 'changed']);
+    expect(tree.pricing[2].ru.features).toEqual(['p3.ru.features.0', 'changed']);
   });
 
   it.each<[string, unknown]>([
@@ -418,11 +432,12 @@ describe('applyPatches: set', () => {
     ['home.ru.heroBullets.0', ['nested']],
     ['home.hiddenSections', ['experience']],
     ['home.hiddenSections', 'works'],
+    ['home.hiddenSections', ['services']],
     ['projects.pr2.coverImage', 5],
     ['projects.pr1.coverImage', undefined],
     ['projects.pr3.coverImage', false],
-    ['services.s1.featured', 'yes'],
-    ['services.s1.number', 1],
+    ['steps.s1.isMain', 'yes'],
+    ['projects.pr1.slug', 1],
     ['projects.pr1.badgeType', 'client'],
     ['projects.pr1.screenshots.0', 3],
     ['projects.pr1.screenshots', [null]],
@@ -434,19 +449,19 @@ describe('applyPatches: set', () => {
   });
 
   it.each<[string, unknown]>([
-    ['services.ghost.featured', 'yes'],
-    ['services.ghost.ru.title', 42],
+    ['steps.ghost.isMain', 'yes'],
+    ['steps.ghost.ru.title', 42],
     ['projects.ghost.screenshots', 'not-a-list'],
     ['projects.ghost.badgeType', 'client'],
-    ['services.ghost.ru.bullets.0', ['nested']],
+    ['pricing.ghost.ru.features.0', ['nested']],
     ['projects.ghost.coverImage', undefined],
   ])('rejects %s = %j even though the item is missing', (path, value) => {
     expectPatchError([set(path, value)]);
   });
 
   it('rejects unknown, collection and item paths with patch context', () => {
-    expectPatchError([set('services', [])]);
-    expectPatchError([set('services.s1', {})]);
+    expectPatchError([set('steps', [])]);
+    expectPatchError([set('steps.s1', {})]);
     try {
       apply([set('home.ru.heroTitle', 'ok'), set('home.ru.nope', 'x')]);
       throw new Error('expected a CmsPatchError');
@@ -473,7 +488,7 @@ describe('applyPatches: set', () => {
 
   it('skips a well-typed set on a missing item id (the past-end check needs the item)', () => {
     const result = apply([
-      set('services.ghost.ru.title', 'x'),
+      set('steps.ghost.ru.title', 'x'),
       set('projects.ghost.screenshots.0', 'x'),
       set('projects.ghost.screenshots.9', 'x'),
     ]);
@@ -483,14 +498,14 @@ describe('applyPatches: set', () => {
   it('is immutable and copies only along the path', () => {
     const before = clone(TREE);
     const list = ['a', 'b'];
-    const { tree } = apply([set('services.s2.ru.bullets', list)]);
+    const { tree } = apply([set('pricing.p2.ru.features', list)]);
     list.push('mutated');
     expect(TREE).toStrictEqual(before);
-    expect(tree.services[1].ru.bullets).toEqual(['a', 'b']);
-    expect(tree.services).not.toBe(TREE.services);
-    expect(tree.services[0]).toBe(TREE.services[0]);
-    expect(tree.services[1].en).toBe(TREE.services[1].en);
-    expect(tree.pricing).toBe(TREE.pricing);
+    expect(tree.pricing[1].ru.features).toEqual(['a', 'b']);
+    expect(tree.pricing).not.toBe(TREE.pricing);
+    expect(tree.pricing[0]).toBe(TREE.pricing[0]);
+    expect(tree.pricing[1].en).toBe(TREE.pricing[1].en);
+    expect(tree.steps).toBe(TREE.steps);
     expect(tree.home).toBe(TREE.home);
   });
 });
@@ -499,9 +514,9 @@ describe('applyPatches: set', () => {
 
 describe('applyPatches: insert', () => {
   it('inserts a new item at the end by default', () => {
-    const { tree, applied } = apply([insert('services', NEW_SERVICE)]);
+    const { tree, applied } = apply([insert('steps', NEW_STEP)]);
     expect(applied).toBe(1);
-    expect(idsOf(tree, 'services')).toEqual(['s1', 's2', 's3', 'nNew']);
+    expect(idsOf(tree, 'steps')).toEqual(['s1', 's2', 's3', 'nNew']);
   });
 
   it.each([
@@ -512,32 +527,32 @@ describe('applyPatches: insert', () => {
     [-1, ['nNew', 's1', 's2', 's3']],
     [99, ['s1', 's2', 's3', 'nNew']],
   ])('inserts at clamped index %i', (index, expected) => {
-    expect(idsOf(apply([insert('services', NEW_SERVICE, index)]).tree, 'services')).toEqual(
-      expected,
-    );
+    expect(idsOf(apply([insert('steps', NEW_STEP, index)]).tree, 'steps')).toEqual(expected);
   });
 
   it('replaces an existing id in place, ignoring index', () => {
-    const replacement = { ...clone(TREE.services[1]), number: '99' };
-    const { tree } = apply([insert('services', replacement, 0)]);
-    expect(idsOf(tree, 'services')).toEqual(['s1', 's2', 's3']);
-    expect(tree.services[1].number).toBe('99');
+    const replacement = { ...clone(TREE.steps[1]), isMain: true };
+    const { tree } = apply([insert('steps', replacement, 0)]);
+    expect(idsOf(tree, 'steps')).toEqual(['s1', 's2', 's3']);
+    expect(tree.steps[1].isMain).toBe(true);
   });
 
   it('stores a parsed copy of the value', () => {
-    const node = clone(NEW_SERVICE) as Record<string, any>;
-    const { tree } = apply([insert('services', node as CollectionNode)]);
+    const node = clone(NEW_STEP) as Record<string, any>;
+    const { tree } = apply([insert('steps', node as CollectionNode)]);
     node.ru.title = 'mutated';
-    expect(tree.services[3].ru.title).toBe('s1.ru.title');
+    expect(tree.steps[3].ru.title).toBe('s1.ru.title');
   });
 
   it('rejects invalid nodes and non-collection paths', () => {
-    expectPatchError([insert('services', { ...NEW_SERVICE, extra: true } as CollectionNode)]);
-    expectPatchError([insert('services', clone(TREE.pricing[0]))]);
-    expectPatchError([insert('services', { ...NEW_SERVICE, id: 'bad.id' })]);
-    expectPatchError([{ op: 'insert', path: 'services.s1' as CollectionKey, value: NEW_SERVICE }]);
-    expectPatchError([{ op: 'insert', path: 'widgets' as CollectionKey, value: NEW_SERVICE }]);
-    expectPatchError([insert('services', NEW_SERVICE, 1.5)]);
+    expectPatchError([insert('steps', { ...NEW_STEP, extra: true } as CollectionNode)]);
+    expectPatchError([insert('steps', { ...NEW_STEP, number: '01' } as CollectionNode)]);
+    expectPatchError([insert('steps', clone(TREE.pricing[0]))]);
+    expectPatchError([insert('steps', { ...NEW_STEP, id: 'bad.id' })]);
+    expectPatchError([{ op: 'insert', path: 'steps.s1' as CollectionKey, value: NEW_STEP }]);
+    expectPatchError([{ op: 'insert', path: 'services' as CollectionKey, value: NEW_STEP }]);
+    expectPatchError([{ op: 'insert', path: 'widgets' as CollectionKey, value: NEW_STEP }]);
+    expectPatchError([insert('steps', NEW_STEP, 1.5)]);
   });
 });
 
@@ -561,21 +576,21 @@ describe('applyPatches: remove', () => {
 
 describe('applyPatches: move', () => {
   it.each([
-    ['services.s3', 0, ['s3', 's1', 's2']],
-    ['services.s1', 2, ['s2', 's3', 's1']],
-    ['services.s1', 99, ['s2', 's3', 's1']],
-    ['services.s3', -2, ['s3', 's1', 's2']],
-    ['services.s2', -1, ['s2', 's1', 's3']],
-    ['services.s2', 1, ['s1', 's2', 's3']],
+    ['steps.s3', 0, ['s3', 's1', 's2']],
+    ['steps.s1', 2, ['s2', 's3', 's1']],
+    ['steps.s1', 99, ['s2', 's3', 's1']],
+    ['steps.s3', -2, ['s3', 's1', 's2']],
+    ['steps.s2', -1, ['s2', 's1', 's3']],
+    ['steps.s2', 1, ['s1', 's2', 's3']],
   ])('moves %s to %i (clamped)', (path, index, expected) => {
-    expect(idsOf(apply([move(path, index)]).tree, 'services')).toEqual(expected);
+    expect(idsOf(apply([move(path, index)]).tree, 'steps')).toEqual(expected);
   });
 
   it('skips a missing id and rejects bad input', () => {
-    expect(apply([move('services.ghost', 0)])).toEqual({ tree: TREE, applied: 0, skipped: 1 });
-    expectPatchError([move('services.s1', 1.5)]);
-    expectPatchError([move('services', 0)]);
-    expectPatchError([move('services.s1.number', 0)]);
+    expect(apply([move('steps.ghost', 0)])).toEqual({ tree: TREE, applied: 0, skipped: 1 });
+    expectPatchError([move('steps.s1', 1.5)]);
+    expectPatchError([move('steps', 0)]);
+    expectPatchError([move('steps.s1.isMain', 0)]);
   });
 });
 
@@ -589,12 +604,12 @@ describe('idempotency', () => {
       set('projects.pr1.screenshots.2', 'c.png'),
       set('pricing.p1.en.features', ['only']),
       set('home.hiddenSections', ['pricing']),
-      insert('services', NEW_SERVICE, 1),
-      insert('services', { ...clone(TREE.services[2]), number: '33' }),
+      insert('steps', NEW_STEP, 1),
+      insert('steps', { ...clone(TREE.steps[2]), isMain: true }),
       remove('pricing.p3'),
       move('projects.pr3', 0),
-      set('services.nNew.ru.title', 'new title'),
-      set('services.ghost.ru.title', 'skipped'),
+      set('steps.nNew.ru.title', 'new title'),
+      set('steps.ghost.ru.title', 'skipped'),
     ];
     const once = apply(batch).tree;
     expect(apply(batch, once).tree).toStrictEqual(once);
@@ -613,11 +628,11 @@ function expectExactUndo(patches: ContentPatch[], tree: SiteTree = TREE) {
 }
 
 describe('invertPatches', () => {
-  const s1 = TREE.services[0];
+  const s1 = TREE.steps[0];
   const sequences: Array<[string, ContentPatch[]]> = [
     ['leaf set', [set('home.ru.heroTitle', 'Новый')]],
     ['same leaf twice', [set('home.ru.heroTitle', 'a'), set('home.ru.heroTitle', 'b')]],
-    ['list entry', [set('services.s1.en.bullets.0', 'x')]],
+    ['list entry', [set('pricing.p1.en.features.0', 'x')]],
     [
       'two appends',
       [set('projects.pr1.screenshots.2', 'c.png'), set('projects.pr1.screenshots.3', 'd.png')],
@@ -643,64 +658,65 @@ describe('invertPatches', () => {
         set('projects.pr2.badgeType', 'own'),
         set('projects.pr1.coverImage', 'https://cdn/c.png'),
         set('projects.pr3.showOnHome', false),
-        set('services.s2.featured', true),
+        set('steps.s2.isMain', true),
       ],
     ],
-    ['insert at end', [insert('services', NEW_SERVICE)]],
-    ['insert at 0', [insert('services', NEW_SERVICE, 0)]],
-    ['insert clamped high', [insert('services', NEW_SERVICE, 99)]],
-    ['insert clamped low', [insert('services', NEW_SERVICE, -4)]],
-    ['insert replace', [insert('services', { ...clone(TREE.services[1]), number: '99' }, 0)]],
+    ['insert at end', [insert('steps', NEW_STEP)]],
+    ['insert at 0', [insert('steps', NEW_STEP, 0)]],
+    ['insert clamped high', [insert('steps', NEW_STEP, 99)]],
+    ['insert clamped low', [insert('steps', NEW_STEP, -4)]],
+    ['insert replace', [insert('steps', { ...clone(TREE.steps[1]), isMain: true }, 0)]],
     [
       'insert, edit the new item, move it',
       [
-        insert('services', NEW_SERVICE, 1),
-        set('services.nNew.ru.title', 't'),
-        set('services.nNew.ru.bullets.2', 'b'),
-        set('services.nNew.featured', true),
-        move('services.nNew', 0),
-        move('services.nNew', 3),
+        insert('steps', NEW_STEP, 1),
+        set('steps.nNew.ru.title', 't'),
+        set('steps.nNew.en.result', 'r'),
+        set('steps.nNew.isMain', true),
+        move('steps.nNew', 0),
+        move('steps.nNew', 3),
+      ],
+    ],
+    [
+      'insert, append to the new item list, move it',
+      [
+        insert('pricing', { ...clone(TREE.pricing[0]), id: 'pNew' }, 1),
+        set('pricing.pNew.ru.features.2', 'b'),
+        move('pricing.pNew', 0),
       ],
     ],
     [
       'insert then replace same id',
-      [insert('services', NEW_SERVICE), insert('services', { ...NEW_SERVICE, number: '7' })],
+      [insert('steps', NEW_STEP), insert('steps', { ...NEW_STEP, isMain: true })],
     ],
-    ['insert then remove', [insert('services', NEW_SERVICE), remove('services.nNew')]],
-    ['remove then re-insert elsewhere', [remove('services.s1'), insert('services', s1, 2)]],
+    ['insert then remove', [insert('steps', NEW_STEP), remove('steps.nNew')]],
+    ['remove then re-insert elsewhere', [remove('steps.s1'), insert('steps', s1, 2)]],
     [
       'remove then re-insert modified',
-      [remove('services.s1'), insert('services', { ...clone(s1), number: 'x' })],
+      [remove('steps.s1'), insert('steps', { ...clone(s1), isMain: false })],
     ],
     ['remove middle', [remove('pricing.p2')]],
     ['remove all', [remove('pricing.p1'), remove('pricing.p2'), remove('pricing.p3')]],
     [
       'remove then touch removed',
-      [
-        remove('services.s1'),
-        set('services.s1.ru.title', 'x'),
-        move('services.s1', 0),
-        remove('services.s1'),
-      ],
+      [remove('steps.s1'), set('steps.s1.ru.title', 'x'), move('steps.s1', 0), remove('steps.s1')],
     ],
-    [
-      'moves with clamps',
-      [move('services.s3', 0), move('services.s1', 99), move('services.s2', -1)],
-    ],
-    ['move to same index', [move('services.s2', 1)]],
+    ['moves with clamps', [move('steps.s3', 0), move('steps.s1', 99), move('steps.s2', -1)]],
+    ['move to same index', [move('steps.s2', 1)]],
     ['move then remove', [move('projects.pr1', 2), remove('projects.pr1')]],
     ['remove then move neighbour', [remove('projects.pr2'), move('projects.pr3', 0)]],
     [
       'skips interleaved',
       [
-        set('services.ghost.ru.title', 'x'),
-        set('services.s1.ru.title', 'y'),
+        set('steps.ghost.ru.title', 'x'),
+        set('steps.s1.ru.title', 'y'),
         remove('pricing.ghost'),
         move('projects.ghost', 0),
         set('projects.ghost.screenshots.0', 'z'),
       ],
     ],
     ['exclusive flag', exclusiveFlagPatches(TREE, 'pricing', 'p3', 'highlighted', true)],
+    ['exclusive main step', exclusiveFlagPatches(TREE, 'steps', 's3', 'isMain', true)],
     [
       'everything across collections',
       [
@@ -717,8 +733,8 @@ describe('invertPatches', () => {
         move('pricing.p4', 0),
         set('projects.pr2.screenshots', ['go.png']),
         set('projects.pr2.screenshots.1', 'rust.png'),
-        remove('services.s2'),
-        insert('services', clone(TREE.services[1]), 0),
+        remove('steps.s2'),
+        insert('steps', clone(TREE.steps[1]), 0),
       ],
     ],
   ];
@@ -736,16 +752,16 @@ describe('invertPatches', () => {
     ]);
     expect(
       invertPatches(TREE, [
-        insert('services', NEW_SERVICE),
+        insert('steps', NEW_STEP),
         remove('pricing.p2'),
         move('projects.pr2', 0),
       ]),
     ).toEqual([
       move('projects.pr2', 1),
       insert('pricing', TREE.pricing[1], 1),
-      remove('services.nNew'),
+      remove('steps.nNew'),
     ]);
-    expect(invertPatches(TREE, [set('services.ghost.number', '1')])).toEqual([]);
+    expect(invertPatches(TREE, [set('projects.ghost.slug', '1')])).toEqual([]);
   });
 
   it('restores the tree exactly for generated sequences (and every op is idempotent)', () => {
@@ -797,7 +813,7 @@ function randomSequence(seed: number): ContentPatch[] {
       case 'stringList':
         return Array.from({ length: int(0, 3) }, (_, i) => `l${i}.${int(0, 9)}`);
       case 'sectionList':
-        return scope === 'home' ? pick([[], ['works'], ['services', 'pricing']]) : [];
+        return scope === 'home' ? pick([[], ['works'], ['process', 'pricing']]) : [];
       default:
         return `v${int(0, 99)}`;
     }
@@ -813,7 +829,7 @@ function randomSequence(seed: number): ContentPatch[] {
     return set(path, valueFor(kind, scope));
   };
 
-  for (let steps = int(1, 14); steps > 0; steps -= 1) {
+  for (let remaining = int(1, 14); remaining > 0; remaining -= 1) {
     const roll = random();
     let patch: ContentPatch;
     if (roll < 0.2) {
@@ -871,14 +887,17 @@ describe('exclusiveFlagPatches', () => {
       false,
       true,
     ]);
+    const main = exclusiveFlagPatches(TREE, 'steps', 's3', 'isMain', true);
+    expect(main).toEqual([set('steps.s3.isMain', true), set('steps.s1.isMain', false)]);
+    expect(apply(main).tree.steps.map((step) => step.isMain)).toEqual([false, false, true]);
   });
 
   it('only sets the item when turning the flag off or when no other item has it', () => {
     expect(exclusiveFlagPatches(TREE, 'pricing', 'p2', 'highlighted', false)).toEqual([
       set('pricing.p2.highlighted', false),
     ]);
-    expect(exclusiveFlagPatches(TREE, 'services', 's1', 'featured', true)).toEqual([
-      set('services.s1.featured', true),
+    expect(exclusiveFlagPatches(TREE, 'steps', 's1', 'isMain', true)).toEqual([
+      set('steps.s1.isMain', true),
     ]);
     expect(exclusiveFlagPatches(TREE, 'projects', 'pr2', 'showOnHome', true)).toEqual([
       set('projects.pr2.showOnHome', true),
@@ -889,7 +908,7 @@ describe('exclusiveFlagPatches', () => {
 
   it('is empty when the target id is missing, so no other item loses the flag', () => {
     expect(exclusiveFlagPatches(TREE, 'pricing', 'ghost', 'highlighted', true)).toEqual([]);
-    expect(exclusiveFlagPatches(TREE, 'services', 'ghost', 'featured', false)).toEqual([]);
+    expect(exclusiveFlagPatches(TREE, 'steps', 'ghost', 'isMain', false)).toEqual([]);
   });
 });
 
@@ -902,15 +921,15 @@ describe('hiddenSectionPatch', () => {
   });
 
   it('keeps HOME_SECTION_KEYS order, so equal sets are equal arrays', () => {
-    expect(hiddenSectionPatch(TREE, 'services', true)).toEqual(
-      set('home.hiddenSections', ['services', 'works']),
+    expect(hiddenSectionPatch(TREE, 'process', true)).toEqual(
+      set('home.hiddenSections', ['process', 'works']),
     );
     const unordered = apply([set('home.hiddenSections', ['pricing', 'works'])]).tree;
     expect(hiddenSectionPatch(unordered, 'works', true)).toEqual(
       set('home.hiddenSections', ['works', 'pricing']),
     );
-    expect(hiddenSectionPatch(unordered, 'services', true)).toEqual(
-      set('home.hiddenSections', ['services', 'works', 'pricing']),
+    expect(hiddenSectionPatch(unordered, 'process', true)).toEqual(
+      set('home.hiddenSections', ['process', 'works', 'pricing']),
     );
 
     // Hide, show, hide again: the same set as hiding «Цены» once, as the same array.
@@ -929,9 +948,9 @@ describe('hiddenSectionPatch', () => {
   });
 
   it('is a no-op for an already hidden or shown key and never aliases the tree list', () => {
-    const tree = apply([set('home.hiddenSections', ['services', 'works'])]).tree;
+    const tree = apply([set('home.hiddenSections', ['process', 'works'])]).tree;
     const patch = hiddenSectionPatch(tree, 'works', true);
-    expect(patch).toEqual(set('home.hiddenSections', ['services', 'works']));
+    expect(patch).toEqual(set('home.hiddenSections', ['process', 'works']));
     expect((patch as { value: unknown }).value).not.toBe(tree.home.hiddenSections);
     expect(apply([patch], tree).tree).toStrictEqual(tree);
     expect(apply([hiddenSectionPatch(tree, 'pricing', false)], tree).tree).toStrictEqual(tree);
@@ -943,6 +962,7 @@ describe('CMS_SECTION_LABELS', () => {
     expect(Object.keys(CMS_SECTION_LABELS).sort()).toEqual([...CMS_SECTION_KEYS].sort());
     expect(Object.values(CMS_SECTION_LABELS).every((label) => label.length > 0)).toBe(true);
     expect(CMS_SECTION_LABELS.pricing).toBe('Цены');
+    expect(CMS_SECTION_LABELS.process).toBe('Процесс и услуги');
   });
 });
 
@@ -952,9 +972,9 @@ describe('contentPatchRequestSchema', () => {
   it('accepts 1..200 well-formed patches', () => {
     const batch = [
       set('home.ru.heroTitle', 'x'),
-      insert('services', NEW_SERVICE, 0),
-      remove('services.s1'),
-      move('services.s2', 0),
+      insert('steps', NEW_STEP, 0),
+      remove('steps.s1'),
+      move('steps.s2', 0),
     ];
     expect(contentPatchRequestSchema.parse({ patches: batch })).toEqual({ patches: batch });
     expect(
@@ -964,12 +984,13 @@ describe('contentPatchRequestSchema', () => {
 
   it.each<[string, unknown]>([
     ['empty', []],
-    ['too many', Array(201).fill({ op: 'remove', path: 'services.s1' })],
+    ['too many', Array(201).fill({ op: 'remove', path: 'steps.s1' })],
     ['unknown op', [{ op: 'patch', path: 'home.ru.heroTitle', value: 'x' }]],
-    ['insert into a non-collection', [{ op: 'insert', path: 'home', value: NEW_SERVICE }]],
-    ['insert of an invalid node', [{ op: 'insert', path: 'services', value: { id: 'x' } }]],
-    ['non-integer move', [{ op: 'move', path: 'services.s1', value: 1.5 }]],
-    ['extra key', [{ op: 'remove', path: 'services.s1', value: 1 }]],
+    ['insert into a non-collection', [{ op: 'insert', path: 'home', value: NEW_STEP }]],
+    ['insert into a removed collection', [{ op: 'insert', path: 'services', value: NEW_STEP }]],
+    ['insert of an invalid node', [{ op: 'insert', path: 'steps', value: { id: 'x' } }]],
+    ['non-integer move', [{ op: 'move', path: 'steps.s1', value: 1.5 }]],
+    ['extra key', [{ op: 'remove', path: 'steps.s1', value: 1 }]],
   ])('rejects %s', (_, patches) => {
     expect(contentPatchRequestSchema.safeParse({ patches }).success).toBe(false);
   });
@@ -1011,7 +1032,9 @@ describe('bridge', () => {
     expect(cmsNodeKey.hidden('works')).toBe('hidden:works');
     expect(cmsItemRef('projects', 'pr1')).toBe('projects:pr1');
     expect(parseCmsItemRef('projects:pr1')).toEqual({ collection: 'projects', id: 'pr1' });
+    expect(parseCmsItemRef('steps:s1')).toEqual({ collection: 'steps', id: 's1' });
     expect(parseCmsItemRef('widgets:pr1')).toBeNull();
+    expect(parseCmsItemRef('services:s1')).toBeNull();
     expect(parseCmsItemRef('projects:a:b')).toBeNull();
     expect(parseCmsItemRef('projects')).toBeNull();
     expect(CMS_ATTR.mode).toBe('data-cms-mode');

@@ -5,10 +5,10 @@ import {
   type HomeResponse,
   type Locale,
   type PricingPlan,
+  type ProcessStep,
   type Project,
   type ProjectNode,
   type SeoMeta,
-  type Service,
   type SiteChrome,
   type SiteSettings,
   type SiteTree,
@@ -32,12 +32,11 @@ export function projectHome(
   return {
     content: localize('home', tree.home, locale),
     hiddenSections: tree.home.hiddenSections,
-    services: published(tree.services).map(({ node, sortOrder }): Service => ({
+    processSteps: published(tree.steps).map(({ node, sortOrder }): ProcessStep => ({
       id: node.id,
-      number: node.number,
       sortOrder,
-      featured: node.featured,
-      ...localize('services', node, locale),
+      isMain: node.isMain,
+      ...localize('steps', node, locale),
     })),
     projects: published(tree.projects, (node) => node.showOnHome).map(({ node, sortOrder }) =>
       toProject(node, sortOrder, locale),

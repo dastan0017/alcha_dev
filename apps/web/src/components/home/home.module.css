@@ -1,14 +1,8 @@
-/* Wraps the home sections so the mobile breakpoint can reorder them. */
-.homeMain {
-  display: flex;
-  flex-direction: column;
-}
-
 /* ============================================= Section rhythm (design 13a) */
 /* v3 spacing: the hero closes with 72px, then every section contributes 64px
    so the gap between two sections is a flat 64px rather than 88+88. Sections
    carry their own padding instead of the global `.section` used elsewhere. */
-.svcSection {
+.processSection {
   padding-block: 64px;
 }
 .worksSection,
@@ -18,7 +12,7 @@
 
 /* ============================================ Shared section-heading lockup */
 /* v3 review (nice-to-have): one lockup for every section head —
-   eyebrow → h2 34px → lede 16px — so services, works and pricing share a
+   eyebrow → h2 34px → lede 16px — so process, works and pricing share a
    rhythm. `.sectionHead` is the row an optional right-hand link sits in. */
 .sectionHead {
   display: flex;
@@ -42,26 +36,6 @@
   text-wrap: pretty;
   /* Multiline CMS copy: line breaks typed in the editor render as-is. */
   white-space: pre-line;
-}
-
-/* Badge that straddles the top border of a highlighted card. Shared by the
-   featured service and the highlighted pricing plan so both read as one
-   pattern (v3 review: "featured service in the pricing-card vocabulary"). */
-.badgeTop {
-  position: absolute;
-  top: -11px;
-  left: 24px;
-  font-family: var(--font-mono-stack);
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #fff;
-  background: var(--primary);
-  border-radius: var(--r-pill);
-  padding: 4px 10px;
-  line-height: 1.4;
-  white-space: nowrap;
 }
 
 /* ==================================================================== Hero */
@@ -886,138 +860,219 @@
   }
 }
 
-/* ================================================================ Services */
-.svcLede {
-  max-width: 620px;
-}
-
-/* Shared tick marker */
-.tick {
-  color: var(--primary);
-  font-weight: 700;
-  flex-shrink: 0;
-  line-height: 1.4;
-}
-
-/* ---------------------------------------------------- Featured service --- */
-/* v3 review: the featured service now speaks the highlighted-pricing-card
-   vocabulary — white fill, 2px purple border, purple glow, straddling badge —
-   instead of its old lilac gradient. It is not clickable, so it has no hover. */
-.svcFeatured {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+/* ================================================ Process (designs 4a, 5a) */
+/* «Процесс и услуги»: the lockup with the timeline pill on its right, then the
+   steps as one ordered list. Mono labels port the design's `font:` shorthand,
+   so they reset `line-height` to `normal` like the hero mock (see .hsLabel). */
+.processHead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
   gap: 36px;
-  align-items: center;
-  padding: 30px 34px;
-  margin-bottom: 20px;
-  background: #fff;
-  border: 2px solid var(--primary);
-  border-radius: 14px;
-  box-shadow: 0 16px 40px rgba(91, 52, 201, 0.14);
+  margin-bottom: 34px;
 }
-.svcFeaturedTop {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin-bottom: 10px;
+.processIntro {
+  max-width: 720px;
 }
-.svcNumFeatured {
-  font-family: var(--font-mono-stack);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--primary);
-}
-.svcFeaturedTitle {
-  font-size: 23px;
-  font-weight: 800;
-}
-.svcFeaturedDesc {
+/* Overrides of the global `.eyebrow` / `.section-title` are scoped under
+   .processIntro: a lone module class ties with them, and the build loads the
+   globals last. --body, not `eyebrow--muted`: #8A8494 fails contrast here. */
+.processIntro .processEyebrow {
   color: var(--body);
-  font-size: 15.5px;
-  line-height: 1.55;
-  text-wrap: pretty;
-  white-space: pre-line;
 }
-.svcFeaturedTicks {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
+.processTitle {
+  font-weight: 800;
+  line-height: 1.16;
 }
-.svcFeaturedTicks li {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  font-size: 14px;
-  color: #4a4453;
+.processLede {
+  max-width: none;
 }
-
-/* -------------------------------------------------- Supporting services -- */
-.svcSecondaryLabel {
+.processPill {
+  flex: none;
+  margin-bottom: 4px;
+  padding: 8px 15px;
   font-family: var(--font-mono-stack);
   font-size: 10.5px;
   font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 0 0 12px 2px;
+  line-height: normal;
+  letter-spacing: 0.1em;
+  color: var(--primary);
+  background: #f1ecfa;
+  border-radius: var(--r-pill);
+  white-space: nowrap;
 }
-.svcGrid {
+
+/* ------------------------------------------------------------ Timeline --- */
+/* ≥1024px: one column per step and never a second row — a wrapped timeline
+   reads as two disconnected rows. Each step spans the list's rows through
+   `subgrid` (head, card, and the main step's annotation), so every card
+   stretches to the tallest one and the footers line up on `margin-top: auto`. */
+.steps {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(var(--step-count), minmax(0, 1fr));
+  column-gap: 16px;
+  row-gap: 12px;
 }
-/* No hover: a service card leads nowhere (v3 review). */
-.svcCard {
+.step {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: subgrid;
+  grid-row: span 2;
+}
+/* Only the annotated step adds a third row, so no stray row gap otherwise. */
+.stepAnnotated {
+  grid-row: span 3;
+}
+.stepHead {
   display: flex;
-  flex-direction: column;
-  gap: 11px;
-  padding: 24px 26px;
-  background: #fff;
-  border: 1px solid rgba(23, 18, 31, 0.1);
-  border-radius: 14px;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
 }
-.svcCardHead {
+.stepNum {
+  flex: none;
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-.svcNum {
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
   font-family: var(--font-mono-stack);
   font-size: 12px;
-  font-weight: 500;
-  color: #b3a8c9;
-  flex-shrink: 0;
+  font-weight: 600;
+  line-height: normal;
 }
-.svcCardTitle {
-  font-size: 17px;
+.stepNumMain {
+  background: var(--primary);
+}
+.stepBadge {
+  flex: none;
+  padding: 3px 8px;
+  font-family: var(--font-mono-stack);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.09em;
+  color: var(--primary);
+  background: #f1ecfa;
+  border-radius: var(--r-pill);
+  white-space: nowrap;
+}
+/* The card's copy of the badge is the one shown below 1024px. */
+.stepBadgeCard {
+  display: none;
+  align-self: flex-start;
+}
+/* Every step but the last draws the rule to the next circle, bridging the
+   16px column gap with its negative margin — unlike one absolutely-positioned
+   line across the row, it cannot drift off a circle or dangle past the last. */
+.stepLine {
+  flex: 1;
+  min-width: 8px;
+  height: 1px;
+  margin-right: -16px;
+  background: rgba(23, 18, 31, 0.14);
+}
+.stepCard {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 17px 16px;
+  background: #fff;
+  border: 1px solid rgba(23, 18, 31, 0.1);
+  border-radius: 13px;
+}
+/* The padding drops 1px so the 2px border doesn't shift the content. */
+.stepCardMain {
+  padding: 16px 15px;
+  border: 2px solid var(--primary);
+  box-shadow: 0 14px 34px rgba(91, 52, 201, 0.13);
+}
+.stepTitle {
+  font-size: 15.5px;
   font-weight: 800;
+  line-height: 1.22;
 }
-.svcCardDesc {
+.stepDesc {
+  font-size: 12.5px;
+  line-height: 1.45;
   color: var(--body);
-  font-size: 14px;
-  line-height: 1.5;
   text-wrap: pretty;
   white-space: pre-line;
 }
-.svcCardTicks {
+/* «От вас» / «Результат» footer, pinned to the bottom of the card. */
+.stepMeta {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-.svcCardTicks li {
-  display: flex;
-  gap: 7px;
-  align-items: flex-start;
-  font-size: 13px;
-  color: #4a4453;
-}
-.svcTech {
+  gap: 9px;
   margin-top: auto;
-  padding-top: 6px;
-  font-size: 11px;
+}
+.stepMeta div {
+  padding-top: 10px;
+  border-top: 1px solid rgba(23, 18, 31, 0.09);
+}
+.stepMeta div:first-child {
+  padding-top: 11px;
+}
+.stepMeta dt {
+  margin-bottom: 3px;
+  font-family: var(--font-mono-stack);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.11em;
+  color: var(--body);
+}
+.stepMeta .stepResultLabel {
+  color: var(--primary);
+}
+.stepMeta dd {
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+}
+/* The annotation fills the main step's third row and reaches across the next
+   column (design: grid-column 2 / span 2), over that step's empty cell. */
+.stepNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 4px;
+}
+.stepNoteWide {
+  width: calc(200% + 16px);
+}
+.stepNoteArrow {
+  flex: none;
+  margin-top: -4px;
+  color: var(--primary);
+}
+/* Keeps the 1.6px stroke when the arrow shrinks below 1024px. */
+.stepNoteArrow path {
+  vector-effect: non-scaling-stroke;
+}
+.stepNoteBody {
+  padding-top: 2px;
+}
+.stepNoteLabel {
+  margin-bottom: 5px;
+  font-family: var(--font-mono-stack);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.11em;
+  color: var(--primary);
+}
+.stepNoteText {
+  font-size: 14.5px;
   font-weight: 500;
-  color: #b8b1c2;
+  line-height: 1.5;
+  color: var(--ink);
+  text-wrap: pretty;
+  white-space: pre-line;
 }
 
 /* =================================================================== Works */
@@ -1250,6 +1305,23 @@
   box-shadow: 0 20px 44px rgba(91, 52, 201, 0.2);
   transform: translateY(-2px);
 }
+/* Badge that straddles the top border of the highlighted plan. */
+.badgeTop {
+  position: absolute;
+  top: -11px;
+  left: 24px;
+  font-family: var(--font-mono-stack);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--primary);
+  border-radius: var(--r-pill);
+  padding: 4px 10px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
 .priceName {
   font-size: 17px;
   font-weight: 700;
@@ -1337,6 +1409,10 @@
 .priceSlot {
   grid-row: span 4;
 }
+/* The «+ Добавить шаг» slot takes a full row under the timeline. */
+.stepSlot {
+  grid-column: 1 / -1;
+}
 
 /* ============================================================== Responsive */
 /* The illustration keeps the design's fixed 460px track at ≥1200px. Below that
@@ -1358,6 +1434,85 @@
   }
 }
 
+/* Process — one column below 1024px (design 5a), never an intermediate 2- or
+   3-column grid, capped at a readable measure on tablets. */
+@media (max-width: 1023px) {
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 720px;
+  }
+  .step {
+    position: relative;
+    grid-template-columns: 36px minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-row: auto;
+    gap: 14px;
+    align-items: start;
+  }
+  .stepBadgeHead {
+    display: none;
+  }
+  .stepBadgeCard {
+    display: block;
+  }
+  /* The rule turns vertical: positioned on the step (the head is not), it runs
+     past the card — and the annotation — across the list gap to the next circle. */
+  .stepLine {
+    position: absolute;
+    left: 17px;
+    top: 42px;
+    bottom: -14px;
+    width: 1px;
+    min-width: 0;
+    height: auto;
+    margin: 0;
+  }
+  .stepCard {
+    padding: 16px;
+  }
+  .stepCardMain {
+    padding: 15px 15px 16px;
+    box-shadow: 0 12px 30px rgba(91, 52, 201, 0.13);
+  }
+  .stepTitle {
+    font-size: 17px;
+  }
+  .stepDesc {
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .stepMeta dd {
+    font-size: 13.5px;
+  }
+  .stepNote {
+    grid-column: 2;
+    gap: 10px;
+    margin-top: 0;
+    padding: 2px 0;
+  }
+  .stepNoteWide {
+    width: auto;
+  }
+  .stepNoteArrow {
+    width: 28px;
+    height: 36px;
+    margin-top: -2px;
+  }
+  .stepNoteLabel {
+    margin-bottom: 4px;
+    font-size: 10px;
+  }
+  .stepNoteText {
+    font-size: 13.5px;
+  }
+  /* Lines up with the cards, past the 36px circle column and its 14px gap. */
+  .stepSlot {
+    margin-left: 50px;
+  }
+}
+
 @media (max-width: 980px) {
   .heroInner {
     grid-template-columns: 1fr;
@@ -1374,55 +1529,28 @@
     border-right: none;
     border-bottom: 1px solid rgba(23, 18, 31, 0.1);
   }
-  .svcFeatured {
-    grid-template-columns: 1fr;
-    gap: 26px;
-    padding: 30px 28px;
-  }
-  .svcGrid {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 /* ------------------------------------------------------ Mobile (design 12a) */
 @media (max-width: 768px) {
-  /* Section order: hero → works → services → prices → cta. Keyed on each
-     section (or, in preview, the editor strip standing in for it) rather than
-     its position, so a hidden section doesn't reshuffle the rest. The preview
-     :has() selectors are separate rules: in a browser without :has() a shared
-     selector list would drop the production order too. */
-  .homeMain > .worksSection {
-    order: 1;
+  /* ~64px rhythm between sections; process leads, so it carries the top pad —
+     or, while it is hidden, whichever section follows the hero instead. */
+  .processSection {
+    padding-block: 34px 40px;
   }
-  .homeMain > :has([data-cms-hidden='works'], [data-cms-add='projects']) {
-    order: 1;
-  }
-  .homeMain > .svcSection {
-    order: 2;
-  }
-  .homeMain > :has([data-cms-hidden='services'], [data-cms-add='services']) {
-    order: 2;
-  }
-  .homeMain > .priceSection {
-    order: 3;
-  }
-  .homeMain > :has([data-cms-hidden='pricing'], [data-cms-add='pricing']) {
-    order: 3;
-  }
-  .homeMain > :last-child {
-    order: 4;
-  }
-
-  /* ~64px rhythm between sections; works leads, so it carries the top pad. */
-  .worksSection {
-    padding-block: 34px;
-  }
-  .svcSection,
+  .worksSection,
   .priceSection {
     padding-block: 0 34px;
   }
+  .hero + .worksSection,
+  .hero + .priceSection {
+    padding-top: 34px;
+  }
   .sectionHead {
     margin-bottom: 20px;
+  }
+  .lockupLede {
+    font-size: 15px;
   }
 
   /* Hero */
@@ -1540,32 +1668,23 @@
     padding-top: 0;
   }
 
-  /* Services — featured card stacks; supporting cards become compact rows */
-  .svcFeatured {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 20px;
+  /* Process — the head stacks, the pill on its own line under the lede */
+  .processHead {
+    display: block;
+    margin-bottom: 24px;
   }
-  .svcFeaturedDesc,
-  .svcFeaturedTicks li,
-  .svcLede,
-  .lockupLede {
-    font-size: 15px;
+  .processIntro .processEyebrow {
+    font-size: 11px;
   }
-  .svcGrid {
-    grid-template-columns: 1fr;
-    gap: 12px;
+  .processIntro .processTitle {
+    font-size: 26px;
+    letter-spacing: -0.012em;
   }
-  .svcCard {
-    padding: 16px 18px;
-    gap: 6px;
-  }
-  .svcCardTicks,
-  .svcTech {
-    display: none;
-  }
-  .svcSecondaryLabel {
-    margin: 24px 0 12px;
+  .processPill {
+    display: inline-block;
+    margin: 14px 0 0;
+    padding: 7px 13px;
+    font-size: 10px;
   }
 
   /* Pricing — horizontal swipe carousel (subgrid reset above at 980px) */

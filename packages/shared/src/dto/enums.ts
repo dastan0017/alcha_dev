@@ -24,7 +24,7 @@ export const projectBadgeSchema = z.enum(['work', 'own']);
 export type ProjectBadge = z.infer<typeof projectBadgeSchema>;
 
 /** Homepage sections the owner can hide in the visual editor. */
-export const homeSectionKeySchema = z.enum(['services', 'works', 'pricing']);
+export const homeSectionKeySchema = z.enum(['process', 'works', 'pricing']);
 export type HomeSectionKey = z.infer<typeof homeSectionKeySchema>;
 export const HOME_SECTION_KEYS = homeSectionKeySchema.options;
 

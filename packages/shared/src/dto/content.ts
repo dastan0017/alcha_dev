@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { serviceSchema } from './service';
+import { processStepSchema } from './process-step';
 import { projectSchema } from './project';
 import { pricingPlanSchema } from './pricing';
 import { siteSettingsSchema } from './settings';
@@ -12,7 +12,7 @@ export const homeResponseSchema = z.object({
   content: homeContentSchema,
   /** Sections the owner hid in the visual editor (absent = none hidden). */
   hiddenSections: z.array(homeSectionKeySchema).default([]),
-  services: z.array(serviceSchema),
+  processSteps: z.array(processStepSchema),
   projects: z.array(projectSchema),
   pricingPlans: z.array(pricingPlanSchema),
   settings: siteSettingsSchema,

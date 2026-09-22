@@ -7,7 +7,7 @@ export * from './constants/design-tokens';
 export * from './dto/common';
 export * from './dto/enums';
 export * from './dto/settings';
-export * from './dto/service';
+export * from './dto/process-step';
 export * from './dto/project';
 export * from './dto/pricing';
 export * from './dto/home';

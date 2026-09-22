@@ -30,7 +30,7 @@ export const CMS_ATTR = {
 export const CMS_SECTION_LABELS: Record<CmsSectionKey, string> = {
   header: 'Шапка',
   hero: 'Первый экран',
-  services: 'Услуги',
+  process: 'Процесс и услуги',
   works: 'Работы',
   pricing: 'Цены',
   cta: 'Призыв к действию',

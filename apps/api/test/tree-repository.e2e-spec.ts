@@ -88,16 +88,16 @@ describe('TreeRepository.writeTree (rolled back)', () => {
   it('inserts and moves items, storing sortOrder as the array index', () =>
     rolledBack(async (tx, fixture) => {
       const tree = edit(fixture, [
-        { op: 'insert', path: 'services', value: newCollectionNode('services'), index: 1 },
-        { op: 'move', path: 'services.s3', value: 0 },
+        { op: 'insert', path: 'steps', value: newCollectionNode('steps'), index: 1 },
+        { op: 'move', path: 'steps.s3', value: 0 },
         { op: 'move', path: 'pricing.p2', value: 0 },
       ]);
       await expectRoundTrip(tx, tree);
-      const rows = await tx.service.findMany({
+      const rows = await tx.processStep.findMany({
         orderBy: { sortOrder: 'asc' },
         select: { id: true, sortOrder: true },
       });
-      expect(rows).toEqual(tree.services.map(({ id }, sortOrder) => ({ id, sortOrder })));
+      expect(rows).toEqual(tree.steps.map(({ id }, sortOrder) => ({ id, sortOrder })));
     }));
 
   it('deletes every row of an emptied collection', () =>

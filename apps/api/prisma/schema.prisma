@@ -136,10 +136,15 @@ model HomeContentTranslation {
   heroNote               String      @default("")
   heroCtaPrimary         String
   heroCtaSecondary       String
-  servicesEyebrow        String      @default("")
-  servicesHeading        String
-  servicesLede           String      @default("")
-  servicesSecondaryLabel String      @default("")
+  processEyebrow         String      @default("")
+  processHeading         String
+  processSubheading      String      @default("")
+  processPill            String      @default("")
+  processFromLabel       String      @default("")
+  processResultLabel     String      @default("")
+  processMainLabel       String      @default("")
+  processAnnotationLabel String      @default("")
+  processAnnotationText  String      @default("")
   worksEyebrow           String      @default("")
   worksHeading           String
   worksLede              String      @default("")
@@ -155,35 +160,33 @@ model HomeContentTranslation {
   @@unique([homeContentId, locale])
 }
 
-// ------------------------------------------------------------ Services --------
+// ------------------------------------------------------- Process steps --------
 
-model Service {
-  id           String               @id @default(cuid())
-  number       String
-  sortOrder    Int                  @default(0)
-  published    Boolean              @default(true)
-  /// The one highlighted "core strength" service rendered as the large card.
-  featured     Boolean              @default(false)
-  createdAt    DateTime             @default(now())
-  updatedAt    DateTime             @updatedAt
-  translations ServiceTranslation[]
+// The homepage «Процесс и услуги» timeline. A step's number is its position.
+model ProcessStep {
+  id           String                   @id @default(cuid())
+  sortOrder    Int                      @default(0)
+  published    Boolean                  @default(true)
+  /// The one highlighted step: purple circle and border, badge and the annotation under it.
+  isMain       Boolean                  @default(false)
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+  translations ProcessStepTranslation[]
 }
 
-model ServiceTranslation {
-  id          String   @id @default(cuid())
-  service     Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  serviceId   String
+model ProcessStepTranslation {
+  id          String      @id @default(cuid())
+  step        ProcessStep @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  stepId      String
   locale      Locale
   title       String
   description String
-  /// Pill label on the featured card, e.g. "МОЯ ГЛАВНАЯ СИЛА".
-  badge       String   @default("")
-  /// Checklist rendered with purple ticks.
-  bullets     String[]
-  /// Optional mono tech line, e.g. "React · Next.js · TypeScript".
-  techLine    String   @default("")
+  /// «ОТ ВАС» — what the step needs from the client.
+  from        String      @default("")
+  /// «РЕЗУЛЬТАТ» — what the step delivers.
+  result      String      @default("")
 
-  @@unique([serviceId, locale])
+  @@unique([stepId, locale])
 }
 
 // ------------------------------------------------------------ Projects --------

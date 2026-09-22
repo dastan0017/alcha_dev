@@ -13,13 +13,23 @@ export const homeContentSchema = z.object({
   heroNote: z.string(),
   heroCtaPrimary: z.string(),
   heroCtaSecondary: z.string(),
-  /** Small label above the services heading, e.g. "УСЛУГИ". */
-  servicesEyebrow: z.string(),
-  servicesHeading: z.string(),
-  /** Intro paragraph under the services heading. */
-  servicesLede: z.string(),
-  /** Divider label above the supporting service cards. */
-  servicesSecondaryLabel: z.string(),
+  /** Small label above the process heading, e.g. "ПРОЦЕСС И УСЛУГИ". */
+  processEyebrow: z.string(),
+  processHeading: z.string(),
+  /** Intro paragraph under the process heading. */
+  processSubheading: z.string(),
+  /** Timeline pill beside the heading, e.g. "ОТ 1 ДО 6 НЕДЕЛЬ". */
+  processPill: z.string(),
+  /** Label above each step's client contribution, e.g. "ОТ ВАС". */
+  processFromLabel: z.string(),
+  /** Label above each step's outcome, e.g. "РЕЗУЛЬТАТ". */
+  processResultLabel: z.string(),
+  /** Badge on the main step, e.g. "ГЛАВНОЕ". */
+  processMainLabel: z.string(),
+  /** Annotation under the main step: its mono label, e.g. "МОЯ ГЛАВНАЯ СИЛА"… */
+  processAnnotationLabel: z.string(),
+  /** …and its text. */
+  processAnnotationText: z.string(),
   /** Small label above the works heading, e.g. "РАБОТЫ". */
   worksEyebrow: z.string(),
   worksHeading: z.string(),
