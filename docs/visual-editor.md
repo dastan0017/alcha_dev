@@ -170,7 +170,7 @@ RU. `HomeResponse` gains `hiddenSections`. New public `GET /content/chrome?local
 
 Required fields (`CMS_REQUIRED_FIELDS`) — RU errors / EN warnings:
 home `heroTitle heroSubtitle heroCtaPrimary heroCtaSecondary servicesHeading worksHeading pricingHeading ctaTitle ctaSubtitle ctaTelegramLabel ctaWhatsappLabel` ·
-chrome all · services `title description` (+ `number`) · pricing `name priceLabel termLine description` ·
+chrome all · services `title description` (+ `number`) · pricing `name priceLabel termLine description ctaLabel` ·
 projects `title badge metaLine description` (+ `slug`).
 
 ## 4. Data-attribute contract (web → bridge) — `packages/shared/src/cms/bridge.ts`

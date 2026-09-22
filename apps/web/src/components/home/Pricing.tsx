@@ -177,7 +177,7 @@ export function Pricing({
                 </p>
                 <ul className={styles.priceFeatures}>
                   {plan.features.map((feature, i) => (
-                    <li key={i}>
+                    <li key={`feature-${i}`}>
                       <span className={styles.check} aria-hidden="true">
                         ✓
                       </span>
@@ -186,10 +186,21 @@ export function Pricing({
                       </span>
                     </li>
                   ))}
+                  {/* Optional add-ons share the list so the card keeps its four subgrid rows. */}
+                  {plan.extras.map((extra, i) => (
+                    <li key={`extra-${i}`} className={styles.priceExtra}>
+                      <span className={styles.plus} aria-hidden="true">
+                        +
+                      </span>
+                      <span {...cms.field(cms.itemLocale('pricing', plan.id, 'extras', i))}>
+                        {extra}
+                      </span>
+                    </li>
+                  ))}
                 </ul>
                 <ContactButton
-                  label={chrome.navCta}
-                  labelAttrs={cms.field(cms.chrome('navCta'))}
+                  label={plan.ctaLabel}
+                  labelAttrs={cms.field(cms.itemLocale('pricing', plan.id, 'ctaLabel'))}
                   className={`btn ${plan.highlighted ? 'btn--primary' : 'btn--ghost'} ${styles.priceCta}`}
                 />
               </article>

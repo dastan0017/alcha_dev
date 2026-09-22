@@ -250,6 +250,10 @@ model PricingPlanTranslation {
   highlightLabel String      @default("")
   description    String
   features       String[]
+  /// Optional add-ons listed after the features with a «+» marker.
+  extras         String[]    @default([])
+  /// The card button, e.g. «Обсудить лендинг».
+  ctaLabel       String      @default("")
 
   @@unique([planId, locale])
 }

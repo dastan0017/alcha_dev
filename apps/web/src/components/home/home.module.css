@@ -1275,10 +1275,11 @@
 }
 .priceTerm {
   font-family: var(--font-mono-stack);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 500;
-  color: var(--muted);
-  margin-top: 4px;
+  letter-spacing: 0.04em;
+  color: var(--body);
+  margin-top: 5px;
 }
 .priceDesc {
   font-size: 13.5px;
@@ -1299,12 +1300,21 @@
   line-height: 1.5;
   color: var(--body);
 }
-.check {
+.check,
+.plus {
   flex: none;
   font-family: var(--font-mono-stack);
   font-size: 11px;
   font-weight: 600;
   color: var(--primary);
+}
+/* Optional add-on («По желанию: …»): a grey «+» and slightly lighter copy, so it
+   reads as extra rather than included. */
+.plus {
+  color: var(--muted);
+}
+.priceFeatures .priceExtra {
+  color: #6f6878;
 }
 /* Sits in the last subgrid row, pinned to its bottom. */
 .priceCta {

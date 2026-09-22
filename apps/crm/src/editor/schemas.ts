@@ -228,6 +228,20 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
         addLabel: 'Добавить пункт',
       },
       {
+        key: 'extras',
+        label: 'По желанию (со знаком «+»)',
+        type: 'list',
+        localized: true,
+        addLabel: 'Добавить опцию',
+      },
+      {
+        key: 'ctaLabel',
+        label: 'Текст кнопки',
+        type: 'text',
+        localized: true,
+        hint: 'Обсудить лендинг',
+      },
+      {
         key: 'highlighted',
         label: 'Выделить как популярный',
         type: 'boolean',
@@ -241,7 +255,7 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
         label: 'Текст бейджа',
         type: 'text',
         localized: true,
-        hint: 'ЧАЩЕ ВСЕГО ВЫБИРАЮТ',
+        hint: 'СОВЕТУЮ КОМПАНИЯМ',
       },
     ] satisfies readonly DeclaredField<'pricing'>[],
     blank: () => {
@@ -255,6 +269,7 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
           termLine: 'СРОК — ПО ЗАДАЧЕ',
           description: 'Для кого этот тариф.',
           features: ['Что входит'],
+          ctaLabel: 'Обсудить тариф',
         },
         en: {
           ...node.en,
@@ -263,6 +278,7 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
           termLine: 'TIMELINE — BY SCOPE',
           description: 'Who this plan is for.',
           features: ['What is included'],
+          ctaLabel: 'Discuss this plan',
         },
       };
     },

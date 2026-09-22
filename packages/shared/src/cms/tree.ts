@@ -54,6 +54,8 @@ const pricingCopySchema = pricingPlanSchema
     highlightLabel: true,
     description: true,
     features: true,
+    extras: true,
+    ctaLabel: true,
   })
   .strict();
 
@@ -269,6 +271,8 @@ export const CMS_FIELD_MODEL = {
       highlightLabel: 'string',
       description: 'string',
       features: 'stringList',
+      extras: 'stringList',
+      ctaLabel: 'string',
     },
   },
   projects: {
@@ -341,7 +345,10 @@ export const CMS_REQUIRED_FIELDS: {
     localized: Object.keys(CMS_FIELD_MODEL.chrome.localized) as CmsLocalizedField<'chrome'>[],
   },
   services: { neutral: ['number'], localized: ['title', 'description'] },
-  pricing: { neutral: [], localized: ['name', 'priceLabel', 'termLine', 'description'] },
+  pricing: {
+    neutral: [],
+    localized: ['name', 'priceLabel', 'termLine', 'description', 'ctaLabel'],
+  },
   projects: { neutral: ['slug'], localized: ['title', 'badge', 'metaLine', 'description'] },
 };
 
