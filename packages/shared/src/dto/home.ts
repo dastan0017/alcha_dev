@@ -1,9 +1,6 @@
 import { z } from 'zod';
 
-/**
- * Editorial singleton holding the homepage hero, section headings and the dark
- * CTA banner (the banner is reused verbatim at the bottom of the About page).
- */
+/** Editorial singleton holding the homepage hero, section headings and the dark CTA banner. */
 export const homeContentSchema = z.object({
   eyebrow: z.string(),
   heroTitle: z.string(),
@@ -28,8 +25,6 @@ export const homeContentSchema = z.object({
   worksHeading: z.string(),
   /** Intro paragraph under the works heading. */
   worksLede: z.string(),
-  /** "All projects →" link label (empty = hidden). */
-  worksLinkLabel: z.string(),
   /** Small label above the pricing heading, e.g. "ЦЕНЫ". */
   pricingEyebrow: z.string(),
   pricingHeading: z.string(),

@@ -1,5 +1,5 @@
 import type { Locale } from '../constants/locales';
-import type { AboutSectionKey, HomeSectionKey } from '../dto/enums';
+import type { HomeSectionKey } from '../dto/enums';
 import { CMS_ID_PATTERN, isCollectionKey, type CmsSectionKey, type CollectionKey } from './tree';
 
 /** `source` of every postMessage between the CRM and the preview iframe. */
@@ -35,11 +35,6 @@ export const CMS_SECTION_LABELS: Record<CmsSectionKey, string> = {
   pricing: 'Цены',
   cta: 'Призыв к действию',
   footer: 'Подвал',
-  aboutHero: 'Обо мне',
-  experience: 'Опыт',
-  projects: 'Проекты',
-  stack: 'Стек',
-  hobbies: 'Вне работы',
   case: 'Кейс проекта',
 };
 
@@ -108,7 +103,7 @@ export type CmsChildMessage =
   /** Ghost slot clicked. */
   | CmsMessage<'add', { collection: CollectionKey }>
   /** «Показать» on a hidden-section strip. */
-  | CmsMessage<'show-section', { section: HomeSectionKey | AboutSectionKey }>
+  | CmsMessage<'show-section', { section: HomeSectionKey }>
   | CmsMessage<'navigation-blocked', { href: string }>;
 
 /** CRM → iframe. */

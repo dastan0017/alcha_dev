@@ -7,14 +7,11 @@ import {
   type CmsFieldKind,
   type CmsScope,
   type CollectionKey,
-  type ExperienceNode,
-  type HobbyNode,
   type Locale,
   type PricingNode,
   type ProjectNode,
   type ServiceNode,
   type SiteTree,
-  type StackNode,
 } from '@alcha/shared';
 import { PrismaService } from '../../prisma/prisma.service';
 
@@ -40,18 +37,13 @@ export class TreeRepository {
    * translation row reads as blank copy.
    */
   async loadPublishedTree(db: Db = this.prisma): Promise<SiteTree> {
-    const [home, about, chrome, services, pricing, projects, experience, stack, hobbies] =
-      await Promise.all([
-        db.homeContent.findFirst({ orderBy: oldestFirst, include }),
-        db.aboutProfile.findFirst({ orderBy: oldestFirst, include }),
-        db.siteChrome.findFirst({ orderBy: oldestFirst, include }),
-        db.service.findMany({ orderBy: byPosition, include }),
-        db.pricingPlan.findMany({ orderBy: byPosition, include }),
-        db.project.findMany({ orderBy: byPosition, include }),
-        db.experience.findMany({ orderBy: byPosition, include }),
-        db.stackCategory.findMany({ orderBy: byPosition, include }),
-        db.hobbyCard.findMany({ orderBy: byPosition, include }),
-      ]);
+    const [home, chrome, services, pricing, projects] = await Promise.all([
+      db.homeContent.findFirst({ orderBy: oldestFirst, include }),
+      db.siteChrome.findFirst({ orderBy: oldestFirst, include }),
+      db.service.findMany({ orderBy: byPosition, include }),
+      db.pricingPlan.findMany({ orderBy: byPosition, include }),
+      db.project.findMany({ orderBy: byPosition, include }),
+    ]);
 
     // Parsing types the generic mapping and fails loudly if the tables and the tree drift.
     return siteTreeSchema.parse({
@@ -60,18 +52,10 @@ export class TreeRepository {
         hiddenSections: home?.hiddenSections ?? [],
         ...copyOf('home', home?.translations),
       },
-      about: {
-        photoUrl: about?.photoUrl ?? null,
-        hiddenSections: about?.hiddenSections ?? [],
-        ...copyOf('about', about?.translations),
-      },
       chrome: copyOf('chrome', chrome?.translations),
       services: services.map((row) => toNode('services', row)),
       pricing: pricing.map((row) => toNode('pricing', row)),
       projects: projects.map((row) => toNode('projects', row)),
-      experience: experience.map((row) => toNode('experience', row)),
-      stack: stack.map((row) => toNode('stack', row)),
-      hobbies: hobbies.map((row) => toNode('hobbies', row)),
     });
   }
 
@@ -85,12 +69,9 @@ export class TreeRepository {
     await this.writeServices(tx, tree.services);
     await this.writePricing(tx, tree.pricing);
     await this.writeProjects(tx, tree.projects);
-    await this.writeExperience(tx, tree.experience);
-    await this.writeStack(tx, tree.stack);
-    await this.writeHobbies(tx, tree.hobbies);
   }
 
-  private async writeSingletons(tx: Db, { home, about, chrome }: SiteTree): Promise<void> {
+  private async writeSingletons(tx: Db, { home, chrome }: SiteTree): Promise<void> {
     const homeRow = await tx.homeContent.findFirst({ orderBy: oldestFirst, select: { id: true } });
     if (homeRow) {
       const homeContentId = homeRow.id;
@@ -108,30 +89,6 @@ export class TreeRepository {
     } else {
       await tx.homeContent.create({
         data: { hiddenSections: home.hiddenSections, translations: { create: createCopy(home) } },
-      });
-    }
-
-    const aboutRow = await tx.aboutProfile.findFirst({
-      orderBy: oldestFirst,
-      select: { id: true },
-    });
-    const aboutColumns = { photoUrl: about.photoUrl, hiddenSections: about.hiddenSections };
-    if (aboutRow) {
-      const aboutProfileId = aboutRow.id;
-      await tx.aboutProfile.update({
-        where: { id: aboutProfileId },
-        data: {
-          ...aboutColumns,
-          translations: {
-            upsert: upsertCopy(about, (locale) => ({
-              aboutProfileId_locale: { aboutProfileId, locale },
-            })),
-          },
-        },
-      });
-    } else {
-      await tx.aboutProfile.create({
-        data: { ...aboutColumns, translations: { create: createCopy(about) } },
       });
     }
 
@@ -214,66 +171,6 @@ export class TreeRepository {
           ...columns,
           translations: {
             upsert: upsertCopy(node, (locale) => ({ projectId_locale: { projectId: id, locale } })),
-          },
-        },
-      });
-    }
-  }
-
-  private async writeExperience(tx: Db, nodes: ExperienceNode[]): Promise<void> {
-    await tx.experience.deleteMany({ where: { id: { notIn: idsOf(nodes) } } });
-    for (const [sortOrder, node] of nodes.entries()) {
-      const { id, ...columns } = columnsOf(node);
-      await tx.experience.upsert({
-        where: { id },
-        create: { id, sortOrder, ...columns, translations: { create: createCopy(node) } },
-        update: {
-          sortOrder,
-          ...columns,
-          translations: {
-            upsert: upsertCopy(node, (locale) => ({
-              experienceId_locale: { experienceId: id, locale },
-            })),
-          },
-        },
-      });
-    }
-  }
-
-  private async writeStack(tx: Db, nodes: StackNode[]): Promise<void> {
-    await tx.stackCategory.deleteMany({ where: { id: { notIn: idsOf(nodes) } } });
-    for (const [sortOrder, node] of nodes.entries()) {
-      const { id, ...columns } = columnsOf(node);
-      await tx.stackCategory.upsert({
-        where: { id },
-        create: { id, sortOrder, ...columns, translations: { create: createCopy(node) } },
-        update: {
-          sortOrder,
-          ...columns,
-          translations: {
-            upsert: upsertCopy(node, (locale) => ({
-              stackCategoryId_locale: { stackCategoryId: id, locale },
-            })),
-          },
-        },
-      });
-    }
-  }
-
-  private async writeHobbies(tx: Db, nodes: HobbyNode[]): Promise<void> {
-    await tx.hobbyCard.deleteMany({ where: { id: { notIn: idsOf(nodes) } } });
-    for (const [sortOrder, node] of nodes.entries()) {
-      const { id, ...columns } = columnsOf(node);
-      await tx.hobbyCard.upsert({
-        where: { id },
-        create: { id, sortOrder, ...columns, translations: { create: createCopy(node) } },
-        update: {
-          sortOrder,
-          ...columns,
-          translations: {
-            upsert: upsertCopy(node, (locale) => ({
-              hobbyCardId_locale: { hobbyCardId: id, locale },
-            })),
           },
         },
       });

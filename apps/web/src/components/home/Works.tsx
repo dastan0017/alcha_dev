@@ -1,5 +1,4 @@
 import type { HomeContent, Locale, Project, SiteChrome } from '@alcha/shared';
-import { Link } from '@/i18n/navigation';
 import { cmsAttrs } from '@/lib/cms';
 import { CmsAddSlot } from '../preview/CmsAddSlot';
 import { CmsHiddenSection } from '../preview/CmsHiddenSection';
@@ -61,15 +60,6 @@ export function Works({
               </p>
             )}
           </div>
-          {content.worksLinkLabel && (
-            <Link
-              href="/about"
-              className={styles.worksLink}
-              {...cms.field(cms.home('worksLinkLabel'))}
-            >
-              {content.worksLinkLabel}
-            </Link>
-          )}
         </div>
 
         <div className={styles.worksStack} {...cms.list('projects', 'stack')}>

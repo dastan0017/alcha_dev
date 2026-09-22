@@ -1,11 +1,5 @@
 import type { SeoMeta, SiteSettings } from '@alcha/shared';
-import {
-  projectAbout,
-  projectChrome,
-  projectHome,
-  projectProject,
-  projectProjects,
-} from './projection';
+import { projectChrome, projectHome, projectProject, projectProjects } from './projection';
 import { treeFixture } from './tree.fixture';
 
 const settings = { email: 'hello@alcha.dev' } as SiteSettings;
@@ -60,55 +54,6 @@ describe('projectHome', () => {
   });
 });
 
-describe('projectAbout', () => {
-  it('maps the profile, collections and the CTA banner from home copy', () => {
-    const tree = treeFixture();
-    tree.about.hiddenSections = ['hobbies'];
-    const about = projectAbout(tree, 'en', context);
-
-    expect(about.profile).toEqual({ photoUrl: 'https://cdn/me.jpg', ...tree.about.en });
-    expect(about.hiddenSections).toEqual(['hobbies']);
-    expect(about.cta).toEqual({
-      title: 'home.en.ctaTitle',
-      subtitle: 'home.en.ctaSubtitle',
-      telegramLabel: 'home.en.ctaTelegramLabel',
-      cvLabel: 'home.en.ctaCvLabel',
-    });
-    expect(about.experiences[1]).toEqual({
-      id: 'e2',
-      company: 'e2-company',
-      sortOrder: 1,
-      ...tree.experience[1].en,
-    });
-    expect(about.stack[0]).toEqual({
-      id: 'st1',
-      sortOrder: 0,
-      title: 'st1.en.title',
-      items: ['React', 'Next.js'],
-    });
-    expect(about.hobbies[0]).toEqual({
-      id: 'h1',
-      sortOrder: 0,
-      handle: '@h1',
-      url: 'https://instagram.com/h1',
-      imageUrl: null,
-      ...tree.hobbies[0].en,
-    });
-    expect(about.settings).toBe(settings);
-    expect(about.seo).toBe(seo);
-  });
-
-  it('shows the published projects flagged showOnAbout', () => {
-    const tree = treeFixture();
-    tree.projects[2].published = false;
-    tree.stack[0].published = false;
-    const about = projectAbout(tree, 'ru', context);
-
-    expect(about.projects.map((p) => [p.slug, p.sortOrder])).toEqual([['second', 1]]);
-    expect(about.stack.map((s) => [s.id, s.sortOrder])).toEqual([['st2', 1]]);
-  });
-});
-
 describe('projectProjects / projectProject', () => {
   it('lists every published project regardless of page flags', () => {
     const tree = treeFixture();
@@ -127,7 +72,6 @@ describe('projectProjects / projectProject', () => {
       badgeType: 'work',
       sortOrder: 1,
       showOnHome: false,
-      showOnAbout: true,
       screenshots: ['https://cdn/pr2.png'],
       coverImage: null,
       ...tree.projects[1].en,
@@ -160,7 +104,6 @@ describe('EN → RU fallback', () => {
     expect(home.content.eyebrow).toBe('');
     expect(home.services[1]).toMatchObject({ title: 's2.ru.title', badge: '' });
     expect(home.projects[0]).toMatchObject({ metaLine: 'pr1.ru.metaLine', seoTitle: '' });
-    expect(projectAbout(tree, 'en', context).cta.title).toBe('home.ru.ctaTitle');
     expect(projectChrome(tree, 'en')).toEqual({ ...tree.chrome.en, navCta: 'chrome.ru.navCta' });
   });
 

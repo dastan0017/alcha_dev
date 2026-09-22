@@ -28,13 +28,8 @@ export const homeSectionKeySchema = z.enum(['services', 'works', 'pricing']);
 export type HomeSectionKey = z.infer<typeof homeSectionKeySchema>;
 export const HOME_SECTION_KEYS = homeSectionKeySchema.options;
 
-/** About-page sections the owner can hide in the visual editor. */
-export const aboutSectionKeySchema = z.enum(['experience', 'projects', 'stack', 'hobbies']);
-export type AboutSectionKey = z.infer<typeof aboutSectionKeySchema>;
-export const ABOUT_SECTION_KEYS = aboutSectionKeySchema.options;
-
 export const userRoleSchema = z.enum(['ADMIN']);
 export type UserRole = z.infer<typeof userRoleSchema>;
 
-export const seoPageSchema = z.enum(['home', 'about']);
+export const seoPageSchema = z.enum(['home']);
 export type SeoPage = z.infer<typeof seoPageSchema>;

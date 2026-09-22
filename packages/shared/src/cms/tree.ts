@@ -1,34 +1,18 @@
 import { z } from 'zod';
 import type { Locale } from '../constants/locales';
 import { translatedSchema } from '../dto/common';
-import {
-  aboutSectionKeySchema,
-  homeSectionKeySchema,
-  projectBadgeSchema,
-  type ProjectBadge,
-} from '../dto/enums';
+import { homeSectionKeySchema, projectBadgeSchema, type ProjectBadge } from '../dto/enums';
 import { homeContentSchema } from '../dto/home';
-import { aboutProfileSchema } from '../dto/about';
 import { siteChromeSchema } from '../dto/chrome';
 import { serviceSchema } from '../dto/service';
 import { pricingPlanSchema } from '../dto/pricing';
 import { projectSchema } from '../dto/project';
-import { experienceSchema } from '../dto/experience';
-import { stackCategorySchema } from '../dto/stack';
-import { hobbyCardSchema } from '../dto/hobby';
 
 /** Item id charset — ids must stay safe inside dot paths and `<collection>:<id>` refs. */
 export const CMS_ID_PATTERN = /^[A-Za-z0-9_-]+$/;
 export const cmsIdSchema = z.string().regex(CMS_ID_PATTERN);
 
-export const collectionKeySchema = z.enum([
-  'services',
-  'pricing',
-  'projects',
-  'experience',
-  'stack',
-  'hobbies',
-]);
+export const collectionKeySchema = z.enum(['services', 'pricing', 'projects']);
 export type CollectionKey = z.infer<typeof collectionKeySchema>;
 export const COLLECTION_KEYS = collectionKeySchema.options;
 
@@ -36,7 +20,7 @@ export function isCollectionKey(value: unknown): value is CollectionKey {
   return typeof value === 'string' && (COLLECTION_KEYS as readonly string[]).includes(value);
 }
 
-/** Every `data-cms-section` key; the hideable ones are HOME_SECTION_KEYS / ABOUT_SECTION_KEYS. */
+/** Every `data-cms-section` key; the hideable ones are HOME_SECTION_KEYS. */
 export const cmsSectionKeySchema = z.enum([
   'header',
   'hero',
@@ -45,11 +29,6 @@ export const cmsSectionKeySchema = z.enum([
   'pricing',
   'cta',
   'footer',
-  'aboutHero',
-  'experience',
-  'projects',
-  'stack',
-  'hobbies',
   'case',
 ]);
 export type CmsSectionKey = z.infer<typeof cmsSectionKeySchema>;
@@ -59,9 +38,6 @@ export const CMS_SECTION_KEYS = cmsSectionKeySchema.options;
 
 export const homeCopySchema = homeContentSchema.strict();
 export type HomeCopy = z.infer<typeof homeCopySchema>;
-
-export const aboutCopySchema = aboutProfileSchema.omit({ photoUrl: true }).strict();
-export type AboutCopy = z.infer<typeof aboutCopySchema>;
 
 export const chromeCopySchema = siteChromeSchema.strict();
 export type ChromeCopy = z.infer<typeof chromeCopySchema>;
@@ -98,14 +74,6 @@ const projectCopySchema = projectSchema
   })
   .strict();
 
-const experienceCopySchema = experienceSchema
-  .pick({ role: true, meta: true, description: true })
-  .strict();
-
-const stackCopySchema = stackCategorySchema.pick({ title: true }).strict();
-
-const hobbyCopySchema = hobbyCardSchema.pick({ title: true, description: true }).strict();
-
 // ─── Collection nodes (array order is sortOrder) ─────────────────────────────
 
 /** `published` is a passthrough the editor never shows; new items are published. */
@@ -136,7 +104,6 @@ export const projectNodeSchema = z
     slug: z.string(),
     badgeType: projectBadgeSchema,
     showOnHome: z.boolean(),
-    showOnAbout: z.boolean(),
     coverImage: z.string().nullable(),
     screenshots: z.array(z.string()),
     ...translatedSchema(projectCopySchema).shape,
@@ -144,42 +111,10 @@ export const projectNodeSchema = z
   .strict();
 export type ProjectNode = z.infer<typeof projectNodeSchema>;
 
-export const experienceNodeSchema = z
-  .object({
-    ...nodeBase,
-    company: z.string(),
-    ...translatedSchema(experienceCopySchema).shape,
-  })
-  .strict();
-export type ExperienceNode = z.infer<typeof experienceNodeSchema>;
-
-export const stackNodeSchema = z
-  .object({
-    ...nodeBase,
-    items: z.array(z.string()),
-    ...translatedSchema(stackCopySchema).shape,
-  })
-  .strict();
-export type StackNode = z.infer<typeof stackNodeSchema>;
-
-export const hobbyNodeSchema = z
-  .object({
-    ...nodeBase,
-    handle: z.string(),
-    url: z.string(),
-    imageUrl: z.string().nullable(),
-    ...translatedSchema(hobbyCopySchema).shape,
-  })
-  .strict();
-export type HobbyNode = z.infer<typeof hobbyNodeSchema>;
-
 export const nodeSchemaByCollection = {
   services: serviceNodeSchema,
   pricing: pricingNodeSchema,
   projects: projectNodeSchema,
-  experience: experienceNodeSchema,
-  stack: stackNodeSchema,
-  hobbies: hobbyNodeSchema,
 } as const satisfies Record<CollectionKey, z.ZodTypeAny>;
 
 /** Any collection item (each node schema is strict, so a value matches at most one). */
@@ -187,9 +122,6 @@ export const collectionNodeSchema = z.union([
   serviceNodeSchema,
   pricingNodeSchema,
   projectNodeSchema,
-  experienceNodeSchema,
-  stackNodeSchema,
-  hobbyNodeSchema,
 ]);
 
 // ─── Site tree ───────────────────────────────────────────────────────────────
@@ -224,20 +156,10 @@ export const siteTreeSchema = z
         ...translatedSchema(homeCopySchema).shape,
       })
       .strict(),
-    about: z
-      .object({
-        photoUrl: z.string().nullable(),
-        hiddenSections: hiddenSectionsSchema(aboutSectionKeySchema),
-        ...translatedSchema(aboutCopySchema).shape,
-      })
-      .strict(),
     chrome: translatedSchema(chromeCopySchema).strict(),
     services: collectionSchema(serviceNodeSchema),
     pricing: collectionSchema(pricingNodeSchema),
     projects: collectionSchema(projectNodeSchema),
-    experience: collectionSchema(experienceNodeSchema),
-    stack: collectionSchema(stackNodeSchema),
-    hobbies: collectionSchema(hobbyNodeSchema),
   })
   .strict();
 export type SiteTree = z.infer<typeof siteTreeSchema>;
@@ -297,7 +219,6 @@ export const CMS_FIELD_MODEL = {
       worksEyebrow: 'string',
       worksHeading: 'string',
       worksLede: 'string',
-      worksLinkLabel: 'string',
       pricingEyebrow: 'string',
       pricingHeading: 'string',
       pricingNote: 'string',
@@ -308,24 +229,11 @@ export const CMS_FIELD_MODEL = {
       ctaCvLabel: 'string',
     },
   },
-  about: {
-    neutral: { photoUrl: 'nullableString', hiddenSections: 'sectionList' },
-    localized: {
-      name: 'string',
-      photoCaption: 'string',
-      bioHtml: 'string',
-      experienceHeading: 'string',
-      projectsHeading: 'string',
-      stackHeading: 'string',
-      hobbiesHeading: 'string',
-    },
-  },
   chrome: {
     neutral: {},
     localized: {
       navWorks: 'string',
       navPricing: 'string',
-      navAbout: 'string',
       navCta: 'string',
       navCtaShort: 'string',
       footerTagline: 'string',
@@ -368,7 +276,6 @@ export const CMS_FIELD_MODEL = {
       slug: 'string',
       badgeType: 'badgeType',
       showOnHome: 'boolean',
-      showOnAbout: 'boolean',
       coverImage: 'nullableString',
       screenshots: 'stringList',
     },
@@ -387,21 +294,8 @@ export const CMS_FIELD_MODEL = {
       seoDescription: 'string',
     },
   },
-  experience: {
-    neutral: { company: 'string' },
-    localized: { role: 'string', meta: 'string', description: 'string' },
-  },
-  stack: {
-    neutral: { items: 'stringList' },
-    localized: { title: 'string' },
-  },
-  hobbies: {
-    neutral: { handle: 'string', url: 'string', imageUrl: 'nullableString' },
-    localized: { title: 'string', description: 'string' },
-  },
 } as const satisfies {
   home: ScopeFieldModel<Omit<SiteTree['home'], Locale>, HomeCopy>;
-  about: ScopeFieldModel<Omit<SiteTree['about'], Locale>, AboutCopy>;
   chrome: ScopeFieldModel<Omit<SiteTree['chrome'], Locale>, ChromeCopy>;
 } & { [K in CollectionKey]: NodeFieldModel<CollectionNodeMap[K]> };
 
@@ -442,17 +336,6 @@ export const CMS_REQUIRED_FIELDS: {
       'ctaCvLabel',
     ],
   },
-  about: {
-    neutral: [],
-    localized: [
-      'name',
-      'bioHtml',
-      'experienceHeading',
-      'projectsHeading',
-      'stackHeading',
-      'hobbiesHeading',
-    ],
-  },
   chrome: {
     neutral: [],
     localized: Object.keys(CMS_FIELD_MODEL.chrome.localized) as CmsLocalizedField<'chrome'>[],
@@ -460,9 +343,6 @@ export const CMS_REQUIRED_FIELDS: {
   services: { neutral: ['number'], localized: ['title', 'description'] },
   pricing: { neutral: [], localized: ['name', 'priceLabel', 'termLine', 'description'] },
   projects: { neutral: ['slug'], localized: ['title', 'badge', 'metaLine', 'description'] },
-  experience: { neutral: ['company'], localized: ['role', 'meta', 'description'] },
-  stack: { neutral: [], localized: ['title'] },
-  hobbies: { neutral: ['handle'], localized: ['title', 'description'] },
 };
 
 const ID_ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyz';

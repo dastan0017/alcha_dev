@@ -1021,16 +1021,6 @@
 }
 
 /* =================================================================== Works */
-.worksLink {
-  flex: none;
-  font-size: 14.5px;
-  font-weight: 600;
-  color: var(--primary);
-  white-space: nowrap;
-}
-.worksLink:hover {
-  color: var(--primary-hover);
-}
 .worksStack {
   display: flex;
   flex-direction: column;
@@ -1508,9 +1498,6 @@
   }
 
   /* Works — image on top, trimmed to essentials */
-  .worksLink {
-    display: none;
-  }
   .workCard {
     grid-template-columns: 1fr;
   }

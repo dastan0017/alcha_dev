@@ -21,8 +21,6 @@ export const cmsPath = {
   home: (locale: Locale, field: CmsLocalizedField<'home'>, index?: number) =>
     withIndex(`home.${locale}.${field}`, index),
   homeNeutral: (field: CmsNeutralField<'home'>) => `home.${field}`,
-  about: (locale: Locale, field: CmsLocalizedField<'about'>) => `about.${locale}.${field}`,
-  aboutNeutral: (field: CmsNeutralField<'about'>) => `about.${field}`,
   chrome: (locale: Locale, field: CmsLocalizedField<'chrome'>) => `chrome.${locale}.${field}`,
   collection: <C extends CollectionKey>(collection: C): C => collection,
   item: (collection: CollectionKey, id: string) => `${collection}.${id}`,
@@ -84,7 +82,7 @@ function parseFieldTarget(scope: CmsScope, segments: string[]): CmsFieldTarget |
 /** Parses a CMS path; null for anything outside the field model (unknown field, locale, index…). */
 export function parseCmsPath(path: string): ParsedCmsPath | null {
   const [head, ...rest] = path.split('.');
-  if (head === 'home' || head === 'about' || head === 'chrome') {
+  if (head === 'home' || head === 'chrome') {
     const target = parseFieldTarget(head, rest);
     return target ? { kind: 'field', scope: head, ...target } : null;
   }

@@ -2,7 +2,7 @@ export const LOCALES = ['ru', 'en'] as const;
 
 export type Locale = (typeof LOCALES)[number];
 
-/** RU is the default locale and lives at the site root (`/`, `/about`). */
+/** RU is the default locale and lives at the site root (`/`, `/works/<slug>`). */
 export const DEFAULT_LOCALE: Locale = 'ru';
 
 export const LOCALE_LABELS: Record<Locale, string> = {

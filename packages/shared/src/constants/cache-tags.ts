@@ -5,7 +5,6 @@
  */
 export const CacheTags = {
   home: 'content:home',
-  about: 'content:about',
   settings: 'content:settings',
   projects: 'content:projects',
   /** Nav / footer / button labels (SiteChrome). */
@@ -16,7 +15,6 @@ export const CacheTags = {
 
 export type StaticContentTag =
   | 'content:home'
-  | 'content:about'
   | 'content:settings'
   | 'content:projects'
   | 'content:chrome';
@@ -26,7 +24,6 @@ export type ContentTag = StaticContentTag | `project:${string}`;
 /** Every static (non per-slug) content tag — used for "publish all". */
 export const ALL_STATIC_CONTENT_TAGS: StaticContentTag[] = [
   CacheTags.home,
-  CacheTags.about,
   CacheTags.settings,
   CacheTags.projects,
   CacheTags.chrome,

@@ -2,7 +2,6 @@ import type { CSSProperties } from 'react';
 import {
   CMS_ATTR,
   CMS_SECTION_LABELS,
-  type AboutSectionKey,
   type CollectionKey,
   type HomeSectionKey,
 } from '@alcha/shared';
@@ -33,7 +32,7 @@ const ACTION: CSSProperties = {
   cursor: 'pointer',
 };
 
-type Props = { section: HomeSectionKey | AboutSectionKey } & (
+type Props = { section: HomeSectionKey } & (
   { variant: 'hidden' } | { variant: 'empty'; collection: CollectionKey }
 );
 

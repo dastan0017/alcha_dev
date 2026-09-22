@@ -1,13 +1,7 @@
 import { z } from 'zod';
 
 /** What the CRM asks the API to publish (which triggers web revalidation). */
-export const publishTargetSchema = z.enum([
-  'home',
-  'about',
-  'settings',
-  'projects',
-  'all',
-]);
+export const publishTargetSchema = z.enum(['home', 'settings', 'projects', 'all']);
 export type PublishTarget = z.infer<typeof publishTargetSchema>;
 
 export const publishRequestSchema = z.object({

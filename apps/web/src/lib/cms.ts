@@ -81,8 +81,6 @@ export function cmsAttrs(enabled: boolean, locale: Locale) {
       ),
 
     home: (field: CmsLocalizedField<'home'>, index?: number) => cmsPath.home(locale, field, index),
-    about: (field: CmsLocalizedField<'about'>) => cmsPath.about(locale, field),
-    aboutNeutral: (field: CmsNeutralField<'about'>) => cmsPath.aboutNeutral(field),
     chrome: (field: CmsLocalizedField<'chrome'>) => cmsPath.chrome(locale, field),
     itemLocale: <C extends CollectionKey>(
       collection: C,

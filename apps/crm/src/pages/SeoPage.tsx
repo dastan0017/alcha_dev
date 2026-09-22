@@ -88,10 +88,7 @@ export function SeoPage() {
             <Form.Item name="page" label="Страница" rules={[{ required: true }]}>
               <Select
                 style={{ width: 160 }}
-                options={[
-                  { value: 'home', label: 'Главная' },
-                  { value: 'about', label: 'Обо мне' },
-                ]}
+                options={[{ value: 'home', label: 'Главная' }]}
               />
             </Form.Item>
             <Form.Item name="locale" label="Язык" rules={[{ required: true }]}>

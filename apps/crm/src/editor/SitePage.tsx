@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
-  ABOUT_SECTION_KEYS,
   CMS_SECTION_LABELS,
   DEFAULT_LOCALE,
   HOME_SECTION_KEYS,
@@ -10,7 +9,6 @@ import {
   hiddenSectionPatch,
   parseCmsItemRef,
   parseCmsPath,
-  type AboutSectionKey,
   type CmsEditorMode,
   type CmsNode,
   type CollectionKey,
@@ -64,12 +62,10 @@ const MAX_STRAY_RELOADS = 2;
 
 const PAGE_TITLES: Record<Exclude<PageKind, 'case'>, string> = {
   home: 'Главная',
-  about: 'Обо мне',
 };
 
-const isHideableSection = (section: string): section is HomeSectionKey | AboutSectionKey =>
-  (HOME_SECTION_KEYS as readonly string[]).includes(section) ||
-  (ABOUT_SECTION_KEYS as readonly string[]).includes(section);
+const isHideableSection = (section: string): section is HomeSectionKey =>
+  (HOME_SECTION_KEYS as readonly string[]).includes(section);
 
 const NON_TEXT_INPUTS = new Set([
   'button',
@@ -288,7 +284,7 @@ export function SitePage() {
     }
   };
 
-  const setSectionHidden = (section: HomeSectionKey | AboutSectionKey, hidden: boolean) => {
+  const setSectionHidden = (section: HomeSectionKey, hidden: boolean) => {
     if (!tree) return;
     const label = CMS_SECTION_LABELS[section];
     const entryId = change([hiddenSectionPatch(tree, section, hidden)], `Секция «${label}»`);

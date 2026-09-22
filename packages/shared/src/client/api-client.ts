@@ -1,7 +1,7 @@
 import type { z } from 'zod';
 import type { Locale } from '../constants/locales';
 import { CacheTags, CONTENT_REVALIDATE_SECONDS } from '../constants/cache-tags';
-import { homeResponseSchema, aboutResponseSchema, type HomeResponse, type AboutResponse } from '../dto/content';
+import { homeResponseSchema, type HomeResponse } from '../dto/content';
 import { siteSettingsSchema, type SiteSettings } from '../dto/settings';
 import { siteChromeSchema, type SiteChrome } from '../dto/chrome';
 import { draftVerifyResponseSchema, type DraftVerifyResponse } from '../dto/content-draft';
@@ -111,10 +111,6 @@ export function createApiClient(options: ApiClientOptions) {
       return request(`/content/home?locale=${locale}`, homeResponseSchema, withTags(opts, [CacheTags.home]));
     },
 
-    getAbout(locale: Locale, opts?: RequestOptions): Promise<AboutResponse> {
-      return request(`/content/about?locale=${locale}`, aboutResponseSchema, withTags(opts, [CacheTags.about]));
-    },
-
     getSettings(locale: Locale, opts?: RequestOptions): Promise<SiteSettings> {
       return request(`/content/settings?locale=${locale}`, siteSettingsSchema, withTags(opts, [CacheTags.settings]));
     },
@@ -141,10 +137,6 @@ export function createApiClient(options: ApiClientOptions) {
 
     getDraftHome(locale: Locale, token: string): Promise<HomeResponse> {
       return request(`/content/draft/home?locale=${locale}`, homeResponseSchema, draftInit(token));
-    },
-
-    getDraftAbout(locale: Locale, token: string): Promise<AboutResponse> {
-      return request(`/content/draft/about?locale=${locale}`, aboutResponseSchema, draftInit(token));
     },
 
     getDraftChrome(locale: Locale, token: string): Promise<SiteChrome> {

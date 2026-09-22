@@ -36,7 +36,7 @@ edit in CRM ──▶ Save (draft in Postgres)
                                                         refreshed in seconds, no rebuild
 ```
 
-Cache tags: `content:home`, `content:about`, `content:settings`, `content:projects`,
+Cache tags: `content:home`, `content:settings`, `content:projects`, `content:chrome`,
 `project:{slug}`. A time-based `revalidate = 3600` is the safety net.
 
 ## Prerequisites

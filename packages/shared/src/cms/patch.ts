@@ -1,11 +1,5 @@
 import { z } from 'zod';
-import {
-  ABOUT_SECTION_KEYS,
-  HOME_SECTION_KEYS,
-  projectBadgeSchema,
-  type AboutSectionKey,
-  type HomeSectionKey,
-} from '../dto/enums';
+import { HOME_SECTION_KEYS, projectBadgeSchema, type HomeSectionKey } from '../dto/enums';
 import { cmsPath, parseCmsPath, type CmsFieldTarget, type ParsedCmsPath } from './paths';
 import {
   CMS_FIELD_MODEL,
@@ -132,19 +126,19 @@ export function exclusiveFlagPatches<C extends CollectionKey>(
 }
 
 /**
- * Sets the owning page's `hiddenSections` with `section` added or removed, in
- * HOME_SECTION_KEYS / ABOUT_SECTION_KEYS order, so equal sets are equal arrays.
+ * Sets the homepage's `hiddenSections` with `section` added or removed, in
+ * HOME_SECTION_KEYS order, so equal sets are equal arrays.
  */
 export function hiddenSectionPatch(
   tree: SiteTree,
-  section: HomeSectionKey | AboutSectionKey,
+  section: HomeSectionKey,
   hidden: boolean,
 ): ContentPatch {
-  const scope = (HOME_SECTION_KEYS as readonly string[]).includes(section) ? 'home' : 'about';
-  const keys: readonly string[] = scope === 'home' ? HOME_SECTION_KEYS : ABOUT_SECTION_KEYS;
-  const current: readonly string[] = tree[scope].hiddenSections;
-  const value = keys.filter((key) => (key === section ? hidden : current.includes(key)));
-  return { op: 'set', path: `${scope}.hiddenSections`, value };
+  const current: readonly string[] = tree.home.hiddenSections;
+  const value = HOME_SECTION_KEYS.filter((key) =>
+    key === section ? hidden : current.includes(key),
+  );
+  return { op: 'set', path: 'home.hiddenSections', value };
 }
 
 // ─── Internals ───────────────────────────────────────────────────────────────
@@ -311,8 +305,7 @@ function checkValue(kind: CmsFieldKind, scope: CmsScope, value: unknown, fail: F
     case 'stringList':
       return isStringArray(value) ? [...value] : fail('expected an array of strings');
     case 'sectionList': {
-      const allowed: readonly string[] =
-        scope === 'home' ? HOME_SECTION_KEYS : scope === 'about' ? ABOUT_SECTION_KEYS : [];
+      const allowed: readonly string[] = scope === 'home' ? HOME_SECTION_KEYS : [];
       if (!isStringArray(value) || !value.every((key) => allowed.includes(key))) {
         return fail(`expected an array of ${allowed.join(', ')}`);
       }

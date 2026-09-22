@@ -1,5 +1,4 @@
 import {
-  ABOUT_SECTION_KEYS,
   CMS_ATTR,
   CMS_SECTION_KEYS,
   CMS_SOURCE,
@@ -11,7 +10,6 @@ import {
   isCollectionKey,
   isLocale,
   parseCmsItemRef,
-  type AboutSectionKey,
   type CmsChildMessage,
   type CmsEditorMode,
   type CmsNode,
@@ -73,9 +71,8 @@ ${sel(CMS_ATTR.hidden)}:hover { background: rgba(91, 52, 201, 0.1) !important; }
 const isSectionKey = (value: string): value is CmsSectionKey =>
   (CMS_SECTION_KEYS as readonly string[]).includes(value);
 
-const isHideableSection = (value: string): value is HomeSectionKey | AboutSectionKey =>
-  (HOME_SECTION_KEYS as readonly string[]).includes(value) ||
-  (ABOUT_SECTION_KEYS as readonly string[]).includes(value);
+const isHideableSection = (value: string): value is HomeSectionKey =>
+  (HOME_SECTION_KEYS as readonly string[]).includes(value);
 
 const normalize = (text: string, multiline: boolean) =>
   (multiline ? text.replace(/\r\n/g, '\n') : text.replace(/[\r\n]+/g, ' ')).trim();

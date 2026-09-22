@@ -35,7 +35,6 @@ enum UserRole {
 
 enum SeoPage {
   home
-  about
 }
 
 // ----------------------------------------------------------------- Auth ------
@@ -89,7 +88,6 @@ model SiteChromeTranslation {
   locale                Locale
   navWorks              String     @default("")
   navPricing            String     @default("")
-  navAbout              String     @default("")
   navCta                String     @default("")
   /// Compact header CTA on narrow screens.
   navCtaShort           String     @default("")
@@ -145,7 +143,6 @@ model HomeContentTranslation {
   worksEyebrow           String      @default("")
   worksHeading           String
   worksLede              String      @default("")
-  worksLinkLabel         String      @default("")
   pricingEyebrow         String      @default("")
   pricingHeading         String
   pricingNote            String
@@ -197,7 +194,6 @@ model Project {
   badgeType    ProjectBadge
   sortOrder    Int                  @default(0)
   showOnHome   Boolean              @default(false)
-  showOnAbout  Boolean              @default(false)
   published    Boolean              @default(false)
   screenshots  String[]
   coverImage   String?
@@ -256,106 +252,6 @@ model PricingPlanTranslation {
   features       String[]
 
   @@unique([planId, locale])
-}
-
-// ---------------------------------------------------------- Experience --------
-
-model Experience {
-  id           String                  @id @default(cuid())
-  company      String
-  sortOrder    Int                     @default(0)
-  published    Boolean                 @default(true)
-  createdAt    DateTime                @default(now())
-  updatedAt    DateTime                @updatedAt
-  translations ExperienceTranslation[]
-}
-
-model ExperienceTranslation {
-  id           String     @id @default(cuid())
-  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
-  experienceId String
-  locale       Locale
-  role         String
-  meta         String
-  description  String
-
-  @@unique([experienceId, locale])
-}
-
-// --------------------------------------------------------- About page ---------
-
-// Singleton — bio, photo and section headings for the About page.
-model AboutProfile {
-  id             String                    @id @default(cuid())
-  photoUrl       String?
-  /// Sections the owner hid in the visual editor (AboutSectionKey values).
-  hiddenSections String[]                  @default([])
-  createdAt      DateTime                  @default(now())
-  updatedAt      DateTime                  @updatedAt
-  translations   AboutProfileTranslation[]
-}
-
-model AboutProfileTranslation {
-  id                String       @id @default(cuid())
-  aboutProfile      AboutProfile @relation(fields: [aboutProfileId], references: [id], onDelete: Cascade)
-  aboutProfileId    String
-  locale            Locale
-  name              String
-  photoCaption      String       @default("")
-  bioHtml           String
-  experienceHeading String
-  projectsHeading   String
-  stackHeading      String
-  hobbiesHeading    String
-
-  @@unique([aboutProfileId, locale])
-}
-
-// -------------------------------------------------------------- Stack ---------
-
-model StackCategory {
-  id           String                     @id @default(cuid())
-  sortOrder    Int                        @default(0)
-  published    Boolean                    @default(true)
-  items        String[]
-  createdAt    DateTime                   @default(now())
-  updatedAt    DateTime                   @updatedAt
-  translations StackCategoryTranslation[]
-}
-
-model StackCategoryTranslation {
-  id              String        @id @default(cuid())
-  stackCategory   StackCategory @relation(fields: [stackCategoryId], references: [id], onDelete: Cascade)
-  stackCategoryId String
-  locale          Locale
-  title           String
-
-  @@unique([stackCategoryId, locale])
-}
-
-// ------------------------------------------------------------- Hobbies --------
-
-model HobbyCard {
-  id           String                 @id @default(cuid())
-  handle       String
-  url          String                 @default("")
-  imageUrl     String?
-  sortOrder    Int                    @default(0)
-  published    Boolean                @default(true)
-  createdAt    DateTime               @default(now())
-  updatedAt    DateTime               @updatedAt
-  translations HobbyCardTranslation[]
-}
-
-model HobbyCardTranslation {
-  id          String    @id @default(cuid())
-  hobbyCard   HobbyCard @relation(fields: [hobbyCardId], references: [id], onDelete: Cascade)
-  hobbyCardId String
-  locale      Locale
-  title       String
-  description String
-
-  @@unique([hobbyCardId, locale])
 }
 
 // ------------------------------------------------------- Visual editor --------

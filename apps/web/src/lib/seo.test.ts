@@ -5,8 +5,7 @@ import { buildMetadata, localizedPath } from './seo';
 test('localizedPath keeps RU at the root and prefixes EN with /en', () => {
   assert.equal(localizedPath('/', 'ru'), '/');
   assert.equal(localizedPath('/', 'en'), '/en');
-  assert.equal(localizedPath('/about', 'ru'), '/about');
-  assert.equal(localizedPath('/about', 'en'), '/en/about');
+  assert.equal(localizedPath('/works/chaban', 'ru'), '/works/chaban');
   assert.equal(localizedPath('/works/chaban', 'en'), '/en/works/chaban');
 });
 
@@ -15,15 +14,15 @@ test('buildMetadata sets a canonical and hreflang alternates', () => {
     title: 'Test title',
     description: 'Test description',
     keywords: ['bishkek'],
-    path: '/about',
+    path: '/works/chaban',
     locale: 'en',
   });
 
-  assert.ok(String(meta.alternates?.canonical).endsWith('/en/about'));
+  assert.ok(String(meta.alternates?.canonical).endsWith('/en/works/chaban'));
 
   const languages = meta.alternates?.languages as Record<string, string>;
-  assert.ok(languages.ru.endsWith('/about'));
-  assert.ok(languages.en.endsWith('/en/about'));
+  assert.ok(languages.ru.endsWith('/works/chaban'));
+  assert.ok(languages.en.endsWith('/en/works/chaban'));
   assert.equal(languages['x-default'], languages.ru);
 });
 

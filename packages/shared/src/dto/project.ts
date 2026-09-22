@@ -15,7 +15,6 @@ export const projectSchema = z.object({
   badgeType: projectBadgeSchema,
   sortOrder: z.number(),
   showOnHome: z.boolean(),
-  showOnAbout: z.boolean(),
   screenshots: z.array(z.string()),
   coverImage: z.string().nullable(),
   title: z.string(),
@@ -27,12 +26,12 @@ export const projectSchema = z.object({
   metaLine: z.string(),
   /** Mono highlight line of concrete facts on the works card. */
   factsLine: z.string(),
-  /** Role line shown on the detailed About-page card (may be empty). */
+  /** Role line on the case page (may be empty). */
   role: z.string(),
   description: z.string(),
   /** "What was done" chips. */
   pills: z.array(z.string()),
-  /** Detailed bullet points (About-page card). */
+  /** Detailed bullet points on the case page. */
   bullets: z.array(z.string()),
   techChips: z.array(z.string()),
   seoTitle: z.string(),

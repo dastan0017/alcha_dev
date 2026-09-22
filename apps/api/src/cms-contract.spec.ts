@@ -61,11 +61,6 @@ const M = CMS_FIELD_MODEL;
 const TREE: SiteTree = siteTreeSchema.parse({
   version: 1,
   home: { hiddenSections: ['works'], ...localized(M.home.localized, 'home') },
-  about: {
-    photoUrl: 'https://cdn/me.jpg',
-    hiddenSections: [],
-    ...localized(M.about.localized, 'about'),
-  },
   chrome: localized(M.chrome.localized, 'chrome'),
   services: ['s1', 's2', 's3'].map((id, i) => ({
     id,
@@ -85,31 +80,10 @@ const TREE: SiteTree = siteTreeSchema.parse({
     published: i !== 2,
     slug: `${id}-slug`,
     badgeType: i === 0 ? 'own' : 'work',
-    showOnHome: true,
-    showOnAbout: i > 0,
+    showOnHome: i !== 1,
     coverImage: i === 0 ? null : `https://cdn/${id}.png`,
-    screenshots: [`https://cdn/${id}-0.png`],
+    screenshots: [`https://cdn/${id}-0.png`, `https://cdn/${id}-1.png`],
     ...localized(M.projects.localized, id),
-  })),
-  experience: ['e1', 'e2'].map((id) => ({
-    id,
-    published: true,
-    company: `${id}-company`,
-    ...localized(M.experience.localized, id),
-  })),
-  stack: ['st1', 'st2'].map((id) => ({
-    id,
-    published: true,
-    items: ['React', 'Next.js'],
-    ...localized(M.stack.localized, id),
-  })),
-  hobbies: ['h1', 'h2'].map((id) => ({
-    id,
-    published: true,
-    handle: `@${id}`,
-    url: `https://x.com/${id}`,
-    imageUrl: null,
-    ...localized(M.hobbies.localized, id),
   })),
 });
 
@@ -141,17 +115,18 @@ describe('siteTreeSchema', () => {
     ['extra chrome key', (t) => (t.chrome.ru.extra = '')],
     ['extra item key', (t) => (t.services[0].sortOrder = 0)],
     ['extra item copy key', (t) => (t.projects[0].en.extra = '')],
-    ['missing localized field', (t) => delete t.about.en.name],
+    ['missing localized field', (t) => delete t.chrome.en.navWorks],
     ['wrong version', (t) => (t.version = 2)],
-    ['bad id charset', (t) => (t.stack[0].id = 'a.b')],
+    ['bad id charset', (t) => (t.pricing[0].id = 'a.b')],
     ['unknown hidden section', (t) => (t.home.hiddenSections = ['experience'])],
     ['bad badgeType', (t) => (t.projects[0].badgeType = 'client')],
     ['duplicate item id', (t) => (t.services[2].id = 's1')],
     ['duplicate home hidden section', (t) => (t.home.hiddenSections = ['works', 'works'])],
-    [
-      'duplicate about hidden section',
-      (t) => (t.about.hiddenSections = ['stack', 'hobbies', 'stack']),
-    ],
+    ['removed about scope', (t) => (t.about = {})],
+    ['removed hobbies collection', (t) => (t.hobbies = [])],
+    ['removed showOnAbout flag', (t) => (t.projects[0].showOnAbout = true)],
+    ['removed navAbout label', (t) => (t.chrome.ru.navAbout = 'Обо мне')],
+    ['removed worksLinkLabel', (t) => (t.home.en.worksLinkLabel = '')],
   ];
   it.each(mutations)('rejects %s', (_, mutate) => {
     const tree = clone(TREE) as Record<string, any>;
@@ -259,11 +234,13 @@ describe('PROJECT_SLUG_PATTERN', () => {
 
 describe('field model types', () => {
   it('distribute over a collection union, so generic drawer code can build paths', () => {
-    const collection = 'stack' as CollectionKey;
-    const neutral: CmsNeutralField<CollectionKey> = 'items';
+    const collection = 'projects' as CollectionKey;
+    const neutral: CmsNeutralField<CollectionKey> = 'screenshots';
     const localizedField: CmsLocalizedField<CollectionKey> = 'title';
-    expect(cmsPath.itemField(collection, 'st1', neutral, 0)).toBe('stack.st1.items.0');
-    expect(cmsPath.itemLocale(collection, 'st1', 'en', localizedField)).toBe('stack.st1.en.title');
+    expect(cmsPath.itemField(collection, 'pr1', neutral, 0)).toBe('projects.pr1.screenshots.0');
+    expect(cmsPath.itemLocale(collection, 'pr1', 'en', localizedField)).toBe(
+      'projects.pr1.en.title',
+    );
   });
 });
 
@@ -291,12 +268,9 @@ describe('parseCmsPath', () => {
     ['home.ru.heroTitle', field('home', 'ru', 'heroTitle', 'string')],
     ['home.en.heroBullets', field('home', 'en', 'heroBullets', 'stringList')],
     ['home.en.heroBullets.12', field('home', 'en', 'heroBullets', 'stringList', 12)],
-    ['about.photoUrl', field('about', null, 'photoUrl', 'nullableString')],
-    ['about.hiddenSections', field('about', null, 'hiddenSections', 'sectionList')],
-    ['about.ru.bioHtml', field('about', 'ru', 'bioHtml', 'string')],
     ['chrome.en.pricingSwipeHint', field('chrome', 'en', 'pricingSwipeHint', 'string')],
     ['services', { kind: 'collection', collection: 'services' }],
-    ['hobbies.Ab_9-x', { kind: 'item', collection: 'hobbies', id: 'Ab_9-x' }],
+    ['pricing.Ab_9-x', { kind: 'item', collection: 'pricing', id: 'Ab_9-x' }],
     ['projects.pr1.coverImage', itemField('projects', 'pr1', null, 'coverImage', 'nullableString')],
     ['projects.pr1.badgeType', itemField('projects', 'pr1', null, 'badgeType', 'badgeType')],
     ['projects.pr1.showOnHome', itemField('projects', 'pr1', null, 'showOnHome', 'boolean')],
@@ -304,10 +278,9 @@ describe('parseCmsPath', () => {
       'projects.pr1.screenshots.0',
       itemField('projects', 'pr1', null, 'screenshots', 'stringList', 0),
     ],
-    ['stack.st1.items.2', itemField('stack', 'st1', null, 'items', 'stringList', 2)],
     ['services.s1.ru.title', itemField('services', 's1', 'ru', 'title', 'string')],
     ['pricing.p1.en.features.0', itemField('pricing', 'p1', 'en', 'features', 'stringList', 0)],
-    ['experience.ru.ru.role', itemField('experience', 'ru', 'ru', 'role', 'string')],
+    ['pricing.ru.ru.name', itemField('pricing', 'ru', 'ru', 'name', 'string')],
   ];
   it.each(accepted)('accepts %s', (path, expected) => {
     expect(parseCmsPath(path)).toEqual(expected);
@@ -332,8 +305,13 @@ describe('parseCmsPath', () => {
     'home.ru.heroBullets.',
     'home.ru.constructor',
     'home.__proto__',
-    'about.ru.photoUrl',
-    'about.en.name.0',
+    'about.photoUrl',
+    'about.ru.bioHtml',
+    'hobbies.h1',
+    'stack.st1.items.0',
+    'projects.pr1.showOnAbout',
+    'chrome.ru.navAbout',
+    'home.ru.worksLinkLabel',
     'chrome.navCta',
     'chrome.ru.navCta.0',
     'widgets',
@@ -349,7 +327,7 @@ describe('parseCmsPath', () => {
     'services.s1.ru.number',
     'services.s1.ru.title.0',
     'projects.pr1.coverImage.0',
-    'stack.st1.items.1.2',
+    'projects.pr1.screenshots.1.2',
     'pricing.p1.fr.name',
   ])('rejects %j', (path) => {
     expect(parseCmsPath(path)).toBeNull();
@@ -360,12 +338,10 @@ describe('parseCmsPath', () => {
       cmsPath.home('ru', 'heroTitle'),
       cmsPath.home('en', 'heroBullets', 3),
       cmsPath.homeNeutral('hiddenSections'),
-      cmsPath.about('en', 'bioHtml'),
-      cmsPath.aboutNeutral('photoUrl'),
       cmsPath.chrome('ru', 'navCta'),
       cmsPath.collection('pricing'),
       cmsPath.item('pricing', 'p1'),
-      cmsPath.itemField('stack', 'st1', 'items', 2),
+      cmsPath.itemField('projects', 'pr1', 'screenshots', 2),
       cmsPath.itemField('projects', 'pr1', 'coverImage'),
       cmsPath.itemLocale('pricing', 'p1', 'en', 'features', 0),
       cmsPath.itemLocale('services', 's1', 'ru', 'title'),
@@ -374,12 +350,10 @@ describe('parseCmsPath', () => {
       'home.ru.heroTitle',
       'home.en.heroBullets.3',
       'home.hiddenSections',
-      'about.en.bioHtml',
-      'about.photoUrl',
       'chrome.ru.navCta',
       'pricing',
       'pricing.p1',
-      'stack.st1.items.2',
+      'projects.pr1.screenshots.2',
       'projects.pr1.coverImage',
       'pricing.p1.en.features.0',
       'services.s1.ru.title',
@@ -392,18 +366,18 @@ describe('getAtPath', () => {
   it('reads leaves, list entries, items and collections', () => {
     expect(getAtPath(TREE, 'home.ru.heroTitle')).toBe('home.ru.heroTitle');
     expect(getAtPath(TREE, 'home.hiddenSections')).toEqual(['works']);
-    expect(getAtPath(TREE, 'about.photoUrl')).toBe('https://cdn/me.jpg');
+    expect(getAtPath(TREE, 'projects.pr2.coverImage')).toBe('https://cdn/pr2.png');
     expect(getAtPath(TREE, 'pricing.p2.en.features.1')).toBe('p2.en.features.1');
-    expect(getAtPath(TREE, 'stack.st2.items.0')).toBe('React');
+    expect(getAtPath(TREE, 'projects.pr2.screenshots.0')).toBe('https://cdn/pr2-0.png');
     expect(getAtPath(TREE, 'projects.pr1.coverImage')).toBeNull();
     expect(getAtPath(TREE, 'services.s2')).toBe(TREE.services[1]);
-    expect(getAtPath(TREE, 'hobbies')).toBe(TREE.hobbies);
+    expect(getAtPath(TREE, 'pricing')).toBe(TREE.pricing);
   });
 
   it('is undefined for missing ids, indexes and invalid paths', () => {
     expect(getAtPath(TREE, 'services.ghost')).toBeUndefined();
     expect(getAtPath(TREE, 'services.ghost.ru.title')).toBeUndefined();
-    expect(getAtPath(TREE, 'stack.st1.items.9')).toBeUndefined();
+    expect(getAtPath(TREE, 'projects.pr1.screenshots.9')).toBeUndefined();
     expect(getAtPath(TREE, 'home.ru.nope')).toBeUndefined();
   });
 });
@@ -415,26 +389,22 @@ describe('applyPatches: set', () => {
     const { tree, applied, skipped } = apply([
       set('home.ru.heroTitle', 'Новый'),
       set('home.hiddenSections', ['services', 'pricing']),
-      set('about.photoUrl', null),
-      set('about.hiddenSections', ['stack']),
       set('chrome.en.navCta', 'Talk'),
       set('services.s2.featured', true),
       set('services.s2.number', '42'),
       set('projects.pr2.badgeType', 'own'),
       set('projects.pr2.coverImage', null),
-      set('hobbies.h1.imageUrl', 'https://cdn/h1.png'),
+      set('projects.pr1.coverImage', 'https://cdn/pr1.png'),
       set('pricing.p1.en.features', ['a']),
       set('services.s3.ru.bullets.1', 'changed'),
     ]);
-    expect({ applied, skipped }).toEqual({ applied: 12, skipped: 0 });
+    expect({ applied, skipped }).toEqual({ applied: 10, skipped: 0 });
     expect(tree.home.ru.heroTitle).toBe('Новый');
     expect(tree.home.hiddenSections).toEqual(['services', 'pricing']);
-    expect(tree.about.photoUrl).toBeNull();
-    expect(tree.about.hiddenSections).toEqual(['stack']);
     expect(tree.chrome.en.navCta).toBe('Talk');
     expect(tree.services[1]).toMatchObject({ featured: true, number: '42' });
     expect(tree.projects[1]).toMatchObject({ badgeType: 'own', coverImage: null });
-    expect(tree.hobbies[0].imageUrl).toBe('https://cdn/h1.png');
+    expect(tree.projects[0].coverImage).toBe('https://cdn/pr1.png');
     expect(tree.pricing[0].en.features).toEqual(['a']);
     expect(tree.services[2].ru.bullets).toEqual(['s3.ru.bullets.0', 'changed']);
   });
@@ -448,19 +418,17 @@ describe('applyPatches: set', () => {
     ['home.ru.heroBullets.0', ['nested']],
     ['home.hiddenSections', ['experience']],
     ['home.hiddenSections', 'works'],
-    ['about.hiddenSections', ['works']],
-    ['about.photoUrl', 5],
+    ['projects.pr2.coverImage', 5],
     ['projects.pr1.coverImage', undefined],
-    ['hobbies.h1.imageUrl', false],
+    ['projects.pr3.coverImage', false],
     ['services.s1.featured', 'yes'],
     ['services.s1.number', 1],
     ['projects.pr1.badgeType', 'client'],
-    ['stack.st1.items.0', 3],
-    ['stack.st1.items', [null]],
+    ['projects.pr1.screenshots.0', 3],
+    ['projects.pr1.screenshots', [null]],
     ['home.ru.heroBullets', new Array(2)],
     ['home.hiddenSections', new Array(1)],
     ['home.hiddenSections', ['works', 'works']],
-    ['about.hiddenSections', ['stack', 'hobbies', 'stack']],
   ])('rejects %s = %j', (path, value) => {
     expectPatchError([set(path, value)]);
   });
@@ -468,10 +436,10 @@ describe('applyPatches: set', () => {
   it.each<[string, unknown]>([
     ['services.ghost.featured', 'yes'],
     ['services.ghost.ru.title', 42],
-    ['stack.ghost.items', 'not-a-list'],
+    ['projects.ghost.screenshots', 'not-a-list'],
     ['projects.ghost.badgeType', 'client'],
     ['services.ghost.ru.bullets.0', ['nested']],
-    ['hobbies.ghost.imageUrl', undefined],
+    ['projects.ghost.coverImage', undefined],
   ])('rejects %s = %j even though the item is missing', (path, value) => {
     expectPatchError([set(path, value)]);
   });
@@ -490,19 +458,24 @@ describe('applyPatches: set', () => {
 
   it('appends at index === length and throws past the end', () => {
     const appended = apply([
-      set('stack.st1.items.2', 'Vue'),
-      set('stack.st1.items.3', 'Nest'),
+      set('projects.pr1.screenshots.2', 'c.png'),
+      set('projects.pr1.screenshots.3', 'd.png'),
     ]).tree;
-    expect(appended.stack[0].items).toEqual(['React', 'Next.js', 'Vue', 'Nest']);
-    expectPatchError([set('stack.st1.items.3', 'Vue')]);
+    expect(appended.projects[0].screenshots).toEqual([
+      'https://cdn/pr1-0.png',
+      'https://cdn/pr1-1.png',
+      'c.png',
+      'd.png',
+    ]);
+    expectPatchError([set('projects.pr1.screenshots.3', 'c.png')]);
     expectPatchError([set('home.en.heroBullets.5', 'x')]);
   });
 
   it('skips a well-typed set on a missing item id (the past-end check needs the item)', () => {
     const result = apply([
       set('services.ghost.ru.title', 'x'),
-      set('stack.ghost.items.0', 'x'),
-      set('stack.ghost.items.9', 'x'),
+      set('projects.ghost.screenshots.0', 'x'),
+      set('projects.ghost.screenshots.9', 'x'),
     ]);
     expect(result).toEqual({ tree: TREE, applied: 0, skipped: 3 });
   });
@@ -613,12 +586,12 @@ describe('idempotency', () => {
   it('replays a batch of absolute sets, upserts, removes and one move to the same tree', () => {
     const batch: ContentPatch[] = [
       set('home.ru.heroTitle', 'x'),
-      set('stack.st1.items.2', 'Vue'),
+      set('projects.pr1.screenshots.2', 'c.png'),
       set('pricing.p1.en.features', ['only']),
       set('home.hiddenSections', ['pricing']),
       insert('services', NEW_SERVICE, 1),
       insert('services', { ...clone(TREE.services[2]), number: '33' }),
-      remove('experience.e1'),
+      remove('pricing.p3'),
       move('projects.pr3', 0),
       set('services.nNew.ru.title', 'new title'),
       set('services.ghost.ru.title', 'skipped'),
@@ -645,7 +618,10 @@ describe('invertPatches', () => {
     ['leaf set', [set('home.ru.heroTitle', 'Новый')]],
     ['same leaf twice', [set('home.ru.heroTitle', 'a'), set('home.ru.heroTitle', 'b')]],
     ['list entry', [set('services.s1.en.bullets.0', 'x')]],
-    ['two appends', [set('stack.st1.items.2', 'Vue'), set('stack.st1.items.3', 'Nest')]],
+    [
+      'two appends',
+      [set('projects.pr1.screenshots.2', 'c.png'), set('projects.pr1.screenshots.3', 'd.png')],
+    ],
     [
       'append then overwrite it',
       [set('home.en.heroBullets.2', 'x'), set('home.en.heroBullets.2', 'y')],
@@ -661,13 +637,12 @@ describe('invertPatches', () => {
     [
       'neutral kinds',
       [
-        set('about.photoUrl', null),
-        set('about.photoUrl', 'https://cdn/new.jpg'),
-        set('about.hiddenSections', ['stack', 'hobbies']),
+        set('projects.pr2.coverImage', null),
+        set('projects.pr2.coverImage', 'https://cdn/new.png'),
         set('home.hiddenSections', []),
         set('projects.pr2.badgeType', 'own'),
         set('projects.pr1.coverImage', 'https://cdn/c.png'),
-        set('hobbies.h1.imageUrl', 'x'),
+        set('projects.pr3.showOnHome', false),
         set('services.s2.featured', true),
       ],
     ],
@@ -698,7 +673,7 @@ describe('invertPatches', () => {
       [remove('services.s1'), insert('services', { ...clone(s1), number: 'x' })],
     ],
     ['remove middle', [remove('pricing.p2')]],
-    ['remove all', [remove('experience.e1'), remove('experience.e2')]],
+    ['remove all', [remove('pricing.p1'), remove('pricing.p2'), remove('pricing.p3')]],
     [
       'remove then touch removed',
       [
@@ -721,18 +696,18 @@ describe('invertPatches', () => {
         set('services.ghost.ru.title', 'x'),
         set('services.s1.ru.title', 'y'),
         remove('pricing.ghost'),
-        move('stack.ghost', 0),
-        set('stack.ghost.items.0', 'z'),
+        move('projects.ghost', 0),
+        set('projects.ghost.screenshots.0', 'z'),
       ],
     ],
     ['exclusive flag', exclusiveFlagPatches(TREE, 'pricing', 'p3', 'highlighted', true)],
     [
       'everything across collections',
       [
-        insert('hobbies', { ...clone(TREE.hobbies[0]), id: 'h3' }, 0),
-        set('hobbies.h3.en.title', 'H3'),
-        remove('hobbies.h1'),
-        move('hobbies.h2', 0),
+        insert('projects', { ...clone(TREE.projects[0]), id: 'pr4', slug: 'pr4-slug' }, 0),
+        set('projects.pr4.en.title', 'PR4'),
+        remove('projects.pr1'),
+        move('projects.pr2', 0),
         set('chrome.ru.footerRights', '©'),
         insert('pricing', { ...clone(TREE.pricing[0]), id: 'p4', highlighted: true }, 1),
         ...exclusiveFlagPatches(TREE, 'pricing', 'p4', 'highlighted', true),
@@ -740,10 +715,10 @@ describe('invertPatches', () => {
         remove('pricing.p4'),
         insert('pricing', { ...clone(TREE.pricing[2]), id: 'p4' }),
         move('pricing.p4', 0),
-        set('stack.st2.items', ['Go']),
-        set('stack.st2.items.1', 'Rust'),
-        remove('experience.e2'),
-        insert('experience', clone(TREE.experience[1]), 0),
+        set('projects.pr2.screenshots', ['go.png']),
+        set('projects.pr2.screenshots.1', 'rust.png'),
+        remove('services.s2'),
+        insert('services', clone(TREE.services[1]), 0),
       ],
     ],
   ];
@@ -756,17 +731,17 @@ describe('invertPatches', () => {
     expect(
       invertPatches(TREE, [set('home.ru.heroTitle', 'a'), set('home.ru.heroTitle', 'b')]),
     ).toEqual([set('home.ru.heroTitle', 'a'), set('home.ru.heroTitle', 'home.ru.heroTitle')]);
-    expect(invertPatches(TREE, [set('stack.st1.items.2', 'Vue')])).toEqual([
-      set('stack.st1.items', ['React', 'Next.js']),
+    expect(invertPatches(TREE, [set('projects.pr1.screenshots.2', 'c.png')])).toEqual([
+      set('projects.pr1.screenshots', ['https://cdn/pr1-0.png', 'https://cdn/pr1-1.png']),
     ]);
     expect(
       invertPatches(TREE, [
         insert('services', NEW_SERVICE),
         remove('pricing.p2'),
-        move('stack.st2', 0),
+        move('projects.pr2', 0),
       ]),
     ).toEqual([
-      move('stack.st2', 1),
+      move('projects.pr2', 1),
       insert('pricing', TREE.pricing[1], 1),
       remove('services.nNew'),
     ]);
@@ -822,9 +797,7 @@ function randomSequence(seed: number): ContentPatch[] {
       case 'stringList':
         return Array.from({ length: int(0, 3) }, (_, i) => `l${i}.${int(0, 9)}`);
       case 'sectionList':
-        return scope === 'home'
-          ? pick([[], ['works'], ['services', 'pricing']])
-          : pick([[], ['stack'], ['experience', 'hobbies', 'projects']]);
+        return scope === 'home' ? pick([[], ['works'], ['services', 'pricing']]) : [];
       default:
         return `v${int(0, 99)}`;
     }
@@ -844,7 +817,7 @@ function randomSequence(seed: number): ContentPatch[] {
     const roll = random();
     let patch: ContentPatch;
     if (roll < 0.2) {
-      const scope = pick(['home', 'about', 'chrome'] as const);
+      const scope = pick(['home', 'chrome'] as const);
       const neutral: FieldKinds = M[scope].neutral;
       patch =
         Object.keys(neutral).length > 0 && random() < 0.3
@@ -907,10 +880,10 @@ describe('exclusiveFlagPatches', () => {
     expect(exclusiveFlagPatches(TREE, 'services', 's1', 'featured', true)).toEqual([
       set('services.s1.featured', true),
     ]);
-    expect(exclusiveFlagPatches(TREE, 'projects', 'pr1', 'showOnAbout', true)).toEqual([
-      set('projects.pr1.showOnAbout', true),
-      set('projects.pr2.showOnAbout', false),
-      set('projects.pr3.showOnAbout', false),
+    expect(exclusiveFlagPatches(TREE, 'projects', 'pr2', 'showOnHome', true)).toEqual([
+      set('projects.pr2.showOnHome', true),
+      set('projects.pr1.showOnHome', false),
+      set('projects.pr3.showOnHome', false),
     ]);
   });
 
@@ -921,31 +894,23 @@ describe('exclusiveFlagPatches', () => {
 });
 
 describe('hiddenSectionPatch', () => {
-  it('adds or removes the key on the page that owns the section', () => {
+  it('adds or removes the key on the homepage', () => {
     expect(hiddenSectionPatch(TREE, 'pricing', true)).toEqual(
       set('home.hiddenSections', ['works', 'pricing']),
     );
     expect(hiddenSectionPatch(TREE, 'works', false)).toEqual(set('home.hiddenSections', []));
-    expect(hiddenSectionPatch(TREE, 'stack', true)).toEqual(set('about.hiddenSections', ['stack']));
-    expect(hiddenSectionPatch(TREE, 'hobbies', false)).toEqual(set('about.hiddenSections', []));
   });
 
-  it('keeps HOME_SECTION_KEYS / ABOUT_SECTION_KEYS order, so equal sets are equal arrays', () => {
+  it('keeps HOME_SECTION_KEYS order, so equal sets are equal arrays', () => {
     expect(hiddenSectionPatch(TREE, 'services', true)).toEqual(
       set('home.hiddenSections', ['services', 'works']),
     );
-    const unordered = apply([
-      set('home.hiddenSections', ['pricing', 'works']),
-      set('about.hiddenSections', ['hobbies', 'experience']),
-    ]).tree;
+    const unordered = apply([set('home.hiddenSections', ['pricing', 'works'])]).tree;
     expect(hiddenSectionPatch(unordered, 'works', true)).toEqual(
       set('home.hiddenSections', ['works', 'pricing']),
     );
-    expect(hiddenSectionPatch(unordered, 'stack', true)).toEqual(
-      set('about.hiddenSections', ['experience', 'stack', 'hobbies']),
-    );
-    expect(hiddenSectionPatch(unordered, 'hobbies', false)).toEqual(
-      set('about.hiddenSections', ['experience']),
+    expect(hiddenSectionPatch(unordered, 'services', true)).toEqual(
+      set('home.hiddenSections', ['services', 'works', 'pricing']),
     );
 
     // Hide, show, hide again: the same set as hiding «Цены» once, as the same array.

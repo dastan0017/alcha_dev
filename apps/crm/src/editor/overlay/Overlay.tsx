@@ -73,7 +73,7 @@ export function Overlay({ store, ...actions }: OverlayActions & { store: BridgeS
       )}
       {editingKey && <NodeBox store={store} nodeKey={editingKey} className={styles.editRing} />}
       {hover.item && <NodeBox store={store} nodeKey={hover.item} className={styles.itemHover} />}
-      {/* A text field inside the photo (the About caption) keeps its own outline, without the scrim. */}
+      {/* A text field inside a photo keeps its own outline, without the scrim. */}
       {hover.image && !hover.field && (
         <ImageScrim
           store={store}

@@ -65,9 +65,6 @@ export function Header({
                 {chrome.navPricing}
               </Link>
             )}
-            <Link href="/about" className="nav-link" {...cms.field(cms.chrome('navAbout'))}>
-              {chrome.navAbout}
-            </Link>
           </nav>
 
           <div className="site-header__actions">
@@ -125,14 +122,6 @@ export function Header({
                     {chrome.navPricing}
                   </Link>
                 )}
-                <Link
-                  href="/about"
-                  className="mobile-menu__link"
-                  onClick={close}
-                  {...cms.field(cms.chrome('navAbout'))}
-                >
-                  {chrome.navAbout}
-                </Link>
               </nav>
               <div className="mobile-menu__foot">
                 <LocaleSwitch />

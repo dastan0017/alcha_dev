@@ -5,7 +5,6 @@ import type { Locale } from '../constants/locales';
 export const siteChromeSchema = z.object({
   navWorks: z.string(),
   navPricing: z.string(),
-  navAbout: z.string(),
   navCta: z.string(),
   /** Compact header CTA on narrow screens. */
   navCtaShort: z.string(),
@@ -32,7 +31,6 @@ export const DEFAULT_CHROME: Record<Locale, SiteChrome> = {
   ru: {
     navWorks: 'Работы',
     navPricing: 'Цены',
-    navAbout: 'Обо мне',
     navCta: 'Обсудить проект',
     navCtaShort: 'Обсудить',
     footerTagline: 'Сайты, CRM и веб-приложения под ключ.',
@@ -51,7 +49,6 @@ export const DEFAULT_CHROME: Record<Locale, SiteChrome> = {
   en: {
     navWorks: 'Work',
     navPricing: 'Pricing',
-    navAbout: 'About',
     navCta: 'Discuss a project',
     navCtaShort: 'Discuss',
     footerTagline: 'Turnkey websites, CRMs and web apps.',

@@ -45,12 +45,6 @@ export class ContentController {
   }
 
   @Public()
-  @Get('about')
-  getAbout(@Query('locale') locale?: string) {
-    return this.content.getAbout('published', assertLocale(locale));
-  }
-
-  @Public()
   @Get('chrome')
   getChrome(@Query('locale') locale?: string) {
     return this.content.getChrome('published', assertLocale(locale));
@@ -99,11 +93,6 @@ export class DraftContentController {
   @Get('home')
   getHome(@Query('locale') locale?: string) {
     return this.content.getHome('draft', assertLocale(locale));
-  }
-
-  @Get('about')
-  getAbout(@Query('locale') locale?: string) {
-    return this.content.getAbout('draft', assertLocale(locale));
   }
 
   @Get('chrome')

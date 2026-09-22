@@ -33,7 +33,6 @@ export function isBlank(value: unknown): boolean {
 export function validateTree(tree: SiteTree): TreeIssues {
   const issues: TreeIssues = { errors: [], warnings: [] };
   checkRequired(issues, 'home', 'home', tree.home);
-  checkRequired(issues, 'about', 'about', tree.about);
   checkRequired(issues, 'chrome', 'chrome', tree.chrome);
   for (const collection of COLLECTION_KEYS) {
     for (const node of tree[collection]) {

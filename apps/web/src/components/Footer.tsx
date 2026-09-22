@@ -69,9 +69,6 @@ export function Footer({
               {chrome.navPricing}
             </Link>
           )}
-          <Link href="/about" className="site-footer__link" {...cms.field(cms.chrome('navAbout'))}>
-            {chrome.navAbout}
-          </Link>
         </nav>
 
         {socials.length > 0 && (

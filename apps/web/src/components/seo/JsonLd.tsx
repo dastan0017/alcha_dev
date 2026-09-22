@@ -1,4 +1,4 @@
-import type { AboutResponse, HomeResponse, Locale, Project, SiteSettings } from '@alcha/shared';
+import type { HomeResponse, Locale, Project, SiteSettings } from '@alcha/shared';
 import { env, SITE_NAME } from '@/lib/env';
 
 function JsonLdScript({ data }: { data: unknown }) {
@@ -19,8 +19,8 @@ function extractPrice(label: string): string | undefined {
   return match ? match[1].replace(/[\s,]/g, '') : undefined;
 }
 
-function aboutUrl(locale: Locale): string {
-  return `${env.siteUrl}${locale === 'ru' ? '' : '/en'}/about`;
+function homeUrl(locale: Locale): string {
+  return `${env.siteUrl}${locale === 'ru' ? '' : '/en'}`;
 }
 
 function businessNode(settings: SiteSettings) {
@@ -52,7 +52,7 @@ function personNode(settings: SiteSettings, locale: Locale) {
     '@id': `${env.siteUrl}/#person`,
     name: 'Dastan Rakhmanzhanov',
     jobTitle: 'Senior Frontend Engineer',
-    url: aboutUrl(locale),
+    url: homeUrl(locale),
     worksFor: { '@id': `${env.siteUrl}/#business` },
     knowsAbout: ['React', 'TypeScript', 'Next.js', 'Node.js', 'NestJS', 'GraphQL'],
     sameAs: sameAs(settings),
@@ -111,22 +111,6 @@ export function HomeJsonLd({ home, locale }: { home: HomeResponse; locale: Local
   return (
     <JsonLdScript
       data={{ '@context': 'https://schema.org', '@graph': [business, personNode(settings, locale), website] }}
-    />
-  );
-}
-
-export function AboutJsonLd({ about, locale }: { about: AboutResponse; locale: Locale }) {
-  const person = personNode(about.settings, locale);
-  const breadcrumb = {
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: SITE_NAME, item: env.siteUrl },
-      { '@type': 'ListItem', position: 2, name: 'About', item: aboutUrl(locale) },
-    ],
-  };
-  return (
-    <JsonLdScript
-      data={{ '@context': 'https://schema.org', '@graph': [person, businessNode(about.settings), breadcrumb] }}
     />
   );
 }

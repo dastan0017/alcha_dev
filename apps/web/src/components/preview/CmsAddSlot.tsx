@@ -22,9 +22,6 @@ const SLOTS: Record<CollectionKey, SlotCopy> = {
     minHeight: 96,
   },
   pricing: { label: 'Добавить тариф', hint: 'Колонки выровняются автоматически', minHeight: 220 },
-  experience: { label: 'Добавить место работы', row: true, minHeight: 96 },
-  stack: { label: 'Добавить категорию', row: true, minHeight: 64 },
-  hobbies: { label: 'Добавить карточку', minHeight: 170 },
 };
 
 export const cmsAddLabel = (collection: CollectionKey) => SLOTS[collection].label;

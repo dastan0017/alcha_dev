@@ -2,10 +2,9 @@ import { DEFAULT_LOCALE, type Locale, type ProjectNode, type SiteTree } from '@a
 import { SITE_URL } from '../lib/site';
 
 /** What the page switcher offers: «Кейс проекта» shows one project's case page. */
-export type PageKind = 'home' | 'about' | 'case';
+export type PageKind = 'home' | 'case';
 
-export type SitePageRef =
-  { kind: 'home' } | { kind: 'about' } | { kind: 'case'; project: ProjectNode };
+export type SitePageRef = { kind: 'home' } | { kind: 'case'; project: ProjectNode };
 
 /** Projects that have a case page in the draft. */
 export const caseProjects = (tree: SiteTree): ProjectNode[] =>
@@ -26,8 +25,6 @@ export function pagePath(page: SitePageRef): string {
   switch (page.kind) {
     case 'home':
       return '/';
-    case 'about':
-      return '/about';
     case 'case':
       return `/works/${encodeURIComponent(page.project.slug)}`;
   }

@@ -6,7 +6,7 @@ import { localizedPath } from '@/lib/seo';
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticPaths = ['/', '/about'];
+  const staticPaths = ['/'];
   const projects = await getProjects('ru'); // slugs are shared across locales
   const projectPaths = projects.map((p) => `/works/${p.slug}`);
   const paths = [...staticPaths, ...projectPaths];

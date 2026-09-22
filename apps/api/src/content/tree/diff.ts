@@ -18,9 +18,7 @@ type Owner = Record<string, unknown>;
  */
 export function countChanges(base: SiteTree, tree: SiteTree): number {
   let changes =
-    changedLeaves('home', base.home, tree.home) +
-    changedLeaves('about', base.about, tree.about) +
-    changedLeaves('chrome', base.chrome, tree.chrome);
+    changedLeaves('home', base.home, tree.home) + changedLeaves('chrome', base.chrome, tree.chrome);
 
   for (const collection of COLLECTION_KEYS) {
     const before: readonly (Owner & { id: string })[] = base[collection];

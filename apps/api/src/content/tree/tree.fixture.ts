@@ -21,11 +21,6 @@ export function treeFixture(): SiteTree {
   return siteTreeSchema.parse({
     version: 1,
     home: { hiddenSections: [], ...copy(M.home.localized, 'home') },
-    about: {
-      photoUrl: 'https://cdn/me.jpg',
-      hiddenSections: [],
-      ...copy(M.about.localized, 'about'),
-    },
     chrome: copy(M.chrome.localized, 'chrome'),
     services: ['s1', 's2', 's3'].map((id, i) => ({
       id,
@@ -41,9 +36,9 @@ export function treeFixture(): SiteTree {
       ...copy(M.pricing.localized, id),
     })),
     projects: [
-      { id: 'pr1', slug: 'first', showOnHome: true, showOnAbout: false },
-      { id: 'pr2', slug: 'second', showOnHome: false, showOnAbout: true },
-      { id: 'pr3', slug: 'third-one', showOnHome: true, showOnAbout: true },
+      { id: 'pr1', slug: 'first', showOnHome: true },
+      { id: 'pr2', slug: 'second', showOnHome: false },
+      { id: 'pr3', slug: 'third-one', showOnHome: true },
     ].map((project) => ({
       ...project,
       published: true,
@@ -51,26 +46,6 @@ export function treeFixture(): SiteTree {
       coverImage: null,
       screenshots: [`https://cdn/${project.id}.png`],
       ...copy(M.projects.localized, project.id),
-    })),
-    experience: ['e1', 'e2'].map((id) => ({
-      id,
-      published: true,
-      company: `${id}-company`,
-      ...copy(M.experience.localized, id),
-    })),
-    stack: ['st1', 'st2'].map((id) => ({
-      id,
-      published: true,
-      items: ['React', 'Next.js'],
-      ...copy(M.stack.localized, id),
-    })),
-    hobbies: ['h1'].map((id) => ({
-      id,
-      published: true,
-      handle: `@${id}`,
-      url: `https://instagram.com/${id}`,
-      imageUrl: null,
-      ...copy(M.hobbies.localized, id),
     })),
   });
 }

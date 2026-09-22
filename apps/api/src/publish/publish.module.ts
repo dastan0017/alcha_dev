@@ -24,13 +24,11 @@ export class PublishService {
     switch (req.target) {
       case 'home':
         return [CacheTags.home];
-      case 'about':
-        return [CacheTags.about];
       case 'settings':
         // Contacts/socials render in the footer of every page.
-        return [CacheTags.settings, CacheTags.home, CacheTags.about];
+        return [CacheTags.settings, CacheTags.home];
       case 'projects': {
-        const tags: string[] = [CacheTags.projects, CacheTags.home, CacheTags.about];
+        const tags: string[] = [CacheTags.projects, CacheTags.home];
         if (req.slug) {
           tags.push(CacheTags.project(req.slug));
         }

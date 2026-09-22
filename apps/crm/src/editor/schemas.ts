@@ -28,7 +28,7 @@ export type FieldType =
   'text' | 'textarea' | 'list' | 'tags' | 'image' | 'images' | 'boolean' | 'select';
 
 /** The singleton a section field is stored in. */
-export type SectionScope = 'home' | 'about' | 'chrome';
+export type SectionScope = 'home' | 'chrome';
 
 export interface FieldOption {
   value: string;
@@ -96,8 +96,8 @@ export type ItemDrawerTarget = Extract<DrawerTarget, { kind: 'item' }>;
 // ─── Collections ─────────────────────────────────────────────────────────────
 
 export interface BlankContext {
-  /** The page the item is added on: projects added on «Обо мне» show there, on the homepage otherwise. */
-  page: 'home' | 'about' | 'case';
+  /** The page the item is added on: projects added on the homepage show there. */
+  page: 'home' | 'case';
   /** The draft the item joins. */
   tree: SiteTree;
 }
@@ -338,7 +338,6 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
       { key: 'techChips', label: 'Технологии', type: 'tags', localized: true },
       { key: 'screenshots', label: 'Скриншоты', type: 'images', localized: false },
       { key: 'showOnHome', label: 'Показывать на главной', type: 'boolean', localized: false },
-      { key: 'showOnAbout', label: 'Показывать на «Обо мне»', type: 'boolean', localized: false },
       { key: 'seoTitle', label: 'SEO title', type: 'text', localized: true },
       { key: 'seoDescription', label: 'SEO description', type: 'textarea', localized: true },
     ] satisfies readonly DeclaredField<'projects'>[],
@@ -349,7 +348,6 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
         slug: `project-${randomSlugPart(6)}`,
         badgeType: 'work',
         showOnHome: page === 'home',
-        showOnAbout: page === 'about',
         ru: {
           ...node.ru,
           title: 'Новый проект',
@@ -381,102 +379,6 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
       };
     },
   },
-
-  experience: {
-    kind: 'МЕСТО РАБОТЫ',
-    noun: 'Место работы',
-    addLabel: 'Добавить место работы',
-    title: (node) => titleOrUntitled(node.company),
-    fields: [
-      { key: 'company', label: 'Компания', type: 'text', localized: false },
-      { key: 'role', label: 'Должность', type: 'text', localized: true },
-      { key: 'meta', label: 'Период и формат', type: 'text', localized: true },
-      { key: 'description', label: 'Описание', type: 'textarea', localized: true },
-    ] satisfies readonly DeclaredField<'experience'>[],
-    blank: () => {
-      const node = newCollectionNode('experience');
-      return {
-        ...node,
-        company: 'Новая компания',
-        ru: {
-          ...node.ru,
-          role: 'Должность',
-          meta: 'Период · формат работы',
-          description: 'Чем занимались и каких результатов добились.',
-        },
-        en: {
-          ...node.en,
-          role: 'Role',
-          meta: 'Period · work format',
-          description: 'What you did and what came out of it.',
-        },
-      };
-    },
-    duplicate: (node) => ({
-      ...structuredClone(node),
-      id: newCmsId(),
-      company: node.company + COPY_SUFFIX.ru,
-    }),
-  },
-
-  stack: {
-    kind: 'КАТЕГОРИЯ СТЕКА',
-    noun: 'Категория стека',
-    addLabel: 'Добавить категорию',
-    title: (node, locale) => titleOrUntitled(node[locale].title),
-    fields: [
-      { key: 'title', label: 'Категория', type: 'text', localized: true },
-      { key: 'items', label: 'Технологии', type: 'tags', localized: false },
-    ] satisfies readonly DeclaredField<'stack'>[],
-    blank: () => {
-      const node = newCollectionNode('stack');
-      return {
-        ...node,
-        ru: { ...node.ru, title: 'Новая категория' },
-        en: { ...node.en, title: 'New category' },
-      };
-    },
-    duplicate: (node) => {
-      const copy = structuredClone(node);
-      return {
-        ...copy,
-        id: newCmsId(),
-        ru: { ...copy.ru, title: copy.ru.title + COPY_SUFFIX.ru },
-        en: { ...copy.en, title: copy.en.title + COPY_SUFFIX.en },
-      };
-    },
-  },
-
-  hobbies: {
-    kind: 'КАРТОЧКА «ВНЕ РАБОТЫ»',
-    noun: 'Карточка «Вне работы»',
-    addLabel: 'Добавить карточку',
-    title: (node, locale) => titleOrUntitled(node[locale].title),
-    fields: [
-      { key: 'imageUrl', label: 'Фото', type: 'image', localized: false },
-      { key: 'title', label: 'Заголовок', type: 'text', localized: true },
-      { key: 'description', label: 'Описание', type: 'textarea', localized: true },
-      { key: 'handle', label: 'Подпись / ник', type: 'text', localized: false, hint: '@nickname' },
-      { key: 'url', label: 'Ссылка', type: 'text', localized: false, hint: 'https://' },
-    ] satisfies readonly DeclaredField<'hobbies'>[],
-    blank: () => {
-      const node = newCollectionNode('hobbies');
-      return {
-        ...node,
-        ru: { ...node.ru, title: 'Новая карточка', description: 'Чем занимаетесь вне работы.' },
-        en: { ...node.en, title: 'New card', description: 'What you do outside of work.' },
-      };
-    },
-    duplicate: (node) => {
-      const copy = structuredClone(node);
-      return {
-        ...copy,
-        id: newCmsId(),
-        ru: { ...copy.ru, title: copy.ru.title + COPY_SUFFIX.ru },
-        en: { ...copy.en, title: copy.en.title + COPY_SUFFIX.en },
-      };
-    },
-  },
 };
 
 /**
@@ -500,7 +402,7 @@ export function findItem(
 // ─── Sections ────────────────────────────────────────────────────────────────
 
 /**
- * Every section has its own copy in `fields` (across the home / about / chrome singletons).
+ * Every section has its own copy in `fields` (across the home / chrome singletons).
  * `item: true` marks a section that renders one collection item (the case page,
  * `data-cms-section-item`): its chip opens that item's drawer, while `fields` holds the
  * section's shared chrome labels.
@@ -512,11 +414,6 @@ export interface SectionSchema {
 }
 
 const sectionFields = (fields: readonly SectionField[]): readonly FieldSchema[] => fields;
-
-const sectionHeading = (key: CmsLocalizedField<'about'>) =>
-  sectionFields([
-    { scope: 'about', key, label: 'Заголовок секции', type: 'text', localized: true },
-  ]);
 
 export const SECTION_SCHEMAS: Record<CmsSectionKey, SectionSchema> = {
   header: {
@@ -533,13 +430,6 @@ export const SECTION_SCHEMAS: Record<CmsSectionKey, SectionSchema> = {
         scope: 'chrome',
         key: 'navPricing',
         label: 'Пункт меню «Цены»',
-        type: 'text',
-        localized: true,
-      },
-      {
-        scope: 'chrome',
-        key: 'navAbout',
-        label: 'Пункт меню «Обо мне»',
         type: 'text',
         localized: true,
       },
@@ -638,13 +528,6 @@ export const SECTION_SCHEMAS: Record<CmsSectionKey, SectionSchema> = {
       { scope: 'home', key: 'worksHeading', label: 'Заголовок', type: 'text', localized: true },
       { scope: 'home', key: 'worksLede', label: 'Вступление', type: 'textarea', localized: true },
       {
-        scope: 'home',
-        key: 'worksLinkLabel',
-        label: 'Ссылка на все проекты',
-        type: 'text',
-        localized: true,
-      },
-      {
         scope: 'chrome',
         key: 'viewCaseLabel',
         label: 'Ссылка на кейс в карточке',
@@ -742,31 +625,6 @@ export const SECTION_SCHEMAS: Record<CmsSectionKey, SectionSchema> = {
       },
     ]),
   },
-  aboutHero: {
-    label: CMS_SECTION_LABELS.aboutHero,
-    fields: sectionFields([
-      { scope: 'about', key: 'photoUrl', label: 'Фото', type: 'image', localized: false },
-      { scope: 'about', key: 'name', label: 'Имя', type: 'text', localized: true },
-      {
-        scope: 'about',
-        key: 'photoCaption',
-        label: 'Подпись к фото',
-        type: 'textarea',
-        localized: true,
-      },
-      {
-        scope: 'about',
-        key: 'bioHtml',
-        label: 'Био — можно <strong>…</strong>',
-        type: 'textarea',
-        localized: true,
-      },
-    ]),
-  },
-  experience: { label: CMS_SECTION_LABELS.experience, fields: sectionHeading('experienceHeading') },
-  projects: { label: CMS_SECTION_LABELS.projects, fields: sectionHeading('projectsHeading') },
-  stack: { label: CMS_SECTION_LABELS.stack, fields: sectionHeading('stackHeading') },
-  hobbies: { label: CMS_SECTION_LABELS.hobbies, fields: sectionHeading('hobbiesHeading') },
   case: {
     label: CMS_SECTION_LABELS.case,
     item: true,
@@ -829,10 +687,6 @@ export function fieldPath(target: DrawerTarget, field: FieldSchema, locale: Loca
       return field.localized
         ? cmsPath.home(locale, field.key as CmsLocalizedField<'home'>)
         : cmsPath.homeNeutral(field.key as CmsNeutralField<'home'>);
-    case 'about':
-      return field.localized
-        ? cmsPath.about(locale, field.key as CmsLocalizedField<'about'>)
-        : cmsPath.aboutNeutral(field.key as CmsNeutralField<'about'>);
     case 'chrome':
       return cmsPath.chrome(locale, field.key as CmsLocalizedField<'chrome'>);
     case undefined:

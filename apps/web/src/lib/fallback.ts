@@ -1,4 +1,4 @@
-import type { AboutResponse, HomeResponse, Locale, SiteSettings } from '@alcha/shared';
+import type { HomeResponse, Locale, SiteSettings } from '@alcha/shared';
 
 /**
  * Safe empty content so `next build` never hard-fails if the API is briefly
@@ -39,7 +39,6 @@ export function emptyHome(locale: Locale): HomeResponse {
       worksEyebrow: '',
       worksHeading: '',
       worksLede: '',
-      worksLinkLabel: '',
       pricingEyebrow: '',
       pricingHeading: '',
       pricingNote: '',
@@ -55,28 +54,5 @@ export function emptyHome(locale: Locale): HomeResponse {
     pricingPlans: [],
     settings: EMPTY_SETTINGS,
     seo: { page: 'home', locale, title: '', description: '', keywords: [], ogImageUrl: null },
-  };
-}
-
-export function emptyAbout(locale: Locale): AboutResponse {
-  return {
-    profile: {
-      name: '',
-      photoUrl: null,
-      photoCaption: '',
-      bioHtml: '',
-      experienceHeading: '',
-      projectsHeading: '',
-      stackHeading: '',
-      hobbiesHeading: '',
-    },
-    hiddenSections: [],
-    experiences: [],
-    projects: [],
-    stack: [],
-    hobbies: [],
-    cta: { title: '', subtitle: '', telegramLabel: '', cvLabel: '' },
-    settings: EMPTY_SETTINGS,
-    seo: { page: 'about', locale, title: '', description: '', keywords: [], ogImageUrl: null },
   };
 }

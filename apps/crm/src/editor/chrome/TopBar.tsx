@@ -41,7 +41,6 @@ export interface TopBarProps {
 export function TopBar(props: TopBarProps) {
   const pageOptions: SegmentedOption<PageKind>[] = [
     { value: 'home', label: 'Главная' },
-    { value: 'about', label: 'Обо мне' },
     {
       value: 'case',
       label: 'Кейс проекта',

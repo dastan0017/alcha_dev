@@ -8,9 +8,7 @@
  * TODO(dastan): a few pieces are reconstructed from the brief because the hi-fi
  * design file was not available at build time — swap them for the verbatim text
  * from `Homepage Directions.dc.html` (section 3a):
- *   - the About bio paragraph,
- *   - the Kurabu / Chargers project cards (role lines, descriptions, bullets),
- *   - the About-card bullet lists for Chaban / Kit Store,
+ *   - the case-page bullet lists for Chaban / Kit Store,
  *   - the real contact handles in SiteSettings.
  */
 import { PrismaClient, ProjectBadge } from '@prisma/client';
@@ -37,12 +35,8 @@ async function wipeContent(): Promise<void> {
     prisma.service.deleteMany(),
     prisma.project.deleteMany(),
     prisma.pricingPlan.deleteMany(),
-    prisma.experience.deleteMany(),
-    prisma.stackCategory.deleteMany(),
-    prisma.hobbyCard.deleteMany(),
     prisma.seoMeta.deleteMany(),
     prisma.homeContent.deleteMany(),
-    prisma.aboutProfile.deleteMany(),
     prisma.siteChrome.deleteMany(),
     prisma.siteSettings.deleteMany(),
     // A visual-editor draft forked from the old content would republish it.
@@ -117,7 +111,6 @@ async function seedHome(): Promise<void> {
             worksHeading: 'Работы',
             worksLede:
               'Каждый проект — от начала до конца лично мной. Беру немного клиентов, поэтому каждому — максимум внимания.',
-            worksLinkLabel: 'Все проекты →',
             pricingEyebrow: 'ЦЕНЫ',
             pricingHeading: 'Сколько это стоит',
             pricingNote: 'Точная смета — за 24 часа после первого разговора',
@@ -154,7 +147,6 @@ async function seedHome(): Promise<void> {
             worksHeading: 'Selected work',
             worksLede:
               'Every project is done end to end by me personally. I take on few clients, so each one gets my full attention.',
-            worksLinkLabel: 'All projects →',
             pricingEyebrow: 'PRICING',
             pricingHeading: 'How much it costs',
             pricingNote: 'A precise quote within 24 hours of our first conversation',
@@ -406,7 +398,6 @@ async function seedProjects(): Promise<void> {
       badgeType: ProjectBadge.own,
       sortOrder: 0,
       showOnHome: true,
-      showOnAbout: false,
       ru: {
         title: 'alcha.dev',
         badge: 'ЭТОТ САЙТ',
@@ -447,7 +438,6 @@ async function seedProjects(): Promise<void> {
       badgeType: ProjectBadge.own,
       sortOrder: 1,
       showOnHome: true,
-      showOnAbout: true,
       ru: {
         title: 'Чабан',
         badge: 'APP STORE + GOOGLE PLAY',
@@ -511,7 +501,6 @@ async function seedProjects(): Promise<void> {
       badgeType: ProjectBadge.work,
       sortOrder: 2,
       showOnHome: true,
-      showOnAbout: true,
       ru: {
         title: 'Kit Store',
         badge: 'APP STORE + GOOGLE PLAY',
@@ -570,102 +559,6 @@ async function seedProjects(): Promise<void> {
           'Stores order from the distributor by phone; the catalogue, orders and clients live in the managers’ CRM.',
       },
     },
-    {
-      // TODO(dastan): reconstructed — replace with verbatim content from the design file.
-      slug: 'kurabu',
-      badgeType: ProjectBadge.work,
-      sortOrder: 3,
-      showOnHome: false,
-      showOnAbout: true,
-      ru: {
-        title: 'Kurabu',
-        badge: 'B2B SAAS · ГЕРМАНИЯ',
-        metaLine:
-          'B2B SaaS для управления клубами и секциями: участники, абонементы, платежи и коммуникации в одном кабинете.',
-        role: 'Lead Frontend · Германия',
-        description:
-          'B2B SaaS для управления клубами и спортивными секциями: участники, абонементы, платежи и коммуникации в одном кабинете. Отвечал за архитектуру фронтенда и качество ключевых модулей.',
-        pills: ['Веб-приложение', 'Модуль абонементов', 'Платежи', 'Роли и права'],
-        bullets: [
-          'Вёл фронтенд-архитектуру продукта',
-          'Проектировал переиспользуемые UI-компоненты',
-          'Согласовывал API-контракты с бэкендом',
-          'Ускорял тяжёлые экраны и таблицы данных',
-        ],
-        techChips: ['React', 'TypeScript', 'Redux', 'REST'],
-        seoTitle: 'Kurabu — B2B SaaS, Lead Frontend',
-        seoDescription:
-          'B2B SaaS для управления клубами: участники, абонементы, платежи. Роль Lead Frontend, Германия.',
-      },
-      en: {
-        title: 'Kurabu',
-        badge: 'B2B SAAS · GERMANY',
-        metaLine:
-          'A B2B SaaS for managing clubs and classes: members, memberships, payments and communication in one dashboard.',
-        role: 'Lead Frontend · Germany',
-        description:
-          'A B2B SaaS for managing clubs and sports classes: members, memberships, payments and communication in one dashboard. I owned the frontend architecture and the quality of the core modules.',
-        pills: ['Web app', 'Memberships module', 'Payments', 'Roles & permissions'],
-        bullets: [
-          'Owned the product’s frontend architecture',
-          'Designed reusable UI components',
-          'Aligned API contracts with the backend',
-          'Sped up heavy screens and data tables',
-        ],
-        techChips: ['React', 'TypeScript', 'Redux', 'REST'],
-        seoTitle: 'Kurabu — B2B SaaS, Lead Frontend',
-        seoDescription:
-          'A B2B SaaS for club management: members, memberships, payments. Lead Frontend role, Germany.',
-      },
-    },
-    {
-      // TODO(dastan): reconstructed — replace with verbatim content from the design file.
-      slug: 'chargers',
-      badgeType: ProjectBadge.work,
-      sortOrder: 4,
-      showOnHome: false,
-      showOnAbout: true,
-      ru: {
-        title: 'Chargers',
-        badge: 'IoT-ПЛАТФОРМА · США',
-        metaLine:
-          'IoT-платформа для сети зарядных станций: мониторинг зарядок в реальном времени, тарифы, сессии и отчёты.',
-        role: 'Frontend Engineer · США',
-        description:
-          'IoT-платформа для сети зарядных станций электромобилей: мониторинг зарядных сессий в реальном времени, тарифы, отчёты и управление станциями. Работал в распределённой Agile-команде в часовом поясе США.',
-        pills: ['Веб-дашборд', 'Реальное время', 'Графики и отчёты', 'Управление станциями'],
-        bullets: [
-          'Дашборд мониторинга зарядных сессий',
-          'Визуализация телеметрии в реальном времени',
-          'Интерфейсы тарификации и отчётов',
-          'Работа в Agile-команде в часовом поясе США',
-        ],
-        techChips: ['React', 'TypeScript', 'TanStack Query', 'REST'],
-        seoTitle: 'Chargers — IoT-платформа зарядных станций',
-        seoDescription:
-          'IoT-платформа для сети зарядных станций: мониторинг в реальном времени, тарифы, сессии и отчёты.',
-      },
-      en: {
-        title: 'Chargers',
-        badge: 'IoT PLATFORM · USA',
-        metaLine:
-          'An IoT platform for a network of charging stations: real-time charge monitoring, tariffs, sessions and reports.',
-        role: 'Frontend Engineer · USA',
-        description:
-          'An IoT platform for an EV charging-station network: real-time monitoring of charging sessions, tariffs, reports and station management. I worked in a distributed Agile team in the US time zone.',
-        pills: ['Web dashboard', 'Real time', 'Charts & reports', 'Station management'],
-        bullets: [
-          'A dashboard to monitor charging sessions',
-          'Real-time telemetry visualisation',
-          'Tariff and reporting interfaces',
-          'Work in an Agile team in the US time zone',
-        ],
-        techChips: ['React', 'TypeScript', 'TanStack Query', 'REST'],
-        seoTitle: 'Chargers — EV charging IoT platform',
-        seoDescription:
-          'An IoT platform for a charging-station network: real-time monitoring, tariffs, sessions and reports.',
-      },
-    },
   ];
 
   for (const p of projects) {
@@ -675,7 +568,6 @@ async function seedProjects(): Promise<void> {
         badgeType: p.badgeType,
         sortOrder: p.sortOrder,
         showOnHome: p.showOnHome,
-        showOnAbout: p.showOnAbout,
         published: true,
         screenshots: [],
         coverImage: null,
@@ -689,208 +581,6 @@ async function seedProjects(): Promise<void> {
     });
   }
   console.log(`✓ Projects (${projects.length})`);
-}
-
-async function seedExperience(): Promise<void> {
-  const experiences = [
-    {
-      company: 'Wellnuts',
-      sortOrder: 0,
-      ru: {
-        role: 'Frontend Engineer',
-        meta: 'авг 2023 — сейчас · 3 года · удалённо · США и Европа',
-        description:
-          'За 3 года вырос из junior/mid в senior frontend через 3 продуктовые команды: Charger, Mainteny и Kurabu. Работаю в англоязычных Agile-командах в часовых поясах США и Европы, участвую в выработке фронтенд-стандартов и API-контрактов.',
-      },
-      en: {
-        role: 'Frontend Engineer',
-        meta: 'Aug 2023 — present · 3 years · remote · US & Europe',
-        description:
-          'In 3 years I grew from junior/mid to senior frontend across 3 product teams: Charger, Mainteny and Kurabu. I work in English-speaking Agile teams across US and European time zones, contributing to frontend standards and API contracts.',
-      },
-    },
-    {
-      company: 'TimelySoft',
-      sortOrder: 1,
-      ru: {
-        role: 'Frontend Developer',
-        meta: 'июн 2021 — янв 2023 · 1 год 8 мес · гибрид · Бишкек, Кыргызстан',
-        description:
-          'Строил и выпускал SPA на React и Angular в TypeScript — 5 коммерческих проектов. Проектировал структуру фронтенда на двух greenfield-проектах, ускорял тяжёлые экраны и покрывал ключевые сценарии E2E-тестами.',
-      },
-      en: {
-        role: 'Frontend Developer',
-        meta: 'Jun 2021 — Jan 2023 · 1 yr 8 mos · hybrid · Bishkek, Kyrgyzstan',
-        description:
-          'Built and shipped React and Angular SPAs in TypeScript — 5 commercial projects. Designed the frontend structure on two greenfield projects, sped up heavy screens and covered key flows with E2E tests.',
-      },
-    },
-  ];
-
-  for (const e of experiences) {
-    await prisma.experience.create({
-      data: {
-        company: e.company,
-        sortOrder: e.sortOrder,
-        published: true,
-        translations: {
-          create: [
-            { locale: 'ru', ...e.ru },
-            { locale: 'en', ...e.en },
-          ],
-        },
-      },
-    });
-  }
-  console.log(`✓ Experience (${experiences.length})`);
-}
-
-async function seedAbout(): Promise<void> {
-  await prisma.aboutProfile.create({
-    data: {
-      photoUrl: null,
-      translations: {
-        create: [
-          {
-            locale: 'ru',
-            name: 'Dastan Rakhmanzhanov',
-            photoCaption: 'Senior Frontend Engineer · Бишкек',
-            // TODO(dastan): replace with the verbatim bio paragraph from the design file.
-            bioHtml:
-              '<p><strong>Senior Frontend Engineer</strong> с более чем 5-летним опытом разработки веб- и мобильных продуктов для распределённых команд стартапов из США и Европы. Специализируюсь на <strong>React и TypeScript</strong> и опираюсь на <strong>full-stack базу</strong> (Node.js, NestJS, GraphQL, AWS), поэтому веду продукт <strong>от первой идеи и дизайна до production</strong>. За плечами — опыт работы в <strong>удалённых международных командах</strong> (США, Германия): от проектирования архитектуры фронтенда до запуска и поддержки.</p>',
-            experienceHeading: 'Опыт',
-            projectsHeading: 'Проекты',
-            stackHeading: 'Стек',
-            hobbiesHeading: 'Вне работы',
-          },
-          {
-            locale: 'en',
-            name: 'Dastan Rakhmanzhanov',
-            photoCaption: 'Senior Frontend Engineer · Bishkek',
-            bioHtml:
-              '<p><strong>Senior Frontend Engineer</strong> with 5+ years building web and mobile products for distributed startup teams in the US and Europe. I specialise in <strong>React and TypeScript</strong>, backed by a <strong>full-stack foundation</strong> (Node.js, NestJS, GraphQL, AWS), which lets me carry a product <strong>from the first idea and design through to production</strong>. I have worked in <strong>remote international teams</strong> (US, Germany) — from designing frontend architecture to launch and maintenance.</p>',
-            experienceHeading: 'Experience',
-            projectsHeading: 'Projects',
-            stackHeading: 'Stack',
-            hobbiesHeading: 'Outside work',
-          },
-        ],
-      },
-    },
-  });
-  console.log('✓ About profile');
-}
-
-async function seedStack(): Promise<void> {
-  const categories = [
-    {
-      sortOrder: 0,
-      items: [
-        'React',
-        'Next.js',
-        'React Native',
-        'Expo',
-        'TypeScript',
-        'Tailwind CSS',
-        'Material UI',
-      ],
-      ru: { title: 'Фронтенд' },
-      en: { title: 'Frontend' },
-    },
-    {
-      sortOrder: 1,
-      items: ['GraphQL', 'Apollo', 'TanStack Query', 'Redux', 'REST'],
-      ru: { title: 'Данные и API' },
-      en: { title: 'Data & API' },
-    },
-    {
-      sortOrder: 2,
-      items: ['Node.js', 'NestJS', 'Prisma', 'PostgreSQL', 'MongoDB', 'JWT'],
-      ru: { title: 'Бэкенд' },
-      en: { title: 'Backend' },
-    },
-    {
-      sortOrder: 3,
-      items: ['Docker', 'GitHub Actions', 'AWS S3', 'CloudFront', 'Yandex Cloud'],
-      ru: { title: 'DevOps и облака' },
-      en: { title: 'DevOps & cloud' },
-    },
-    {
-      sortOrder: 4,
-      items: ['Cypress', 'Vite', 'Webpack'],
-      ru: { title: 'Тесты и сборка' },
-      en: { title: 'Testing & build' },
-    },
-  ];
-
-  for (const c of categories) {
-    await prisma.stackCategory.create({
-      data: {
-        sortOrder: c.sortOrder,
-        items: c.items,
-        published: true,
-        translations: {
-          create: [
-            { locale: 'ru', ...c.ru },
-            { locale: 'en', ...c.en },
-          ],
-        },
-      },
-    });
-  }
-  console.log(`✓ Stack categories (${categories.length})`);
-}
-
-async function seedHobbies(): Promise<void> {
-  const hobbies = [
-    {
-      handle: '@arashan_televyshka',
-      url: 'https://www.instagram.com/arashan_televyshka',
-      sortOrder: 0,
-      ru: {
-        title: '@arashan_televyshka',
-        description: 'Делюсь опытом в фермерстве: разведение арашанских овец и жизнь хозяйства.',
-      },
-      en: {
-        title: '@arashan_televyshka',
-        description: 'Sharing my farming experience: breeding Arashan sheep and life on the ranch.',
-      },
-    },
-    {
-      handle: '@dastich_fantastich_r',
-      url: 'https://www.instagram.com/dastich_fantastich_r',
-      sortOrder: 1,
-      ru: {
-        title: 'Фермер-айтишник',
-        description:
-          '@dastich_fantastich_r — личный блог: опыт в IT и фермерстве, интересные моменты из жизни.',
-      },
-      en: {
-        title: 'Farmer in tech',
-        description:
-          '@dastich_fantastich_r — a personal blog: experiences in IT and farming, and moments from life.',
-      },
-    },
-  ];
-
-  for (const h of hobbies) {
-    await prisma.hobbyCard.create({
-      data: {
-        handle: h.handle,
-        url: h.url,
-        imageUrl: null,
-        sortOrder: h.sortOrder,
-        published: true,
-        translations: {
-          create: [
-            { locale: 'ru', ...h.ru },
-            { locale: 'en', ...h.en },
-          ],
-        },
-      },
-    });
-  }
-  console.log(`✓ Hobby cards (${hobbies.length})`);
 }
 
 async function seedSeo(): Promise<void> {
@@ -924,32 +614,6 @@ async function seedSeo(): Promise<void> {
         'Next.js developer Kyrgyzstan',
       ],
     },
-    {
-      page: 'about' as const,
-      locale: 'ru' as const,
-      title: 'Обо мне — Dastan Rakhmanzhanov, Frontend',
-      description:
-        'Senior Frontend Engineer из Бишкека. 5+ лет на React, TypeScript и Next.js. Опыт в командах из США и Европы. Резюме и проекты.',
-      keywords: [
-        'Dastan Rakhmanzhanov',
-        'Senior Frontend Engineer Бишкек',
-        'React разработчик Бишкек',
-        'frontend Кыргызстан',
-      ],
-    },
-    {
-      page: 'about' as const,
-      locale: 'en' as const,
-      title: 'About — Dastan Rakhmanzhanov, Frontend',
-      description:
-        'Senior Frontend Engineer based in Bishkek. 5+ years with React, TypeScript and Next.js. Experience in US and European teams. CV and projects.',
-      keywords: [
-        'Dastan Rakhmanzhanov',
-        'hire React developer Bishkek',
-        'frontend developer Kyrgyzstan',
-        'Next.js developer',
-      ],
-    },
   ];
 
   for (const m of metas) {
@@ -968,10 +632,6 @@ async function main(): Promise<void> {
   await seedServices();
   await seedPricing();
   await seedProjects();
-  await seedExperience();
-  await seedAbout();
-  await seedStack();
-  await seedHobbies();
   await seedSeo();
   console.log('Done ✓');
 }

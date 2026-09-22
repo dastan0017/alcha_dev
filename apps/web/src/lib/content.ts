@@ -2,7 +2,6 @@ import { cache } from 'react';
 import {
   ApiError,
   DEFAULT_CHROME,
-  type AboutResponse,
   type HomeResponse,
   type Locale,
   type Project,
@@ -10,7 +9,7 @@ import {
   type SiteSettings,
 } from '@alcha/shared';
 import { api } from './api';
-import { emptyAbout, emptyHome, EMPTY_SETTINGS } from './fallback';
+import { emptyHome, EMPTY_SETTINGS } from './fallback';
 import { getPreview } from './preview';
 
 function warn(scope: string, error: unknown): void {
@@ -41,17 +40,6 @@ export const getHome = cache(async (locale: Locale): Promise<HomeResponse> => {
   } catch (error) {
     warn('home', error);
     return emptyHome(locale);
-  }
-});
-
-export const getAbout = cache(async (locale: Locale): Promise<AboutResponse> => {
-  const draft = await readDraft('about', (token) => api.getDraftAbout(locale, token));
-  if (draft !== undefined) return draft;
-  try {
-    return await api.getAbout(locale);
-  } catch (error) {
-    warn('about', error);
-    return emptyAbout(locale);
   }
 });
 

@@ -1,10 +1,7 @@
 import {
   CMS_REQUIRED_FIELDS,
   DEFAULT_LOCALE,
-  type AboutResponse,
   type CmsScope,
-  type Experience,
-  type HobbyCard,
   type HomeResponse,
   type Locale,
   type PricingPlan,
@@ -15,7 +12,6 @@ import {
   type SiteChrome,
   type SiteSettings,
   type SiteTree,
-  type StackCategory,
 } from '@alcha/shared';
 import { isBlank } from './validate';
 
@@ -57,50 +53,6 @@ export function projectHome(
   };
 }
 
-export function projectAbout(
-  tree: SiteTree,
-  locale: Locale,
-  { settings, seo }: PageContext,
-): AboutResponse {
-  const home = localize('home', tree.home, locale);
-  return {
-    profile: { photoUrl: tree.about.photoUrl, ...localize('about', tree.about, locale) },
-    hiddenSections: tree.about.hiddenSections,
-    experiences: published(tree.experience).map(({ node, sortOrder }): Experience => ({
-      id: node.id,
-      company: node.company,
-      sortOrder,
-      ...localize('experience', node, locale),
-    })),
-    projects: published(tree.projects, (node) => node.showOnAbout).map(({ node, sortOrder }) =>
-      toProject(node, sortOrder, locale),
-    ),
-    stack: published(tree.stack).map(({ node, sortOrder }): StackCategory => ({
-      id: node.id,
-      sortOrder,
-      items: node.items,
-      ...localize('stack', node, locale),
-    })),
-    hobbies: published(tree.hobbies).map(({ node, sortOrder }): HobbyCard => ({
-      id: node.id,
-      sortOrder,
-      handle: node.handle,
-      url: node.url,
-      imageUrl: node.imageUrl,
-      ...localize('hobbies', node, locale),
-    })),
-    // The dark CTA banner at the bottom of About reuses the homepage copy.
-    cta: {
-      title: home.ctaTitle,
-      subtitle: home.ctaSubtitle,
-      telegramLabel: home.ctaTelegramLabel,
-      cvLabel: home.ctaCvLabel,
-    },
-    settings,
-    seo,
-  };
-}
-
 export function projectProjects(tree: SiteTree, locale: Locale): Project[] {
   return published(tree.projects).map(({ node, sortOrder }) => toProject(node, sortOrder, locale));
 }
@@ -122,7 +74,6 @@ function toProject(node: ProjectNode, sortOrder: number, locale: Locale): Projec
     badgeType: node.badgeType,
     sortOrder,
     showOnHome: node.showOnHome,
-    showOnAbout: node.showOnAbout,
     screenshots: node.screenshots,
     coverImage: node.coverImage,
     ...localize('projects', node, locale),

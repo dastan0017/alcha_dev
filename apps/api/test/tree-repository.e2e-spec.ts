@@ -90,7 +90,7 @@ describe('TreeRepository.writeTree (rolled back)', () => {
       const tree = edit(fixture, [
         { op: 'insert', path: 'services', value: newCollectionNode('services'), index: 1 },
         { op: 'move', path: 'services.s3', value: 0 },
-        { op: 'move', path: 'stack.st2', value: 0 },
+        { op: 'move', path: 'pricing.p2', value: 0 },
       ]);
       await expectRoundTrip(tx, tree);
       const rows = await tx.service.findMany({
@@ -102,30 +102,22 @@ describe('TreeRepository.writeTree (rolled back)', () => {
 
   it('deletes every row of an emptied collection', () =>
     rolledBack(async (tx, fixture) => {
-      await expectRoundTrip(tx, { ...fixture, pricing: [], hobbies: [] });
+      await expectRoundTrip(tx, { ...fixture, pricing: [], projects: [] });
       expect(await tx.pricingPlan.count()).toBe(0);
-      expect(await tx.hobbyCardTranslation.count()).toBe(0);
+      expect(await tx.projectTranslation.count()).toBe(0);
     }));
 
   it('creates missing singleton and translation rows', () =>
     rolledBack(async (tx, fixture) => {
       await tx.siteChrome.deleteMany();
-      await tx.aboutProfile.deleteMany();
       await tx.homeContentTranslation.deleteMany({ where: { locale: 'en' } });
       await tx.projectTranslation.deleteMany({ where: { projectId: 'pr2', locale: 'en' } });
 
       const blank = await trees.loadPublishedTree(tx);
       expect(blank.chrome.ru.navWorks).toBe('');
-      expect(blank.about).toMatchObject({ photoUrl: null, hiddenSections: [] });
       expect(blank.home.en.heroBullets).toEqual([]);
       expect(blank.projects[1].en.title).toBe('');
 
-      await expectRoundTrip(
-        tx,
-        edit(fixture, [
-          set('home.hiddenSections', ['pricing', 'works']),
-          set('about.hiddenSections', ['hobbies']),
-        ]),
-      );
+      await expectRoundTrip(tx, edit(fixture, [set('home.hiddenSections', ['pricing', 'works'])]));
     }));
 });

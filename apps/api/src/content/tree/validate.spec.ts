@@ -9,7 +9,7 @@ describe('validateTree', () => {
   it('reports blank required RU fields as errors and EN ones as warnings', () => {
     const tree = treeFixture();
     tree.home.ru.heroTitle = '';
-    tree.about.ru.name = '  \n';
+    tree.chrome.ru.navWorks = '  \n';
     tree.pricing[0].ru.name = '';
     tree.home.en.heroSubtitle = '';
     tree.chrome.en.footerRights = '';
@@ -18,7 +18,7 @@ describe('validateTree', () => {
     const { errors, warnings } = validateTree(tree);
     expect(errors.map(({ path, locale }) => [path, locale])).toEqual([
       ['home.ru.heroTitle', 'ru'],
-      ['about.ru.name', 'ru'],
+      ['chrome.ru.navWorks', 'ru'],
       ['pricing.p1.ru.name', 'ru'],
     ]);
     expect(warnings.map(({ path, locale }) => [path, locale])).toEqual([
@@ -32,13 +32,13 @@ describe('validateTree', () => {
   it('reports blank required neutral fields as errors without a locale', () => {
     const tree = treeFixture();
     tree.services[0].number = '';
-    tree.experience[1].company = ' ';
-    tree.hobbies[0].handle = '';
+    tree.services[2].number = ' ';
+    tree.projects[1].slug = '';
 
     expect(validateTree(tree).errors.map(({ path, locale }) => [path, locale])).toEqual([
       ['services.s1.number', null],
-      ['experience.e2.company', null],
-      ['hobbies.h1.handle', null],
+      ['services.s3.number', null],
+      ['projects.pr2.slug', null],
     ]);
   });
 
@@ -47,10 +47,10 @@ describe('validateTree', () => {
     tree.home.ru.eyebrow = '';
     tree.home.ru.heroSubtitleMobile = '';
     tree.home.en.heroBullets = [];
-    tree.about.photoUrl = null;
     tree.services[0].ru.badge = '';
     tree.projects[0].ru.seoTitle = '';
-    tree.hobbies[0].url = '';
+    tree.projects[0].screenshots = [];
+    tree.pricing[0].en.highlightLabel = '';
 
     expect(validateTree(tree)).toEqual({ errors: [], warnings: [] });
   });

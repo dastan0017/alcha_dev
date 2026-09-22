@@ -30,7 +30,8 @@ CRM /site ──PATCH /admin/content/draft──▶ API ContentDraft.tree (JSON,
 | D11 | «Сбросить всё» asks for confirmation (`ResetDialog`, focus on «Отмена»); the prototype resets at once.                                                                                                                                                                                                                                                                                                                                                                                         | It discards every unpublished change and cannot be undone.                                                                                                                   |
 | D12 | The onboarding strip is dismissed per browser (localStorage keyed by user id), not per account.                                                                                                                                                                                                                                                                                                                                                                                                | Per account needs a user flag in the API.                                                                                                                                    |
 | D13 | Analytics (GA4, Metrika) are not rendered in preview.                                                                                                                                                                                                                                                                                                                                                                                                                                          | Editor sessions are not visits, and draft titles / URLs must not reach the trackers.                                                                                         |
-| D14 | `POST /publish` keeps its `home` / `about` / `projects` (+ `slug`) targets although the CRM only sends `settings` and `all`; content goes through `/admin/content/publish`.                                                                                                                                                                                                                                                                                                                    | Contract stability: `publishTargetSchema` is a shared public contract.                                                                                                       |
+| D14 | `POST /publish` keeps its `home` / `projects` (+ `slug`) targets although the CRM only sends `settings` and `all`; content goes through `/admin/content/publish`.                                                                                                                                                                                                                                                                                                                              | Contract stability: `publishTargetSchema` is a shared public contract.                                                                                                       |
+| D15 | The About page (`/about`) was removed on 2026-09-17 with its content: the `about` singleton, the `experience` / `stack` / `hobbies` collections, `showOnAbout`, `navAbout`, `worksLinkLabel` and the About SEO rows. Migration `20260917090000_remove_about_page` also strips those keys from a stored draft and deletes the Kurabu / Chargers projects only About showed.                                                                                                                     | Not needed for launch; a different About will be designed from scratch later.                                                                                                |
 
 ## 1. Content tree — `packages/shared/src/cms/tree.ts`
 
@@ -41,38 +42,29 @@ draft; required-ness is checked at publish (§3). Collection array order **is**
 ```ts
 type Localized<T> = { ru: T; en: T };
 
-HomeCopy    = homeContentSchema                    // existing 24 fields (heroBullets: string[])
-AboutCopy   = { name; photoCaption; bioHtml; experienceHeading; projectsHeading; stackHeading; hobbiesHeading }
-ChromeCopy  = { navWorks; navPricing; navAbout; navCta; navCtaShort;
+HomeCopy    = homeContentSchema                    // existing 23 fields (heroBullets: string[])
+ChromeCopy  = { navWorks; navPricing; navCta; navCtaShort;
                 footerTagline; footerNavHeading; footerContactsHeading; footerRights; footerMadeIn;
                 viewCaseLabel; allWorksLabel; backToHomeLabel; roleLabel; stackLabel; whatWasDoneLabel;
                 pricingSwipeHint }
 
 HomeSectionKey  = 'services' | 'works' | 'pricing'
-AboutSectionKey = 'experience' | 'projects' | 'stack' | 'hobbies'
-CollectionKey   = 'services' | 'pricing' | 'projects' | 'experience' | 'stack' | 'hobbies'
+CollectionKey   = 'services' | 'pricing' | 'projects'
 
 SiteTree = {
   version: 1;
   home:  { hiddenSections: HomeSectionKey[] } & Localized<HomeCopy>;
-  about: { photoUrl: string | null; hiddenSections: AboutSectionKey[] } & Localized<AboutCopy>;
   chrome: Localized<ChromeCopy>;
-  services:   ServiceNode[];
-  pricing:    PricingNode[];
-  projects:   ProjectNode[];
-  experience: ExperienceNode[];
-  stack:      StackNode[];
-  hobbies:    HobbyNode[];
+  services: ServiceNode[];
+  pricing:  PricingNode[];
+  projects: ProjectNode[];
 }
 
 ServiceNode    = { id; published; number; featured }                                  & Localized<{ title; description; badge; bullets: string[]; techLine }>
 PricingNode    = { id; published; highlighted }                                       & Localized<{ name; priceLabel; termLine; highlightLabel; description; features: string[] }>
-ProjectNode    = { id; published; slug; badgeType: 'work'|'own'; showOnHome; showOnAbout;
+ProjectNode    = { id; published; slug; badgeType: 'work'|'own'; showOnHome;
                    coverImage: string | null; screenshots: string[] }                 & Localized<{ title; badge; typeTag; metaLine; factsLine; role; description;
                                                                                                   pills: string[]; bullets: string[]; techChips: string[]; seoTitle; seoDescription }>
-ExperienceNode = { id; published; company }                                           & Localized<{ role; meta; description }>
-StackNode      = { id; published; items: string[] }                                   & Localized<{ title }>
-HobbyNode      = { id; published; handle; url; imageUrl: string | null }              & Localized<{ title; description }>
 ```
 
 Ids of existing rows are the DB ids; new items get `newCmsId()` (`n` + 24 base36
@@ -85,17 +77,17 @@ Dot-separated; collection items are addressed **by id**, string-list entries by
 numeric index.
 
 ```
-home.hiddenSections                         about.photoUrl | about.hiddenSections
-home.<locale>.<field>[.<index>]             about.<locale>.<field>
+home.hiddenSections
+home.<locale>.<field>[.<index>]
 chrome.<locale>.<field>
 <collection>                                insert target
 <collection>.<id>                           remove / move target
-<collection>.<id>.<neutralField>[.<index>]  e.g. projects.<id>.coverImage, stack.<id>.items.2
+<collection>.<id>.<neutralField>[.<index>]  e.g. projects.<id>.coverImage, projects.<id>.screenshots.2
 <collection>.<id>.<locale>.<field>[.<index>] e.g. services.<id>.ru.title, pricing.<id>.en.features.0
 ```
 
 Exports: `cmsPath` builders (`home(locale, field, index?)`, `homeNeutral(field)`,
-`about(locale, field)`, `aboutNeutral(field)`, `chrome(locale, field)`,
+`chrome(locale, field)`,
 `collection(c)`, `item(c, id)`, `itemField(c, id, field, index?)`,
 `itemLocale(c, id, locale, field, index?)`), `parseCmsPath(path)` → a
 discriminated `ParsedCmsPath | null` (rejects unknown fields), `getAtPath(tree, path)`.
@@ -161,7 +153,7 @@ plus `project:<slug>` for every slug in `base ∪ tree`.
 ### Draft reads for the web (preview token, `@Public()` + `PreviewTokenGuard`)
 
 `GET /content/draft/verify` → `{ expiresAt }` · `GET /content/draft/home?locale=` →
-`HomeResponse` · `/content/draft/about?locale=` → `AboutResponse` ·
+`HomeResponse` ·
 `/content/draft/chrome?locale=` → `SiteChrome` · `/content/draft/projects/:slug?locale=` → `Project`.
 
 Preview tokens are JWTs with audience `alcha-preview`, TTL `PREVIEW_TOKEN_TTL`
@@ -170,52 +162,47 @@ token is never accepted as an admin access token.
 
 ### Projection (API) — one code path for published and draft reads
 
-`projectHome / projectAbout / projectProjects / projectProject / projectChrome`
+`projectHome / projectProjects / projectProject / projectChrome`
 turn a tree into the existing public DTOs: filter `published`, home projects =
-`showOnHome`, about projects = `showOnAbout`, `sortOrder` = index; a blank
-**required** EN field falls back to RU. `HomeResponse` and `AboutResponse`
-gain `hiddenSections`. New public `GET /content/chrome?locale=` (tag
+`showOnHome`, `sortOrder` = index; a blank **required** EN field falls back to
+RU. `HomeResponse` gains `hiddenSections`. New public `GET /content/chrome?locale=` (tag
 `content:chrome`).
 
 Required fields (`CMS_REQUIRED_FIELDS`) — RU errors / EN warnings:
 home `heroTitle heroSubtitle heroCtaPrimary heroCtaSecondary servicesHeading worksHeading pricingHeading ctaTitle ctaSubtitle ctaTelegramLabel ctaCvLabel` ·
-about `name bioHtml experienceHeading projectsHeading stackHeading hobbiesHeading` ·
 chrome all · services `title description` (+ `number`) · pricing `name priceLabel termLine description` ·
-projects `title badge metaLine description` (+ `slug`) · experience `role meta description` (+ `company`) ·
-stack `title` · hobbies `title description` (+ `handle`).
+projects `title badge metaLine description` (+ `slug`).
 
 ## 4. Data-attribute contract (web → bridge) — `packages/shared/src/cms/bridge.ts`
 
 Emitted **only in preview mode**. `cmsAttrs(enabled, locale)` in
 `apps/web/src/lib/cms.ts` returns attribute helpers (`field`, `image`, `item`,
 `list`, `section` — each `{}` unless enabled, so production HTML is unchanged)
-and path builders bound to the page locale (`home`, `about`, `aboutNeutral`,
-`chrome`, `itemLocale`, `itemField`).
+and path builders bound to the page locale (`home`, `chrome`, `itemLocale`,
+`itemField`).
 
 A field element must hold nothing but its text: where a label shares its element
 with an icon, an arrow or other nodes, the text sits in its own `<span>` carrying
 the attributes (`ContactButton` renders that span only when given attributes).
 
-| Attribute                                                                                                                      | On                                                                                                                              | Example                                                                     |
-| ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `data-cms-field="<path>"`                                                                                                      | leaf element whose only child is the text                                                                                       | `home.ru.heroTitle`, `services.<id>.en.bullets.1`                           |
-| `data-cms-multiline`                                                                                                           | + multiline text (Enter = newline; rendered with `white-space: pre-line`)                                                       | descriptions, ledes                                                         |
-| `data-cms-value="<raw>"`                                                                                                       | + when rendered text ≠ stored value                                                                                             | pricing amount split into «от» + «$300»                                     |
-| `data-cms-rich`                                                                                                                | + field that must not be edited inline (opens its section drawer)                                                               | `about.ru.bioHtml`                                                          |
-| `data-cms-image="<path>"`                                                                                                      | image wrapper                                                                                                                   | `projects.<id>.coverImage`, `about.photoUrl`, `projects.<id>.screenshots.0` |
-| `data-cms-item="<collection>:<id>"`                                                                                            | card root                                                                                                                       | `pricing:<id>`                                                              |
-| `data-cms-list="<collection>"` + `data-cms-list-layout="grid\|stack"`                                                          | container directly holding the cards                                                                                            | `services` grid, `projects` stack                                           |
-| `data-cms-section="<key>"` + `data-cms-section-label` (+ `data-cms-section-hideable`, `data-cms-section-item="projects:<id>"`) | section root                                                                                                                    | `pricing` «Цены»                                                            |
-| `data-cms-add="<collection>"`                                                                                                  | ghost slot button (last child of the list), or the «+ Добавить …» button of the strip rendered in place of an **empty** section | «+ Добавить тариф»                                                          |
-| `data-cms-hidden="<section>"`                                                                                                  | «Показать» button of the strip rendered in place of a **hidden** section                                                        | «Секция «Цены» скрыта …»                                                    |
-| `data-cms-preview-ui`                                                                                                          | root of a ghost slot or strip; hidden in view mode and while no bridge runs (a draft tab outside the CRM)                       |                                                                             |
-| `data-locale-nav="<href>"`                                                                                                     | locale controls (`LocaleSwitch`, `EnLocaleHint`); rendered for visitors too, so not `data-cms-*`                                | `/en/about`                                                                 |
+| Attribute                                                                                                                      | On                                                                                                                              | Example                                                   |
+| ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `data-cms-field="<path>"`                                                                                                      | leaf element whose only child is the text                                                                                       | `home.ru.heroTitle`, `services.<id>.en.bullets.1`         |
+| `data-cms-multiline`                                                                                                           | + multiline text (Enter = newline; rendered with `white-space: pre-line`)                                                       | descriptions, ledes                                       |
+| `data-cms-value="<raw>"`                                                                                                       | + when rendered text ≠ stored value                                                                                             | pricing amount split into «от» + «$300»                   |
+| `data-cms-rich`                                                                                                                | + field that must not be edited inline (opens its section drawer)                                                               | none rendered today                                       |
+| `data-cms-image="<path>"`                                                                                                      | image wrapper                                                                                                                   | `projects.<id>.coverImage`, `projects.<id>.screenshots.0` |
+| `data-cms-item="<collection>:<id>"`                                                                                            | card root                                                                                                                       | `pricing:<id>`                                            |
+| `data-cms-list="<collection>"` + `data-cms-list-layout="grid\|stack"`                                                          | container directly holding the cards                                                                                            | `services` grid, `projects` stack                         |
+| `data-cms-section="<key>"` + `data-cms-section-label` (+ `data-cms-section-hideable`, `data-cms-section-item="projects:<id>"`) | section root                                                                                                                    | `pricing` «Цены»                                          |
+| `data-cms-add="<collection>"`                                                                                                  | ghost slot button (last child of the list), or the «+ Добавить …» button of the strip rendered in place of an **empty** section | «+ Добавить тариф»                                        |
+| `data-cms-hidden="<section>"`                                                                                                  | «Показать» button of the strip rendered in place of a **hidden** section                                                        | «Секция «Цены» скрыта …»                                  |
+| `data-cms-preview-ui`                                                                                                          | root of a ghost slot or strip; hidden in view mode and while no bridge runs (a draft tab outside the CRM)                       |                                                           |
+| `data-locale-nav="<href>"`                                                                                                     | locale controls (`LocaleSwitch`, `EnLocaleHint`); rendered for visitors too, so not `data-cms-*`                                | `/en/works/chaban`                                        |
 
 Sections (★ = hideable): home — `header` Шапка, `hero` Первый экран,
 `services`★ Услуги, `works`★ Работы, `pricing`★ Цены, `cta` Призыв к действию,
-`footer` Подвал · about — `aboutHero` Обо мне, `experience`★ Опыт,
-`projects`★ Проекты, `stack`★ Стек, `hobbies`★ Вне работы, `cta` · case page —
-`case` Кейс проекта (`data-cms-section-item`).
+`footer` Подвал · case page — `case` Кейс проекта (`data-cms-section-item`).
 
 ## 5. Bridge protocol — `packages/shared/src/cms/bridge.ts`
 

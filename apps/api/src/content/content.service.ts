@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type {
-  AboutResponse,
   HomeResponse,
   Locale,
   Project,
@@ -12,13 +11,7 @@ import { SettingsService } from '../settings/settings.service';
 import { SeoService } from '../seo/seo.service';
 import { DraftService } from './draft.service';
 import { TreeRepository } from './tree/tree.repository';
-import {
-  projectAbout,
-  projectChrome,
-  projectHome,
-  projectProject,
-  projectProjects,
-} from './tree/projection';
+import { projectChrome, projectHome, projectProject, projectProjects } from './tree/projection';
 
 /** `published` reads the content tables; `draft` the editor's working copy (preview mode). */
 type ContentSource = 'published' | 'draft';
@@ -40,15 +33,6 @@ export class ContentService {
       this.seo.resolve('home', locale),
     ]);
     return projectHome(tree, locale, { settings, seo });
-  }
-
-  async getAbout(source: ContentSource, locale: Locale): Promise<AboutResponse> {
-    const [tree, settings, seo] = await Promise.all([
-      this.load(source),
-      this.settings.get(),
-      this.seo.resolve('about', locale),
-    ]);
-    return projectAbout(tree, locale, { settings, seo });
   }
 
   async getChrome(source: ContentSource, locale: Locale): Promise<SiteChrome> {
