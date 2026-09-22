@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { CMS_ATTR, type CollectionKey } from '@alcha/shared';
+import { CMS_ATTR, MAX_PROCESS_STEPS, type CollectionKey } from '@alcha/shared';
 
 interface SlotCopy {
   label: string;
@@ -12,7 +12,7 @@ interface SlotCopy {
 const SLOTS: Record<CollectionKey, SlotCopy> = {
   steps: {
     label: 'Добавить шаг',
-    hint: '— встанет последним, номера шагов пересчитаются сами',
+    hint: `— встанет последним, номера пересчитаются сами (не больше ${MAX_PROCESS_STEPS} шагов)`,
     row: true,
     minHeight: 72,
   },

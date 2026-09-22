@@ -315,6 +315,12 @@ export type CmsLocalizedField<S extends CmsScope> = S extends CmsScope
   : never;
 
 /**
+ * The most process steps publish accepts: the desktop timeline keeps every step on one row,
+ * and at 1024px a seventh column is too narrow for the copy (docs/visual-editor.md D16).
+ */
+export const MAX_PROCESS_STEPS = 6;
+
+/**
  * Fields publish requires non-blank (docs/visual-editor.md §3): a blank RU or neutral
  * field is an error, a blank EN field a warning (projections fall back to RU).
  */

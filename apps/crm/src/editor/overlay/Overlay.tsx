@@ -13,6 +13,8 @@ import styles from './Overlay.module.css';
 
 /** Hover survives this long after the pointer leaves the iframe, so it can reach the controls. */
 const LEAVE_DELAY_MS = 150;
+/** Leaving the hovered card for elsewhere in the frame: long enough to cross a neighbour to its toolbar. */
+const ITEM_LEAVE_DELAY_MS = 250;
 /** Floating controls keep this distance from the frame edges. */
 const EDGE = 6;
 /** How far the section chip reaches into its section; the rest sits above the top edge. */
@@ -106,24 +108,40 @@ const isEmpty = (hover: HoverKeys) => !hover.field && !hover.image && !hover.ite
 function useStickyHover(store: BridgeStore) {
   const reported = useBridgeState(store, (state) => state.hover);
   const [hover, setHover] = useState(reported);
+  /** The hover on screen, read by the effect without re-running it. */
+  const shown = useRef(reported);
   /** The control under the pointer, if any. */
   const overControl = useRef<EventTarget | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const settleLater = useCallback(() => {
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setHover(store.get().hover), LEAVE_DELAY_MS);
-  }, [store]);
+  const show = useCallback((next: HoverKeys) => {
+    shown.current = next;
+    setHover(next);
+  }, []);
+
+  const settleLater = useCallback(
+    (delay = LEAVE_DELAY_MS) => {
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => show(store.get().hover), delay);
+    },
+    [store, show],
+  );
 
   useEffect(() => {
     if (overControl.current) return;
-    if (isEmpty(reported)) {
+    // Leaving the shown card — onto a gap or another card — waits like leaving the frame, so
+    // a toolbar wider than its card (a 226px process step vs ~315px) stays reachable across
+    // the neighbour it overhangs.
+    const leavesItem = !!shown.current.item && reported.item !== shown.current.item;
+    if (leavesItem) {
+      settleLater(ITEM_LEAVE_DELAY_MS);
+    } else if (isEmpty(reported)) {
       settleLater();
     } else {
       clearTimeout(timer.current);
-      setHover(reported);
+      show(reported);
     }
-  }, [reported, settleLater]);
+  }, [reported, settleLater, show]);
 
   useEffect(() => () => clearTimeout(timer.current), []);
 

@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import type { HomeContent, Locale, ProcessStep } from '@alcha/shared';
+import { MAX_PROCESS_STEPS, type HomeContent, type Locale, type ProcessStep } from '@alcha/shared';
 import { cmsAttrs } from '@/lib/cms';
 import { CmsAddSlot } from '../preview/CmsAddSlot';
 import { CmsHiddenSection } from '../preview/CmsHiddenSection';
@@ -187,7 +187,10 @@ export function Process({
               </li>
             );
           })}
-          {cms.enabled && <CmsAddSlot collection="steps" as="li" className={styles.stepSlot} />}
+          {/* Publish refuses more steps than fit on one desktop row. */}
+          {cms.enabled && steps.length < MAX_PROCESS_STEPS && (
+            <CmsAddSlot collection="steps" as="li" className={styles.stepSlot} />
+          )}
         </ol>
       </div>
     </section>

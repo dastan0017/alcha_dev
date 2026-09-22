@@ -1,3 +1,4 @@
+import { MAX_PROCESS_STEPS } from '@alcha/shared';
 import { validateTree } from './validate';
 import { treeFixture } from './tree.fixture';
 
@@ -27,6 +28,25 @@ describe('validateTree', () => {
       ['steps.s2.en.description', 'en'],
     ]);
     for (const issue of [...errors, ...warnings]) expect(issue.message).toMatch(/[а-яё]/i);
+  });
+
+  it('reports every published process step past the limit', () => {
+    const tree = treeFixture();
+    const step = (id: string, published = true) => ({
+      ...structuredClone(tree.steps[0]),
+      id,
+      published,
+    });
+    tree.steps.push(step('s4'), step('hidden', false), step('s5'), step('s6'));
+    expect(validateTree(tree).errors).toEqual([]);
+
+    tree.steps.push(step('s7'), step('s8'));
+    const { errors } = validateTree(tree);
+    expect(errors.map(({ path, locale }) => [path, locale])).toEqual([
+      ['steps.s7', null],
+      ['steps.s8', null],
+    ]);
+    expect(errors[0].message).toContain(String(MAX_PROCESS_STEPS));
   });
 
   it('reports blank required neutral fields as errors without a locale', () => {

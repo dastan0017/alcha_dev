@@ -3,6 +3,7 @@ import {
   COLLECTION_KEYS,
   DEFAULT_LOCALE,
   LOCALES,
+  MAX_PROCESS_STEPS,
   PROJECT_SLUG_PATTERN,
   type CmsIssue,
   type CmsScope,
@@ -19,6 +20,7 @@ const MESSAGES = {
   requiredEn: 'Не заполнено на английском — на сайте будет показан русский текст',
   slugFormat: 'Адрес проекта: строчные латинские буквы и цифры, слова через дефис',
   slugTaken: (slug: string) => `Адрес «${slug}» уже занят другим проектом`,
+  tooManySteps: `Шагов больше ${MAX_PROCESS_STEPS}: на компьютере они не помещаются в одну строку — удалите лишний`,
 };
 
 /** Empty or whitespace-only: what publish treats as a missing required value. */
@@ -27,8 +29,9 @@ export function isBlank(value: unknown): boolean {
 }
 
 /**
- * Publish checks (docs/visual-editor.md §3): a blank required RU or neutral field and a
- * malformed or duplicate project slug are errors; a blank required EN field is a warning.
+ * Publish checks (docs/visual-editor.md §3): a blank required RU or neutral field, a
+ * malformed or duplicate project slug and a process step past MAX_PROCESS_STEPS are errors;
+ * a blank required EN field is a warning.
  */
 export function validateTree(tree: SiteTree): TreeIssues {
   const issues: TreeIssues = { errors: [], warnings: [] };
@@ -40,6 +43,11 @@ export function validateTree(tree: SiteTree): TreeIssues {
     }
   }
   checkSlugs(issues, tree.projects);
+  // Only published steps render, so only they count.
+  const shown = tree.steps.filter((step) => step.published);
+  for (const { id } of shown.slice(MAX_PROCESS_STEPS)) {
+    issues.errors.push({ path: `steps.${id}`, locale: null, message: MESSAGES.tooManySteps });
+  }
   return issues;
 }
 

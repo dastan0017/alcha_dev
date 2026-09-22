@@ -879,6 +879,7 @@
    globals last. --body, not `eyebrow--muted`: #8A8494 fails contrast here. */
 .processIntro .processEyebrow {
   color: var(--body);
+  line-height: normal;
 }
 .processTitle {
   font-weight: 800;
@@ -980,6 +981,7 @@
   flex-direction: column;
   gap: 9px;
   padding: 17px 16px;
+  overflow-wrap: break-word;
   background: #fff;
   border: 1px solid rgba(23, 18, 31, 0.1);
   border-radius: 13px;
@@ -994,6 +996,7 @@
   font-size: 15.5px;
   font-weight: 800;
   line-height: 1.22;
+  letter-spacing: normal;
 }
 .stepDesc {
   font-size: 12.5px;
@@ -1056,6 +1059,7 @@
 }
 .stepNoteBody {
   padding-top: 2px;
+  overflow-wrap: break-word;
 }
 .stepNoteLabel {
   margin-bottom: 5px;
@@ -1073,6 +1077,22 @@
   color: var(--ink);
   text-wrap: pretty;
   white-space: pre-line;
+}
+
+/* High-contrast mode paints every background Canvas: outline the circles,
+   badges and pill, and draw the rules in text colour, or they vanish. */
+@media (forced-colors: active) {
+  .stepNum,
+  .stepBadge,
+  .processPill {
+    border: 1px solid CanvasText;
+  }
+  .stepNumMain {
+    border-width: 2px;
+  }
+  .stepLine {
+    background: CanvasText;
+  }
 }
 
 /* =================================================================== Works */
@@ -1437,6 +1457,14 @@
 /* Process — one column below 1024px (design 5a), never an intermediate 2- or
    3-column grid, capped at a readable measure on tablets. */
 @media (max-width: 1023px) {
+  /* The head stacks with the list: the pill on its own line under the lede. */
+  .processHead {
+    display: block;
+  }
+  .processPill {
+    display: inline-block;
+    margin: 14px 0 0;
+  }
   .steps {
     display: flex;
     flex-direction: column;
@@ -1499,6 +1527,9 @@
     width: 28px;
     height: 36px;
     margin-top: -2px;
+  }
+  .stepNoteBody {
+    padding-top: 0;
   }
   .stepNoteLabel {
     margin-bottom: 4px;
@@ -1668,9 +1699,8 @@
     padding-top: 0;
   }
 
-  /* Process — the head stacks, the pill on its own line under the lede */
+  /* Process — phone type scale and spacing (the head already stacks ≤1023px) */
   .processHead {
-    display: block;
     margin-bottom: 24px;
   }
   .processIntro .processEyebrow {
@@ -1681,8 +1711,6 @@
     letter-spacing: -0.012em;
   }
   .processPill {
-    display: inline-block;
-    margin: 14px 0 0;
     padding: 7px 13px;
     font-size: 10px;
   }
