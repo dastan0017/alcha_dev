@@ -99,7 +99,10 @@ echo "API is healthy."
 log "Checking the API actually returns content"
 probe=$(docker run --rm --network "$NETWORK" curlimages/curl:latest \
           -s --max-time 10 "http://api:4000/content/home?locale=ru" || true)
-if [ -z "$probe" ] || ! echo "$probe" | grep -q '"hero"'; then
+# Must be a NON-EMPTY heroTitle. An unseeded database returns the full structure
+# with every string empty ("heroTitle":""), which is exactly the case this guard
+# exists to catch — so testing for the key alone would always pass.
+if [ -z "$probe" ] || ! echo "$probe" | grep -q '"heroTitle":"[^"]'; then
   echo "$probe" | head -c 300
   fail "API returned no usable home content. The database is probably unseeded — run ./seed-once.sh first. Refusing to build a blank site."
 fi
