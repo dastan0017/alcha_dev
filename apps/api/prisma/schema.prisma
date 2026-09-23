@@ -5,11 +5,15 @@
 
 generator client {
   provider = "prisma-client-js"
-  // "native" keeps local dev (darwin-arm64) working; the Debian target matches the
-  // node:22-bookworm-slim production image. Without an explicit target, `prisma
-  // generate` emits an engine for the build platform only and the container dies
-  // at its first query with "Query engine library ... could not be found".
-  binaryTargets = ["native", "debian-openssl-3.0.x"]
+  // Without an explicit target, `prisma generate` emits an engine for the BUILD platform
+  // only, and the container dies at its first query with
+  // "Query engine library ... could not be found".
+  //   native     — local dev on darwin-arm64
+  //   debian-*   — the node:22-bookworm-slim image on the current x86 host (CPX22)
+  //   linux-arm64-* — kept ready for the planned move to an ARM host (CAX11) once
+  //                   Hetzner has stock; carrying both costs ~15 MB and makes that
+  //                   migration a no-op instead of a crash-at-first-query.
+  binaryTargets = ["native", "debian-openssl-3.0.x", "linux-arm64-openssl-3.0.x"]
 }
 
 datasource db {
