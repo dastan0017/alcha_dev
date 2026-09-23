@@ -1,0 +1,43 @@
+# Keep the build context small and — more importantly — keep the gitignored root .env
+# out of every image layer. Without this, `COPY . .` bakes JWT_SECRET, JWT_REFRESH_SECRET,
+# SEED_ADMIN_PASSWORD and TELEGRAM_BOT_TOKEN into a readable layer, and ships 1.2 GB of
+# macOS-arm64 node_modules that would shadow the Linux ones installed in the image.
+
+# Secrets — never in an image layer.
+.env
+.env.*
+!.env.example
+
+# Dependencies (reinstalled natively inside the image).
+node_modules
+**/node_modules
+.pnpm-store
+
+# Build outputs (rebuilt in the image; a stale darwin Prisma engine lives in apps/api/dist).
+**/dist
+**/build
+**/.next
+**/out
+**/*.tsbuildinfo
+
+# Caches.
+.turbo
+**/.turbo
+coverage
+**/.nyc_output
+
+# VCS and tooling.
+.git
+.github
+.vscode
+.idea
+
+# OS noise.
+**/.DS_Store
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Local media.
+.minio-data
+uploads

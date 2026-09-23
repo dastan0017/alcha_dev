@@ -14,6 +14,11 @@ async function bootstrap(): Promise<void> {
   const config = app.get(ConfigService);
   const logger = new Logger('Bootstrap');
 
+  // Behind Caddy every request arrives from the proxy's container IP. Without this,
+  // ThrottlerGuard buckets the whole internet as one client (req.ip) and the public
+  // contact form is capped at 5 submissions/min globally.
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
   app.use(helmet());
   app.use(cookieParser());
   app.useGlobalFilters(new ZodExceptionFilter());

@@ -13,7 +13,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return paths.map((path) => ({
     url: `${env.siteUrl}${localizedPath(path, 'ru')}`,
-    lastModified: new Date(),
+    // Deliberately omitted. This route revalidates hourly, so `new Date()` claimed every
+    // URL changed within the last hour, forever — the textbook way to get your lastmod
+    // discounted entirely. Restore it once Project exposes a real updatedAt.
     changeFrequency: 'weekly',
     priority: path === '/' ? 1 : 0.8,
     alternates: {

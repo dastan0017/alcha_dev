@@ -1,0 +1,2 @@
+# Keeps apps/web/public/ in git: a Dockerfile COPY of this directory fails on a
+# fresh clone if it has no tracked files. Replace with a real favicon when there is one.

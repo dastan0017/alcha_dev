@@ -27,6 +27,9 @@ export class RevalidateService {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'x-revalidate-secret': secret },
           body,
+          // Without this, undici's 300s default means a web app that accepts the
+          // connection but never answers pins a publish request for ~15 minutes.
+          signal: AbortSignal.timeout(5_000),
         });
         if (res.ok) {
           this.logger.log(`Revalidated tags [${tags.join(', ')}]`);
@@ -36,7 +39,9 @@ export class RevalidateService {
       } catch (error) {
         this.logger.warn(`Revalidate attempt ${attempt} errored: ${String(error)}`);
       }
-      await new Promise((resolve) => setTimeout(resolve, attempt * 300));
+      if (attempt < 3) {
+        await new Promise((resolve) => setTimeout(resolve, attempt * 300));
+      }
     }
 
     this.logger.error(`Failed to revalidate tags after 3 attempts: [${tags.join(', ')}]`);

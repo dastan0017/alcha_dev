@@ -1,0 +1,94 @@
+# alcha.dev — reverse proxy + automatic HTTPS.
+#
+# Caddy is the ONLY container publishing host ports (80/443). Everything else
+# talks over the private compose network.
+#
+# DO NOT add a stock "security headers" block here. The usual copy-paste snippet
+# sets `X-Frame-Options: DENY`, which permanently breaks the CRM's visual editor:
+# admin.alcha.dev embeds alcha.dev in an iframe for draft preview. X-Frame-Options
+# cannot express an allow-list, so the policy below uses CSP frame-ancestors
+# instead — that is the only header that can permit exactly one origin.
+#
+# Host headers are passed through untouched on purpose. Next builds locale and
+# preview redirects from the incoming request, and Caddy already sets
+# X-Forwarded-For/Proto/Host correctly by default. Adding `header_up Host ...`
+# would make those redirects point at an internal hostname.
+
+{
+	email hello@alcha.dev
+	# Uncomment to test against Let's Encrypt staging without burning rate limits:
+	# acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+}
+
+(compression) {
+	# Compress here rather than in Next/Nest — neither should spend CPU on it.
+	encode zstd gzip
+}
+
+(common_headers) {
+	header {
+		-Server
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
+}
+
+# ----------------------------------------------------------------- public site --
+alcha.dev {
+	import compression
+	import common_headers
+	# Allows the CRM to frame the site for draft preview, and nothing else.
+	header Content-Security-Policy "frame-ancestors 'self' https://admin.alcha.dev"
+
+	# Social crawlers hit this for every link preview and it is expensive
+	# (satori + resvg + a Google Fonts fetch per render, uncached by design).
+	@og path /api/og*
+	header @og Cache-Control "public, max-age=86400, s-maxage=86400"
+
+	reverse_proxy web:3000
+}
+
+# www -> apex. A 301 so search engines consolidate on one canonical host.
+www.alcha.dev {
+	import common_headers
+	redir https://alcha.dev{uri} permanent
+}
+
+# ------------------------------------------------------------------------- api --
+api.alcha.dev {
+	import compression
+	import common_headers
+	# The API is JSON only; never let a browser frame it.
+	header Content-Security-Policy "frame-ancestors 'none'"
+
+	# The visual editor sends content patches as one JSON body. Express caps the
+	# body at 100kb by default, so keep Caddy's limit above that, not below.
+	request_body {
+		max_size 4MB
+	}
+
+	reverse_proxy api:4000
+}
+
+# ------------------------------------------------------------------------- crm --
+# Static SPA served straight off the volume the crm build container populates.
+admin.alcha.dev {
+	import compression
+	import common_headers
+	# Admin UI: keep it out of search results entirely.
+	header X-Robots-Tag "noindex, nofollow"
+
+	root * /srv/crm
+	# THE SPA FALLBACK. Without this every deep link (/login, /site, /leads)
+	# 404s — and /login is the first page any admin ever loads.
+	try_files {path} /index.html
+	file_server
+
+	# Hashed assets are immutable; index.html must never be cached or a deploy
+	# leaves browsers pinned to the previous bundle.
+	@assets path /assets/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+	@index path /index.html
+	header @index Cache-Control "no-cache"
+}
