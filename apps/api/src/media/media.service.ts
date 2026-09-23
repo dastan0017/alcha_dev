@@ -19,10 +19,18 @@ export class MediaService {
   ) {
     this.bucket = config.getOrThrow<string>('S3_BUCKET');
     this.publicUrl = config.getOrThrow<string>('S3_PUBLIC_URL').replace(/\/+$/, '');
+    // Dev (MinIO) sets an explicit endpoint; real AWS leaves S3_ENDPOINT blank so the
+    // SDK resolves the regional endpoint itself. Passing an empty string works today,
+    // but being explicit keeps it from silently signing against "" if that ever changes.
+    const endpoint = config.getOrThrow<string>('S3_ENDPOINT').trim();
     this.s3 = new S3Client({
       region: config.getOrThrow<string>('S3_REGION'),
-      endpoint: config.getOrThrow<string>('S3_ENDPOINT'),
+      ...(endpoint ? { endpoint } : {}),
       forcePathStyle: config.get<boolean>('S3_FORCE_PATH_STYLE') ?? true,
+      // The SDK defaults to WHEN_SUPPORTED, which hoists an x-amz-checksum-crc32 of an
+      // EMPTY body into the signed query string. MinIO ignores it; real AWS validates it
+      // against the uploaded bytes and rejects every browser upload with HTTP 400.
+      requestChecksumCalculation: 'WHEN_REQUIRED',
       credentials: {
         accessKeyId: config.getOrThrow<string>('S3_ACCESS_KEY'),
         secretAccessKey: config.getOrThrow<string>('S3_SECRET_KEY'),

@@ -74,6 +74,12 @@
     "description": "The link may be outdated or the page may have been removed.",
     "home": "Back to home"
   },
+  "error": {
+    "code": "500",
+    "title": "Something went wrong",
+    "description": "We couldn’t load this page’s content. This is usually temporary.",
+    "retry": "Try again"
+  },
   "enHint": {
     "text": "Этот сайт доступен на русском.",
     "action": "Переключить на RU",
