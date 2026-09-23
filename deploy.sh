@@ -110,17 +110,30 @@ echo "Content OK."
 
 # ------------------------------------------------------------ 3. build the rest --
 if [ "$DO_BUILD" = 1 ]; then
-  log "Building the web image (API reachable at http://api:4000 via --network)"
+  # BuildKit does not support joining an arbitrary docker network ("network mode
+  # ... not supported by buildkit"), so the compose service name is not resolvable
+  # during the build. --network=host IS supported, and the host can route straight
+  # to the container's bridge address — so resolve it now rather than hardcoding
+  # it, since it changes whenever the container is recreated.
+  API_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' alcha_api)
+  [ -n "$API_IP" ] || fail "could not resolve the API container IP"
+  curl -fsS --max-time 10 "http://${API_IP}:4000/health" >/dev/null \
+    || fail "API unreachable at ${API_IP}:4000 from the host — cannot prerender"
+
+  log "Building the web image (prerendering against http://${API_IP}:4000)"
   docker build -f apps/web/Dockerfile -t alcha-web:latest \
-    --network "$NETWORK" \
+    --network=host \
     --build-arg NEXT_PUBLIC_SITE_URL="$NEXT_PUBLIC_SITE_URL" \
     --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" \
     --build-arg NEXT_PUBLIC_GA_ID="${NEXT_PUBLIC_GA_ID:-}" \
     --build-arg NEXT_PUBLIC_YANDEX_METRIKA_ID="${NEXT_PUBLIC_YANDEX_METRIKA_ID:-}" \
     --build-arg NEXT_PUBLIC_GSC_VERIFICATION="${NEXT_PUBLIC_GSC_VERIFICATION:-}" \
     --build-arg NEXT_PUBLIC_YANDEX_VERIFICATION="${NEXT_PUBLIC_YANDEX_VERIFICATION:-}" \
-    --build-arg API_INTERNAL_URL="http://api:4000" \
+    --build-arg API_INTERNAL_URL="http://${API_IP}:4000" \
     . || fail "web image build failed"
+  # NB: this bakes a container IP into the image, but only as the BUILD-time
+  # prerender target. At runtime docker-compose.prod.yml sets
+  # API_INTERNAL_URL=http://api:4000, which takes precedence.
 
   log "Building the CRM image"
   docker build -f apps/crm/Dockerfile -t alcha-crm:latest \
