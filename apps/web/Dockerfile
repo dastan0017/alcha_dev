@@ -43,8 +43,12 @@ COPY apps/crm/package.json      apps/crm/
 # @img/sharp-linux-* binaries are fetched. Copying host node_modules from a Mac
 # yields "Could not load the sharp module".
 RUN pnpm install --frozen-lockfile
-RUN node -e "require.resolve('esbuild')" \
- || (echo 'esbuild postinstall was skipped — check the pnpm version' && exit 1)
+# Checked in the .pnpm store, not via require.resolve: pnpm does not hoist.
+RUN bin=$(ls -d node_modules/.pnpm/esbuild@*/node_modules/esbuild/bin/esbuild 2>/dev/null | head -1); \
+    if [ -z "$bin" ] || [ ! -x "$bin" ]; then \
+      echo 'esbuild binary missing — a lifecycle script was skipped (check the pnpm version)'; exit 1; \
+    fi; \
+    echo "esbuild ok: $bin"
 
 # --------------------------------------------------------------------- builder --
 FROM deps AS builder

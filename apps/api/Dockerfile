@@ -37,9 +37,14 @@ COPY apps/api/package.json      apps/api/
 COPY apps/web/package.json      apps/web/
 COPY apps/crm/package.json      apps/crm/
 RUN pnpm install --frozen-lockfile
-# Fail loudly if a postinstall was skipped, rather than at runtime.
-RUN node -e "require.resolve('esbuild')" \
- || (echo 'esbuild postinstall was skipped — check the pnpm version' && exit 1)
+# Fail loudly if a postinstall was skipped, rather than deep in the build.
+# The binary is checked in the .pnpm store, not via require.resolve: pnpm does not
+# hoist, so esbuild is not resolvable from the workspace root.
+RUN bin=$(ls -d node_modules/.pnpm/esbuild@*/node_modules/esbuild/bin/esbuild 2>/dev/null | head -1); \
+    if [ -z "$bin" ] || [ ! -x "$bin" ]; then \
+      echo 'esbuild binary missing — a lifecycle script was skipped (check the pnpm version)'; exit 1; \
+    fi; \
+    echo "esbuild ok: $bin"
 
 # --------------------------------------------------------------------- builder --
 FROM deps AS builder
