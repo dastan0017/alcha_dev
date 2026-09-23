@@ -38,7 +38,26 @@ log()  { printf '\n\033[1;34m==> %s\033[0m\n' "$*"; }
 fail() { printf '\n\033[1;31mFAILED: %s\033[0m\n' "$*" >&2; exit 1; }
 
 [ -f .env ] || fail ".env not found in $(pwd). Copy .env.production.example and fill it in."
-set -a; . ./.env; set +a
+
+# Parse .env literally — do NOT `source` it. DATABASE_URL contains '&' (the
+# connection_limit/pool_timeout query params), which bash would read as a command
+# separator, silently truncating the value. Docker Compose's own env_file parser
+# is unaffected, so .env stays in plain compose format with no quoting required.
+load_env() {
+  local line key val
+  while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in ''|\#*) continue ;; esac
+    [ "${line#*=}" = "$line" ] && continue
+    key=${line%%=*}
+    val=${line#*=}
+    case "$val" in
+      \"*\") val=${val#\"}; val=${val%\"} ;;
+      \'*\') val=${val#\'}; val=${val%\'} ;;
+    esac
+    export "$key=$val"
+  done < "$1"
+}
+load_env ./.env
 
 for v in POSTGRES_USER POSTGRES_PASSWORD POSTGRES_DB DATABASE_URL JWT_SECRET \
          JWT_REFRESH_SECRET REVALIDATE_SECRET CORS_ORIGINS WEB_URL CRM_URL \

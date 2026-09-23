@@ -24,7 +24,24 @@ cd "$(dirname "$0")"
 COMPOSE="docker compose -f docker-compose.prod.yml"
 
 [ -f .env ] || { echo ".env not found" >&2; exit 1; }
-set -a; . ./.env; set +a
+
+# Parse, don't source: DATABASE_URL contains '&' and bash would treat it as a
+# command separator, truncating the value.
+load_env() {
+  local line key val
+  while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in ''|\#*) continue ;; esac
+    [ "${line#*=}" = "$line" ] && continue
+    key=${line%%=*}
+    val=${line#*=}
+    case "$val" in
+      \"*\") val=${val#\"}; val=${val%\"} ;;
+      \'*\') val=${val#\'}; val=${val%\'} ;;
+    esac
+    export "$key=$val"
+  done < "$1"
+}
+load_env ./.env
 
 if [ "${SEED_ADMIN_PASSWORD:-}" = "changeme123" ] || [ -z "${SEED_ADMIN_PASSWORD:-}" ]; then
   echo "REFUSING: SEED_ADMIN_PASSWORD is unset or still the default 'changeme123'." >&2
