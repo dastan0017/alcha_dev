@@ -21,6 +21,16 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# --yes skips the confirmation on a FRESH database only. It deliberately refuses
+# to proceed when content already exists — a non-interactive wipe is never safe.
+ASSUME_YES=0
+for a in "$@"; do
+  case "$a" in
+    --yes) ASSUME_YES=1 ;;
+    *) echo "unknown flag: $a" >&2; exit 2 ;;
+  esac
+done
+
 COMPOSE="docker compose -f docker-compose.prod.yml"
 
 [ -f .env ] || { echo ".env not found" >&2; exit 1; }
@@ -50,11 +60,14 @@ if [ "${SEED_ADMIN_PASSWORD:-}" = "changeme123" ] || [ -z "${SEED_ADMIN_PASSWORD
 fi
 
 echo "Checking whether content already exists..."
+# </dev/null matters: `docker compose run` would otherwise swallow this script's
+# stdin, so a later `read` sees EOF, returns non-zero, and `set -e` kills the run
+# with no message at all.
 existing=$($COMPOSE run --rm --no-deps -T \
   -e DATABASE_URL="$DATABASE_URL" \
   --entrypoint node api \
   -e 'const{PrismaClient}=require("@prisma/client");const p=new PrismaClient();p.homeContent.count().then(n=>{console.log(n);return p.$disconnect()}).catch(()=>{console.log(0)})' \
-  2>/dev/null | tr -dc '0-9' || echo 0)
+  </dev/null 2>/dev/null | tr -dc '0-9' || echo 0)
 
 if [ "${existing:-0}" != "0" ]; then
   cat >&2 <<WARN
@@ -63,12 +76,18 @@ if [ "${existing:-0}" != "0" ]; then
   Seeding now would DELETE it, including every edit made in the CRM.
 
 WARN
-  read -r -p "Type SEED-AND-WIPE to proceed anyway: " confirm
+  if [ "$ASSUME_YES" = 1 ]; then
+    echo "REFUSING: --yes will not wipe existing content. Re-run interactively if you truly mean it." >&2
+    exit 1
+  fi
+  read -r -p "Type SEED-AND-WIPE to proceed anyway: " confirm || confirm=""
   [ "$confirm" = "SEED-AND-WIPE" ] || { echo "Aborted."; exit 1; }
 else
   echo "Database has no content — safe to seed."
-  read -r -p "Seed production now? [y/N] " confirm
-  [ "$confirm" = "y" ] || [ "$confirm" = "Y" ] || { echo "Aborted."; exit 1; }
+  if [ "$ASSUME_YES" != 1 ]; then
+    read -r -p "Seed production now? [y/N] " confirm || confirm=""
+    [ "$confirm" = "y" ] || [ "$confirm" = "Y" ] || { echo "Aborted."; exit 1; }
+  fi
 fi
 
 echo "Seeding..."
