@@ -40,7 +40,7 @@ function CvField() {
   const customRequest: UploadProps['customRequest'] = async (options) => {
     setUploading(true);
     try {
-      const asset = await uploadMedia(options.file as File);
+      const { asset } = await uploadMedia(options.file as File);
       form.setFieldValue('cvUrl', asset.url);
       qc.invalidateQueries({ queryKey: MEDIA_QUERY_KEY });
       message.success('PDF загружен — сохраните настройки');

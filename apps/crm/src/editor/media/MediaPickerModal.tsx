@@ -71,7 +71,7 @@ function MediaGrid({ onPick }: { onPick: (url: string) => void }) {
     }
     setFileError(null);
     // Per-call callback: it does not fire if the modal was closed during the upload.
-    upload.mutate(file, { onSuccess: (asset) => onPick(asset.url) });
+    upload.mutate(file, { onSuccess: (result) => onPick(result.asset.url) });
   };
 
   const images = (media.data ?? []).filter((asset) => asset.mimeType.startsWith('image/'));
