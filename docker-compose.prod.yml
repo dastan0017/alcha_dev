@@ -1,0 +1,142 @@
+# alcha.dev — production stack. Single Hetzner host.
+#
+#   caddy (the ONLY service publishing host ports: 80, 443)
+#     ├── web:3000    Next.js
+#     ├── api:4000    NestJS
+#     └── /srv/crm    static CRM bundle (volume, written by the crm one-shot)
+#   postgres:5432 — private network only, never published
+#
+# Run via ./deploy.sh, not by hand: the web image must be built while the API is
+# up, because `next build` prerenders by fetching it.
+
+name: alcha
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: alcha_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+    # NO `ports:` — deliberately. Publishing 5432 would expose Postgres on the
+    # public IP, and Docker's DNAT rules bypass ufw entirely. The API reaches it
+    # over the compose network as postgres:5432.
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # -h 127.0.0.1 forces TCP. Without it pg_isready succeeds over the unix
+      # socket while initdb's temporary socket-only server is running, so the API
+      # is released too early, fails $connect() over TCP, and crash-loops.
+      test: ['CMD-SHELL', 'pg_isready -h 127.0.0.1 -p 5432 -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+    networks: [internal]
+
+  # One-shot: applies migrations, then exits. The API waits for it to succeed.
+  migrate:
+    image: alcha-api:latest
+    container_name: alcha_migrate
+    restart: 'no'
+    working_dir: /app/apps/api
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+    # NEVER add `migrate reset`, `db push --force-reset` or a seed to this.
+    # `migrate deploy` only applies pending migrations and never drops data.
+    command: ['pnpm', 'exec', 'prisma', 'migrate', 'deploy']
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [internal]
+
+  api:
+    image: alcha-api:latest
+    container_name: alcha_api
+    restart: unless-stopped
+    env_file: [.env]
+    environment:
+      # Explicit, not inherited: if NODE_ENV is missing the zod schema defaults it
+      # to 'development', which publishes Swagger at /docs and drops the `secure`
+      # flag from the refresh cookie.
+      NODE_ENV: production
+      TZ: Asia/Bishkek
+      # Removes x-amz-checksum-crc32 (of an empty body) from presigned URLs.
+      # MinIO tolerates it; real S3 rejects every upload that carries it.
+      AWS_REQUEST_CHECKSUM_CALCULATION: WHEN_REQUIRED
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    # No `ports:` — Caddy reaches it as api:4000 on the internal network.
+    networks: [internal]
+    stop_grace_period: 30s
+
+  web:
+    image: alcha-web:latest
+    container_name: alcha_web
+    restart: unless-stopped
+    environment:
+      # Compiled away in the bundle, but Next's own __prerender_bypass cookie
+      # reads this at RUNTIME from node_modules. If it is not 'production' that
+      # cookie loses Secure/SameSite=None and draft preview silently never
+      # activates inside the CRM iframe.
+      NODE_ENV: production
+      TZ: Asia/Bishkek
+      # Server-side fetches use the internal hostname; the browser uses the public
+      # URL baked in at build time.
+      API_INTERNAL_URL: http://api:4000
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET:?REVALIDATE_SECRET is required}
+      CRM_URL: ${CRM_URL:?CRM_URL is required}
+    depends_on:
+      api:
+        condition: service_started
+    volumes:
+      # Only the fetch/image caches. Revalidated page HTML is written to
+      # .next/server/app, which is inside the image layer and intentionally not
+      # mounted — deploy.sh re-warms it after each deploy instead.
+      - next_cache:/app/apps/web/.next/cache
+    networks: [internal]
+    stop_grace_period: 30s
+
+  # One-shot: publishes the built CRM bundle into the volume Caddy serves.
+  crm:
+    image: alcha-crm:latest
+    container_name: alcha_crm_publish
+    restart: 'no'
+    volumes:
+      - crm_dist:/srv/crm
+    networks: [internal]
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: alcha_caddy
+    restart: unless-stopped
+    # The only public surface. Matches the Hetzner firewall (22/80/443).
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp' # HTTP/3
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - crm_dist:/srv/crm:ro
+      - caddy_data:/data # certificates — losing this re-issues and can hit LE rate limits
+      - caddy_config:/config
+    depends_on:
+      crm:
+        condition: service_completed_successfully
+    networks: [internal]
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:
+  crm_dist:
+  next_cache:
+
+networks:
+  internal:
+    driver: bridge
