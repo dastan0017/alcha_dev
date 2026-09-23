@@ -83,5 +83,10 @@ fi
 # Prune local copies only. Never touches the pgdata volume.
 find "$DIR" -name 'alcha-*.sql.gz' -mtime "+${RETAIN_DAYS}" -print -delete
 
-# Install the daily job with:
-#   (crontab -l 2>/dev/null; echo '17 3 * * * cd /opt/alcha && ./backup.sh >> /opt/alcha/backups/backup.log 2>&1') | crontab -
+# Install the daily job with (note: run this WITHOUT `set -e` — `crontab -l` exits
+# non-zero when no crontab exists yet, which is the normal first-run case and
+# would otherwise abort the install silently):
+#
+#   existing=$(crontab -l 2>/dev/null | grep -v 'alcha/backup.sh')
+#   printf '%s\n17 3 * * * cd /opt/alcha && ./backup.sh >> /opt/alcha/backups/backup.log 2>&1\n' "$existing" \
+#     | sed '/^$/d' | crontab -
