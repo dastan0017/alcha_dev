@@ -1132,9 +1132,6 @@
   border-right: 1px solid rgba(23, 18, 31, 0.1);
   overflow: hidden;
 }
-.workImg {
-  object-fit: contain;
-}
 .workShot {
   font-family: var(--font-mono-stack);
   font-size: 12px;
@@ -1149,23 +1146,6 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-.workHeadRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-.workTitleWrap {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-.workTitle {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--ink);
 }
 .workTag {
   flex: none;
@@ -1183,16 +1163,8 @@
 /* v3 review: the amber client-project tag is gone — purple stays the card's
    single accent, so this tag is neutral. */
 .workTagWork {
-  color: var(--body);
-  background: var(--plate);
-}
-.workBadge {
-  flex: none;
-  font-family: var(--font-mono-stack);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--muted);
-  text-align: right;
+  color: #4a4453;
+  background: #f0edf3;
 }
 .workMeta {
   font-size: 14.5px;
@@ -1200,13 +1172,6 @@
   color: var(--body);
   text-wrap: pretty;
   white-space: pre-line;
-}
-/* Was purple; the card now spends its one purple on the case link. */
-.workFacts {
-  font-family: var(--font-mono-stack);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--body);
 }
 .workPills {
   display: flex;
@@ -1268,6 +1233,14 @@
 }
 .workCoverImg {
   object-fit: cover;
+}
+/* A 6:5 cover, so the cell's floor is taller and the art sits on its own cream. */
+.workMediaTall {
+  min-height: 433px;
+  background: #fdf4ec;
+}
+.workMediaTall .workCoverImg {
+  object-position: center bottom;
 }
 .workBodyWide {
   padding: 26px 30px 22px;
@@ -1888,6 +1861,9 @@
     aspect-ratio: 16 / 10;
     min-height: 0;
   }
+  .workMediaTall {
+    aspect-ratio: 6 / 5;
+  }
   /* Full width pushes them below the name and badge instead of squeezing the row. */
   .workStores {
     margin-left: 0;
@@ -1904,11 +1880,6 @@
     padding: 16px 18px 18px;
     gap: 10px;
   }
-  .workHeadRow {
-    align-items: center;
-    gap: 10px;
-  }
-  .workFacts,
   .workTech {
     display: none;
   }

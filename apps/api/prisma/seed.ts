@@ -507,9 +507,8 @@ async function seedProjects(): Promise<void> {
       badgeType: ProjectBadge.own,
       sortOrder: 1,
       showOnHome: true,
-      // TODO(dastan): вставьте ссылки на страницы приложения — пустая ссылка не показывается.
-      appStoreUrl: '',
-      googlePlayUrl: '',
+      appStoreUrl: 'https://apps.apple.com/kg/app/%D1%87%D0%B0%D0%B1%D0%B0%D0%BD/id6772493408',
+      googlePlayUrl: 'https://play.google.com/store/apps/details?id=kg.arashan.mobile',
       ru: {
         // The mono line next to the badge: this project's tag is its name.
         title: 'Приложение для заводчиков племенных овец',
@@ -583,26 +582,40 @@ async function seedProjects(): Promise<void> {
       badgeType: ProjectBadge.work,
       sortOrder: 2,
       showOnHome: true,
+      // TODO(dastan): обложка 6:5 (kitstore-cover-6x5.png, 1560×1300) — ставите её сами.
+      coverImage: '',
+      appStoreUrl:
+        'https://apps.apple.com/kg/app/%D0%BA%D0%B8%D1%82-%D1%82%D1%80%D0%B5%D0%B9%D0%B4/id6760572485',
+      googlePlayUrl: 'https://play.google.com/store/apps/details?id=com.nursultan23.kit',
       ru: {
-        title: 'Kit Store',
-        badge: 'APP STORE + GOOGLE PLAY',
-        typeTag: 'КЛИЕНТСКИЙ ПРОЕКТ',
+        title: 'Оптовые заказы — без звонков и ручного сбора',
+        badge: 'КЛИЕНТСКИЙ ПРОЕКТ',
+        // The mono line next to the badge: this project's tag is its name.
+        typeTag: 'Kit Store',
         metaLine:
-          'Магазины заказывают товар у дистрибьютора прямо с телефона — как в интернет-магазине. Раньше заказы собирали торговые агенты вручную; теперь каталог, заказы и клиенты — в CRM у менеджеров.',
-        // TODO(dastan): подставьте реальные цифры (×× магазинов-партнёров).
+          'Раньше заказы собирали торговые агенты: звонок, блокнот, пересчёт. Теперь магазин заказывает сам с телефона, как в интернет-магазине, а каталог, заказы и клиенты — в CRM у менеджеров.',
         facts: [
-          { text: 'Магазины заказывают сами' },
-          { text: 'заказы без звонков' },
-          { text: 'уведомления в WhatsApp' },
+          {
+            lead: 'Магазин заказывает сам',
+            text: '— с телефона, в любое время, без звонка агенту',
+          },
+          {
+            lead: 'Заказы не теряются',
+            text: '— каждый падает в CRM со статусом, уведомление сразу в WhatsApp',
+          },
+          {
+            lead: 'Агенты не собирают заказы вручную',
+            text: '— каталог и цены обновляются в одном месте',
+          },
         ],
         role: 'Клиентский проект · мобильное приложение, CRM и сервер',
         description:
-          'Магазины заказывают товар у дистрибьютора прямо с телефона — как в интернет-магазине. Раньше заказы собирали торговые агенты вручную; теперь каталог, заказы и клиенты — в CRM у менеджеров.',
+          'Раньше заказы собирали торговые агенты: звонок, блокнот, пересчёт. Теперь магазин заказывает сам с телефона, как в интернет-магазине, а каталог, заказы и клиенты — в CRM у менеджеров.',
         pills: [
-          'Мобильное приложение (iOS + Android)',
-          'CRM для персонала',
+          'Мобильное приложение',
+          'CRM для менеджеров',
           'Каталог и заказы',
-          'Сервер и передача',
+          'Запуск и передача',
         ],
         bullets: [
           'Магазины-партнёры оформляют заказы сами',
@@ -611,31 +624,35 @@ async function seedProjects(): Promise<void> {
           'Аналитика продаж и остатков',
           'Развёртывание и поддержка на сервере',
         ],
-        techChips: ['React Native', 'Expo', 'React', 'NestJS', 'GraphQL', 'PostgreSQL'],
+        techChips: ['React Native', 'NestJS', 'PostgreSQL'],
         seoTitle: 'Kit Store — приложение и CRM для дистрибьютора',
         seoDescription:
           'Магазины заказывают у дистрибьютора с телефона; каталог, заказы и клиенты — в CRM у менеджеров.',
       },
       en: {
-        title: 'Kit Store',
-        badge: 'APP STORE + GOOGLE PLAY',
-        typeTag: 'CLIENT PROJECT',
+        title: 'Wholesale orders without calls or paperwork',
+        badge: 'CLIENT PROJECT',
+        typeTag: 'Kit Store',
         metaLine:
-          'Stores order goods from the distributor straight from their phone — like an online shop. Orders used to be collected by sales reps by hand; now the catalogue, orders and clients live in the managers’ CRM.',
+          'Sales reps used to collect orders by hand: a call, a notebook, a recount. Now a store orders by itself from a phone, like in an online shop, and the catalogue, orders and customers live in the managers’ CRM.',
         facts: [
-          { text: 'Stores order themselves' },
-          { text: 'orders without calls' },
-          { text: 'WhatsApp notifications' },
+          {
+            lead: 'Stores order by themselves',
+            text: '— from a phone, any time, without calling a rep',
+          },
+          {
+            lead: 'No order gets lost',
+            text: '— each one lands in the CRM with a status, plus an instant WhatsApp notification',
+          },
+          {
+            lead: 'Reps no longer collect orders by hand',
+            text: '— catalogue and prices are updated in one place',
+          },
         ],
         role: 'Client project · mobile app, CRM and server',
         description:
-          'Stores order goods from the distributor straight from their phone — like an online shop. Orders used to be collected by sales reps by hand; now the catalogue, orders and clients live in the managers’ CRM.',
-        pills: [
-          'Mobile app (iOS + Android)',
-          'CRM for staff',
-          'Catalogue & orders',
-          'Server & handover',
-        ],
+          'Sales reps used to collect orders by hand: a call, a notebook, a recount. Now a store orders by itself from a phone, like in an online shop, and the catalogue, orders and customers live in the managers’ CRM.',
+        pills: ['Mobile app', 'CRM for managers', 'Catalogue & orders', 'Launch & handover'],
         bullets: [
           'Partner stores place orders themselves',
           'Managers run the catalogue, orders and clients in a CRM',
@@ -660,7 +677,7 @@ async function seedProjects(): Promise<void> {
         showOnHome: p.showOnHome,
         published: true,
         screenshots: [],
-        coverImage: null,
+        coverImage: p.coverImage || null,
         appStoreUrl: p.appStoreUrl ?? '',
         googlePlayUrl: p.googlePlayUrl ?? '',
         translations: {
