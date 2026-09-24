@@ -51,6 +51,24 @@ function fill(fields: FieldKinds, tag: string): Record<string, unknown> {
           [{ text: `${tag}.${field}.0` }, { lead: 'Lead', text: `${tag}.${field}.1` }],
         ];
       }
+      if (kind === 'pointList') {
+        return [
+          field,
+          [
+            { title: `${tag}.${field}.0`, text: `${tag}.${field}.0` },
+            { title: `${tag}.${field}.1`, text: `${tag}.${field}.1` },
+          ],
+        ];
+      }
+      if (kind === 'shotList') {
+        return [
+          field,
+          [
+            { src: `${tag}.${field}.0.png`, device: 'desktop' },
+            { src: `${tag}.${field}.1.png`, device: 'mobile' },
+          ],
+        ];
+      }
       return [
         field,
         kind === 'stringList' ? [`${tag}.${field}.0`, `${tag}.${field}.1`] : `${tag}.${field}`,
@@ -91,7 +109,16 @@ const TREE: SiteTree = siteTreeSchema.parse({
     appStoreUrl: `https://apps.apple.com/${id}`,
     googlePlayUrl: '',
     coverImage: i === 0 ? null : `https://cdn/${id}.png`,
-    screenshots: [`https://cdn/${id}-0.png`, `https://cdn/${id}-1.png`],
+    shareImage: null,
+    requestsImage: null,
+    nextProjectId: '',
+    durationWeeks: '',
+    launchedAt: '',
+    editingImages: [`https://cdn/${id}-0.png`, `https://cdn/${id}-1.png`],
+    screenshots: [
+      { src: `https://cdn/${id}-hero.png`, device: 'desktop' },
+      { src: `https://cdn/${id}-phone.png`, device: 'mobile' },
+    ],
     ...localized(M.projects.localized, id),
   })),
 });
@@ -176,6 +203,8 @@ describe('newCollectionNode', () => {
     stringList: [],
     badgeType: 'work',
     factList: [],
+    pointList: [],
+    shotList: [],
   };
 
   it.each(COLLECTION_KEYS)('builds a blank, published, insertable %s item', (collection) => {
@@ -197,7 +226,7 @@ describe('newCollectionNode', () => {
   it('never shares ids or lists between items', () => {
     const [a, b] = [newCollectionNode('projects'), newCollectionNode('projects')];
     expect(a.id).not.toBe(b.id);
-    expect(a.screenshots).not.toBe(b.screenshots);
+    expect(a.editingImages).not.toBe(b.editingImages);
     expect(a.ru.pills).not.toBe(b.ru.pills);
     expect(a.ru.pills).not.toBe(a.en.pills);
   });
@@ -251,9 +280,9 @@ describe('PROJECT_SLUG_PATTERN', () => {
 describe('field model types', () => {
   it('distribute over a collection union, so generic drawer code can build paths', () => {
     const collection = 'projects' as CollectionKey;
-    const neutral: CmsNeutralField<CollectionKey> = 'screenshots';
+    const neutral: CmsNeutralField<CollectionKey> = 'editingImages';
     const localizedField: CmsLocalizedField<CollectionKey> = 'title';
-    expect(cmsPath.itemField(collection, 'pr1', neutral, 0)).toBe('projects.pr1.screenshots.0');
+    expect(cmsPath.itemField(collection, 'pr1', neutral, 0)).toBe('projects.pr1.editingImages.0');
     expect(cmsPath.itemLocale(collection, 'pr1', 'en', localizedField)).toBe(
       'projects.pr1.en.title',
     );
@@ -291,8 +320,8 @@ describe('parseCmsPath', () => {
     ['projects.pr1.badgeType', itemField('projects', 'pr1', null, 'badgeType', 'badgeType')],
     ['projects.pr1.showOnHome', itemField('projects', 'pr1', null, 'showOnHome', 'boolean')],
     [
-      'projects.pr1.screenshots.0',
-      itemField('projects', 'pr1', null, 'screenshots', 'stringList', 0),
+      'projects.pr1.editingImages.0',
+      itemField('projects', 'pr1', null, 'editingImages', 'stringList', 0),
     ],
     ['steps.s1.isMain', itemField('steps', 's1', null, 'isMain', 'boolean')],
     ['steps.s1.ru.title', itemField('steps', 's1', 'ru', 'title', 'string')],
@@ -349,7 +378,7 @@ describe('parseCmsPath', () => {
     'steps.s1.ru.isMain',
     'steps.s1.ru.title.0',
     'projects.pr1.coverImage.0',
-    'projects.pr1.screenshots.1.2',
+    'projects.pr1.editingImages.1.2',
     'pricing.p1.fr.name',
   ])('rejects %j', (path) => {
     expect(parseCmsPath(path)).toBeNull();
@@ -363,7 +392,7 @@ describe('parseCmsPath', () => {
       cmsPath.chrome('ru', 'navCta'),
       cmsPath.collection('pricing'),
       cmsPath.item('pricing', 'p1'),
-      cmsPath.itemField('projects', 'pr1', 'screenshots', 2),
+      cmsPath.itemField('projects', 'pr1', 'editingImages', 2),
       cmsPath.itemField('projects', 'pr1', 'coverImage'),
       cmsPath.itemField('steps', 's1', 'isMain'),
       cmsPath.itemLocale('pricing', 'p1', 'en', 'features', 0),
@@ -376,7 +405,7 @@ describe('parseCmsPath', () => {
       'chrome.ru.navCta',
       'pricing',
       'pricing.p1',
-      'projects.pr1.screenshots.2',
+      'projects.pr1.editingImages.2',
       'projects.pr1.coverImage',
       'steps.s1.isMain',
       'pricing.p1.en.features.0',
@@ -386,13 +415,50 @@ describe('parseCmsPath', () => {
   });
 });
 
+describe('indexed screenshot paths', () => {
+  // A screenshot is an object, but an image annotation on the page needs a settable string
+  // path: `…screenshots.<i>` reads and writes that slot's picture and leaves its frame alone.
+  it('reads the picture of a slot', () => {
+    expect(getAtPath(TREE, 'projects.pr1.screenshots.0')).toBe('https://cdn/pr1-hero.png');
+    expect(getAtPath(TREE, 'projects.pr1.screenshots.1')).toBe('https://cdn/pr1-phone.png');
+    expect(getAtPath(TREE, 'projects.pr1.screenshots.9')).toBeUndefined();
+    expect(parseCmsPath('projects.pr1.screenshots.1')).toMatchObject({
+      field: 'screenshots',
+      fieldKind: 'shotList',
+      index: 1,
+    });
+  });
+
+  it('sets the picture and keeps the frame', () => {
+    const next = apply([set('projects.pr1.screenshots.1', 'new.png')]).tree;
+    expect(next.projects[0].screenshots[1]).toEqual({ src: 'new.png', device: 'mobile' });
+    expect(next.projects[0].screenshots[0]).toEqual(TREE.projects[0].screenshots[0]);
+  });
+
+  it('appends a desktop slot at the end and rejects a gap', () => {
+    const next = apply([set('projects.pr1.screenshots.2', 'added.png')]).tree;
+    expect(next.projects[0].screenshots[2]).toEqual({ src: 'added.png', device: 'desktop' });
+    expectPatchError([set('projects.pr1.screenshots.3', 'too-far.png')]);
+  });
+
+  it('inverts a picture change and an append', () => {
+    for (const patches of [
+      [set('projects.pr1.screenshots.0', 'x.png')],
+      [set('projects.pr1.screenshots.2', 'y.png')],
+    ]) {
+      const after = apply(patches).tree;
+      expect(applyPatches(after, invertPatches(TREE, patches)).tree).toEqual(TREE);
+    }
+  });
+});
+
 describe('getAtPath', () => {
   it('reads leaves, list entries, items and collections', () => {
     expect(getAtPath(TREE, 'home.ru.heroTitle')).toBe('home.ru.heroTitle');
     expect(getAtPath(TREE, 'home.hiddenSections')).toEqual(['works']);
     expect(getAtPath(TREE, 'projects.pr2.coverImage')).toBe('https://cdn/pr2.png');
     expect(getAtPath(TREE, 'pricing.p2.en.features.1')).toBe('p2.en.features.1');
-    expect(getAtPath(TREE, 'projects.pr2.screenshots.0')).toBe('https://cdn/pr2-0.png');
+    expect(getAtPath(TREE, 'projects.pr2.editingImages.0')).toBe('https://cdn/pr2-0.png');
     expect(getAtPath(TREE, 'projects.pr1.coverImage')).toBeNull();
     expect(getAtPath(TREE, 'steps.s2')).toBe(TREE.steps[1]);
     expect(getAtPath(TREE, 'pricing')).toBe(TREE.pricing);
@@ -401,7 +467,7 @@ describe('getAtPath', () => {
   it('is undefined for missing ids, indexes and invalid paths', () => {
     expect(getAtPath(TREE, 'steps.ghost')).toBeUndefined();
     expect(getAtPath(TREE, 'steps.ghost.ru.title')).toBeUndefined();
-    expect(getAtPath(TREE, 'projects.pr1.screenshots.9')).toBeUndefined();
+    expect(getAtPath(TREE, 'projects.pr1.editingImages.9')).toBeUndefined();
     expect(getAtPath(TREE, 'home.ru.nope')).toBeUndefined();
   });
 });
@@ -450,8 +516,8 @@ describe('applyPatches: set', () => {
     ['steps.s1.isMain', 'yes'],
     ['projects.pr1.slug', 1],
     ['projects.pr1.badgeType', 'client'],
-    ['projects.pr1.screenshots.0', 3],
-    ['projects.pr1.screenshots', [null]],
+    ['projects.pr1.editingImages.0', 3],
+    ['projects.pr1.editingImages', [null]],
     ['home.ru.heroBullets', new Array(2)],
     ['home.hiddenSections', new Array(1)],
     ['home.hiddenSections', ['works', 'works']],
@@ -462,7 +528,7 @@ describe('applyPatches: set', () => {
   it.each<[string, unknown]>([
     ['steps.ghost.isMain', 'yes'],
     ['steps.ghost.ru.title', 42],
-    ['projects.ghost.screenshots', 'not-a-list'],
+    ['projects.ghost.editingImages', 'not-a-list'],
     ['projects.ghost.badgeType', 'client'],
     ['pricing.ghost.ru.features.0', ['nested']],
     ['projects.ghost.coverImage', undefined],
@@ -484,24 +550,24 @@ describe('applyPatches: set', () => {
 
   it('appends at index === length and throws past the end', () => {
     const appended = apply([
-      set('projects.pr1.screenshots.2', 'c.png'),
-      set('projects.pr1.screenshots.3', 'd.png'),
+      set('projects.pr1.editingImages.2', 'c.png'),
+      set('projects.pr1.editingImages.3', 'd.png'),
     ]).tree;
-    expect(appended.projects[0].screenshots).toEqual([
+    expect(appended.projects[0].editingImages).toEqual([
       'https://cdn/pr1-0.png',
       'https://cdn/pr1-1.png',
       'c.png',
       'd.png',
     ]);
-    expectPatchError([set('projects.pr1.screenshots.3', 'c.png')]);
+    expectPatchError([set('projects.pr1.editingImages.3', 'c.png')]);
     expectPatchError([set('home.en.heroBullets.5', 'x')]);
   });
 
   it('skips a well-typed set on a missing item id (the past-end check needs the item)', () => {
     const result = apply([
       set('steps.ghost.ru.title', 'x'),
-      set('projects.ghost.screenshots.0', 'x'),
-      set('projects.ghost.screenshots.9', 'x'),
+      set('projects.ghost.editingImages.0', 'x'),
+      set('projects.ghost.editingImages.9', 'x'),
     ]);
     expect(result).toEqual({ tree: TREE, applied: 0, skipped: 3 });
   });
@@ -612,7 +678,7 @@ describe('idempotency', () => {
   it('replays a batch of absolute sets, upserts, removes and one move to the same tree', () => {
     const batch: ContentPatch[] = [
       set('home.ru.heroTitle', 'x'),
-      set('projects.pr1.screenshots.2', 'c.png'),
+      set('projects.pr1.editingImages.2', 'c.png'),
       set('pricing.p1.en.features', ['only']),
       set('home.hiddenSections', ['pricing']),
       insert('steps', NEW_STEP, 1),
@@ -646,7 +712,7 @@ describe('invertPatches', () => {
     ['list entry', [set('pricing.p1.en.features.0', 'x')]],
     [
       'two appends',
-      [set('projects.pr1.screenshots.2', 'c.png'), set('projects.pr1.screenshots.3', 'd.png')],
+      [set('projects.pr1.editingImages.2', 'c.png'), set('projects.pr1.editingImages.3', 'd.png')],
     ],
     [
       'append then overwrite it',
@@ -658,7 +724,7 @@ describe('invertPatches', () => {
     ],
     [
       'clear list then append',
-      [set('projects.pr1.screenshots', []), set('projects.pr1.screenshots.0', 'a.png')],
+      [set('projects.pr1.editingImages', []), set('projects.pr1.editingImages.0', 'a.png')],
     ],
     [
       'neutral kinds',
@@ -723,7 +789,7 @@ describe('invertPatches', () => {
         set('steps.s1.ru.title', 'y'),
         remove('pricing.ghost'),
         move('projects.ghost', 0),
-        set('projects.ghost.screenshots.0', 'z'),
+        set('projects.ghost.editingImages.0', 'z'),
       ],
     ],
     ['exclusive flag', exclusiveFlagPatches(TREE, 'pricing', 'p3', 'highlighted', true)],
@@ -742,8 +808,8 @@ describe('invertPatches', () => {
         remove('pricing.p4'),
         insert('pricing', { ...clone(TREE.pricing[2]), id: 'p4' }),
         move('pricing.p4', 0),
-        set('projects.pr2.screenshots', ['go.png']),
-        set('projects.pr2.screenshots.1', 'rust.png'),
+        set('projects.pr2.editingImages', ['go.png']),
+        set('projects.pr2.editingImages.1', 'rust.png'),
         remove('steps.s2'),
         insert('steps', clone(TREE.steps[1]), 0),
       ],
@@ -758,8 +824,8 @@ describe('invertPatches', () => {
     expect(
       invertPatches(TREE, [set('home.ru.heroTitle', 'a'), set('home.ru.heroTitle', 'b')]),
     ).toEqual([set('home.ru.heroTitle', 'a'), set('home.ru.heroTitle', 'home.ru.heroTitle')]);
-    expect(invertPatches(TREE, [set('projects.pr1.screenshots.2', 'c.png')])).toEqual([
-      set('projects.pr1.screenshots', ['https://cdn/pr1-0.png', 'https://cdn/pr1-1.png']),
+    expect(invertPatches(TREE, [set('projects.pr1.editingImages.2', 'c.png')])).toEqual([
+      set('projects.pr1.editingImages', ['https://cdn/pr1-0.png', 'https://cdn/pr1-1.png']),
     ]);
     expect(
       invertPatches(TREE, [
@@ -829,6 +895,16 @@ function randomSequence(seed: number): ContentPatch[] {
         return Array.from({ length: int(0, 3) }, (_, i) =>
           random() < 0.5 ? { text: `f${i}.${int(0, 9)}` } : { lead: `L${i}`, text: `f${i}` },
         );
+      case 'pointList':
+        return Array.from({ length: int(0, 3) }, (_, i) => ({
+          title: `T${i}.${int(0, 9)}`,
+          text: `p${i}.${int(0, 9)}`,
+        }));
+      case 'shotList':
+        return Array.from({ length: int(0, 3) }, (_, i) => ({
+          src: `s${i}.${int(0, 9)}.png`,
+          device: pick(['desktop', 'mobile']),
+        }));
       default:
         return `v${int(0, 99)}`;
     }

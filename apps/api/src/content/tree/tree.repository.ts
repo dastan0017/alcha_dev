@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import {
+  blankCmsValue,
   CMS_FIELD_MODEL,
   LOCALES,
   siteTreeSchema,
@@ -188,7 +189,7 @@ function copyOf(scope: CmsScope, translations: readonly TranslationRow[] = []) {
     return Object.fromEntries(
       Object.entries(fields).map(([field, kind]) => [
         field,
-        row ? row[field] : kind === 'stringList' || kind === 'factList' ? [] : '',
+        row ? row[field] : blankCmsValue(kind),
       ]),
     );
   };

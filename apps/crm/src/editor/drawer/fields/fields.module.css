@@ -284,3 +284,40 @@
 .factLead {
   font-weight: 700;
 }
+
+/* ------------------------------------------------- Pictures with captions -- */
+
+/* One row of MediaRowsField: the picture on top, then the frame choice, then one
+   caption input per language — everything that belongs to that picture, together. */
+.mediaRow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--canvas);
+}
+.mediaRowTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mediaCaptions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mediaCaption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mediaCaptionBadge {
+  flex: none;
+  width: 24px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}

@@ -210,8 +210,22 @@ model Project {
   sortOrder    Int                  @default(0)
   showOnHome   Boolean              @default(false)
   published    Boolean              @default(false)
-  screenshots  String[]
+  /// Case-page screenshots `[{ src, device: 'desktop' | 'mobile' }]`; `[0]` is the hero shot,
+  /// the rest the «Экраны» gallery. Captions are per-locale, in `screenshotCaptions`.
+  screenshots  Json                 @default("[]")
   coverImage   String?
+  /// Link-preview picture shown in the «Ссылка в мессенджере» bubble; blank falls back to the og-image.
+  shareImage   String?
+  /// «Админка: тексты и фото» pictures, in order; captions are in `editingCaptions`.
+  editingImages String[]
+  /// «Админка: заявки» picture; its caption is `requestsCaption`.
+  requestsImage String?
+  /// Project the «Следующий проект» card points at. A plain id, not a foreign key: a deleted
+  /// or unpublished target falls back to the next project by sort order rather than blocking the delete.
+  nextProjectId String              @default("")
+  /// Meta-strip values. Stored but not rendered — the strip comes back once both are real.
+  durationWeeks String             @default("")
+  launchedAt    String             @default("")
   /// Store pages of a shipped app; blank hides the link on the card.
   appStoreUrl   String              @default("")
   googlePlayUrl String              @default("")
@@ -237,7 +251,29 @@ model ProjectTranslation {
   role           String   @default("")
   description    String
   pills          String[]
+  /// Bullet list of the classic case page; the detailed one uses `siteFeatures` instead.
   bullets        String[]
+  /// «01 · Что умеет сайт» rows `[{ title, text }]`. Non-empty turns on the detailed case layout.
+  siteFeatures   Json     @default("[]")
+  /// Caption under each `Project.screenshots` entry, same index.
+  screenshotCaptions String[]
+  /// «02 · Админка: тексты и фото».
+  editingTitle   String   @default("")
+  editingLead    String   @default("")
+  editingPoints  Json     @default("[]")
+  /// Caption under each `Project.editingImages` entry, same index.
+  editingCaptions String[]
+  /// «03 · Админка: заявки».
+  requestsTitle  String   @default("")
+  requestsLead   String   @default("")
+  requestsPoints Json     @default("[]")
+  /// The status row in order, e.g. «Новая → В работе → Оплачена → Закрыта».
+  requestsStatuses String[]
+  requestsCaption String  @default("")
+  /// «Проверьте сами» line: `**bold**` renders bold, `[text]` opens the request form.
+  proofLine      String   @default("")
+  /// «Сервер и надёжность» columns `[{ title, text }]`.
+  reliability    Json     @default("[]")
   techChips      String[]
   seoTitle       String   @default("")
   seoDescription String   @default("")

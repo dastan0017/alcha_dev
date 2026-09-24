@@ -6,7 +6,12 @@ import { homeContentSchema } from '../dto/home';
 import { siteChromeSchema } from '../dto/chrome';
 import { processStepSchema } from '../dto/process-step';
 import { pricingPlanSchema } from '../dto/pricing';
-import { projectSchema, type ProjectFact } from '../dto/project';
+import {
+  projectSchema,
+  type ProjectFact,
+  type ProjectPoint,
+  type ProjectShot,
+} from '../dto/project';
 
 /** Item id charset — ids must stay safe inside dot paths and `<collection>:<id>` refs. */
 export const CMS_ID_PATTERN = /^[A-Za-z0-9_-]+$/;
@@ -72,6 +77,19 @@ const projectCopySchema = projectSchema
     description: true,
     pills: true,
     bullets: true,
+    siteFeatures: true,
+    screenshotCaptions: true,
+    editingTitle: true,
+    editingLead: true,
+    editingPoints: true,
+    editingCaptions: true,
+    requestsTitle: true,
+    requestsLead: true,
+    requestsPoints: true,
+    requestsStatuses: true,
+    requestsCaption: true,
+    proofLine: true,
+    reliability: true,
     techChips: true,
     seoTitle: true,
     seoDescription: true,
@@ -109,7 +127,13 @@ export const projectNodeSchema = z
     badgeType: projectBadgeSchema,
     showOnHome: z.boolean(),
     coverImage: z.string().nullable(),
-    screenshots: z.array(z.string()),
+    screenshots: projectSchema.shape.screenshots,
+    shareImage: z.string().nullable(),
+    editingImages: z.array(z.string()),
+    requestsImage: z.string().nullable(),
+    nextProjectId: z.string(),
+    durationWeeks: z.string(),
+    launchedAt: z.string(),
     appStoreUrl: z.string(),
     googlePlayUrl: z.string(),
     ...translatedSchema(projectCopySchema).shape,
@@ -172,7 +196,15 @@ export type CollectionNode = CollectionNodeMap[CollectionKey];
 // ─── Field model (what paths may address and what a `set` must carry) ────────
 
 export type CmsFieldKind =
-  'string' | 'nullableString' | 'boolean' | 'stringList' | 'sectionList' | 'badgeType' | 'factList';
+  | 'string'
+  | 'nullableString'
+  | 'boolean'
+  | 'stringList'
+  | 'sectionList'
+  | 'badgeType'
+  | 'factList'
+  | 'pointList'
+  | 'shotList';
 
 type KindOf<T> = [T] extends [ProjectBadge]
   ? 'badgeType'
@@ -186,9 +218,15 @@ type KindOf<T> = [T] extends [ProjectBadge]
           ? 'sectionList'
           : [T] extends [string[]]
             ? 'stringList'
-            : [T] extends [ProjectFact[]]
-              ? 'factList'
-              : never;
+            : // A point has a `title` a fact never has, so it must be checked first —
+              // the other way round every point list would read as a fact list.
+              [T] extends [ProjectPoint[]]
+              ? 'pointList'
+              : [T] extends [ProjectFact[]]
+                ? 'factList'
+                : [T] extends [ProjectShot[]]
+                  ? 'shotList'
+                  : never;
 
 type ScopeFieldModel<Neutral, Copy> = {
   neutral: { [K in keyof Neutral]: KindOf<Neutral[K]> };
@@ -290,7 +328,13 @@ export const CMS_FIELD_MODEL = {
       badgeType: 'badgeType',
       showOnHome: 'boolean',
       coverImage: 'nullableString',
-      screenshots: 'stringList',
+      screenshots: 'shotList',
+      shareImage: 'nullableString',
+      editingImages: 'stringList',
+      requestsImage: 'nullableString',
+      nextProjectId: 'string',
+      durationWeeks: 'string',
+      launchedAt: 'string',
       appStoreUrl: 'string',
       googlePlayUrl: 'string',
     },
@@ -304,6 +348,19 @@ export const CMS_FIELD_MODEL = {
       description: 'string',
       pills: 'stringList',
       bullets: 'stringList',
+      siteFeatures: 'pointList',
+      screenshotCaptions: 'stringList',
+      editingTitle: 'string',
+      editingLead: 'string',
+      editingPoints: 'pointList',
+      editingCaptions: 'stringList',
+      requestsTitle: 'string',
+      requestsLead: 'string',
+      requestsPoints: 'pointList',
+      requestsStatuses: 'stringList',
+      requestsCaption: 'string',
+      proofLine: 'string',
+      reliability: 'pointList',
       techChips: 'stringList',
       seoTitle: 'string',
       seoDescription: 'string',
@@ -369,6 +426,47 @@ export const CMS_REQUIRED_FIELDS: {
   projects: { neutral: ['slug'], localized: ['title', 'badge', 'metaLine', 'description'] },
 };
 
+/**
+ * Localized fields the projection fills from the RU copy when the current locale leaves them
+ * blank. Required fields always fall back — a page may not render an empty heading — and a
+ * scope may add more: the detailed case page carries a lot of copy that is optional per
+ * project but must not half-render in EN once the RU side is written.
+ */
+export const CMS_FALLBACK_FIELDS: {
+  [S in CmsScope]: readonly CmsLocalizedField<S>[];
+} = {
+  home: CMS_REQUIRED_FIELDS.home.localized,
+  chrome: CMS_REQUIRED_FIELDS.chrome.localized,
+  steps: CMS_REQUIRED_FIELDS.steps.localized,
+  pricing: CMS_REQUIRED_FIELDS.pricing.localized,
+  projects: [
+    ...CMS_REQUIRED_FIELDS.projects.localized,
+    'siteFeatures',
+    'screenshotCaptions',
+    'editingTitle',
+    'editingLead',
+    'editingPoints',
+    'editingCaptions',
+    'requestsTitle',
+    'requestsLead',
+    'requestsPoints',
+    'requestsStatuses',
+    'requestsCaption',
+    'proofLine',
+    'reliability',
+  ],
+};
+
+/**
+ * Whether a field value counts as «not filled in»: a blank or whitespace-only string, a
+ * missing value, or an empty list. What publish reports as missing and what the projection
+ * falls back to RU for.
+ */
+export function isBlankCmsValue(value: unknown): boolean {
+  if (Array.isArray(value)) return value.length === 0;
+  return typeof value !== 'string' || value.trim() === '';
+}
+
 const ID_ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyz';
 
 /** Id for a new collection item: `n` + 24 base36 chars (modulo bias is irrelevant for ids). */
@@ -388,7 +486,15 @@ const BLANK_BY_KIND: Record<CmsFieldKind, unknown> = {
   sectionList: [],
   badgeType: 'work',
   factList: [],
+  pointList: [],
+  shotList: [],
 };
+
+/** The empty value of a field kind: what a blank draft item and a missing translation row hold. */
+export function blankCmsValue(kind: CmsFieldKind): unknown {
+  const blank = BLANK_BY_KIND[kind];
+  return Array.isArray(blank) ? [] : blank;
+}
 
 type FieldKinds = Readonly<Record<string, CmsFieldKind>>;
 

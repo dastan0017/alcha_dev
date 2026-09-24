@@ -1,4 +1,5 @@
 import { isLocale, type Locale } from '../constants/locales';
+import type { ProjectShot } from '../dto/project';
 import {
   CMS_FIELD_MODEL,
   CMS_ID_PATTERN,
@@ -39,7 +40,11 @@ export const cmsPath = {
   ) => withIndex(`${collection}.${id}.${locale}.${field}`, index),
 };
 
-/** A leaf: `locale` is null for neutral fields; `index` is set only on string-list entries. */
+/**
+ * A leaf: `locale` is null for neutral fields; `index` is set on a list entry — a string of a
+ * string list, or the picture of a screenshot (its frame stays with the entry, so an indexed
+ * shot path reads and writes `src` alone, which is what an image annotation needs).
+ */
 export interface CmsFieldTarget {
   locale: Locale | null;
   field: string;
@@ -54,6 +59,9 @@ export type ParsedCmsPath =
   | ({ kind: 'itemField'; collection: CollectionKey; id: string } & CmsFieldTarget);
 
 const INDEX_PATTERN = /^(0|[1-9]\d*)$/;
+
+/** Field kinds whose entries a path may address by index; both resolve to a string leaf. */
+const INDEXABLE_KINDS = new Set<CmsFieldKind>(['stringList', 'shotList']);
 
 function parseFieldTarget(scope: CmsScope, segments: string[]): CmsFieldTarget | null {
   const [head, ...tail] = segments;
@@ -70,7 +78,7 @@ function parseFieldTarget(scope: CmsScope, segments: string[]): CmsFieldTarget |
 
   const index = Number(indexSegment);
   if (
-    fieldKind !== 'stringList' ||
+    !INDEXABLE_KINDS.has(fieldKind) ||
     !INDEX_PATTERN.test(indexSegment) ||
     !Number.isSafeInteger(index)
   ) {
@@ -114,5 +122,7 @@ export function getAtPath(tree: SiteTree, path: string): unknown {
 
   const record = parsed.locale ? (owner[parsed.locale] as Record<string, unknown>) : owner;
   const value = record[parsed.field];
-  return parsed.index === null ? value : (value as readonly string[])[parsed.index];
+  if (parsed.index === null) return value;
+  const entry = (value as readonly unknown[])[parsed.index];
+  return parsed.fieldKind === 'shotList' ? (entry as ProjectShot | undefined)?.src : entry;
 }

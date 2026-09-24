@@ -25,7 +25,17 @@ import {
 
 /** The drawer control that edits a field. */
 export type FieldType =
-  'text' | 'textarea' | 'list' | 'facts' | 'tags' | 'image' | 'images' | 'boolean' | 'select';
+  | 'text'
+  | 'textarea'
+  | 'list'
+  | 'facts'
+  | 'points'
+  | 'tags'
+  | 'image'
+  | 'images'
+  | 'media'
+  | 'boolean'
+  | 'select';
 
 /** Entry glyph of a `list` field: ✓ for included items, + for optional ones. */
 export type ListMarker = '✓' | '+';
@@ -61,17 +71,28 @@ export interface FieldSchema {
   offLabel?: string;
   /** `text`: an inline error message that blocks saving, or null. */
   validate?: (value: string) => string | null;
+  /**
+   * `media`: key of the localized caption list edited alongside the pictures. That field is
+   * declared too, as `hidden`, so its value is still read and diffed like any other.
+   */
+  captions?: string;
+  /** Read and saved, but drawn by another field's control rather than one of its own. */
+  hidden?: boolean;
+  /** `select`: choices computed from the tree rather than fixed. */
+  optionsFrom?: 'projects';
 }
 
 /** Controls that can hold each value kind of the shared field model. */
 type FieldTypeByKind = {
-  string: 'text' | 'textarea';
+  string: 'text' | 'textarea' | 'select';
   nullableString: 'image';
   boolean: 'boolean';
   badgeType: 'select';
-  stringList: 'list' | 'tags' | 'images';
+  stringList: 'list' | 'tags' | 'images' | 'media';
   sectionList: never;
   factList: 'facts';
+  pointList: 'points';
+  shotList: 'media';
 };
 
 type FieldModel = typeof CMS_FIELD_MODEL;
@@ -385,7 +406,142 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
         addLabel: 'Добавить пункт',
       },
       { key: 'techChips', label: 'Технологии', type: 'tags', localized: true },
-      { key: 'screenshots', label: 'Скриншоты', type: 'images', localized: false },
+
+      // ── Подробная страница кейса ──────────────────────────────────────────
+      // Заполненные поля включают подробную страницу; пустые — прячут свой блок.
+      {
+        key: 'siteFeatures',
+        label: '01 · Что умеет сайт — строки списка',
+        type: 'points',
+        localized: true,
+        addLabel: 'Добавить строку',
+        hint: 'Услуги и цены рядом',
+      },
+      {
+        key: 'screenshots',
+        label: 'Скриншоты: первый — большой вверху, дальше — «Экраны»',
+        type: 'media',
+        localized: false,
+        captions: 'screenshotCaptions',
+        addLabel: 'Добавить скриншот',
+        hint: 'Главная на телефоне',
+      },
+      {
+        key: 'screenshotCaptions',
+        label: 'Подписи к скриншотам',
+        type: 'list',
+        localized: true,
+        hidden: true,
+      },
+      {
+        key: 'shareImage',
+        label: 'Картинка превью ссылки (1200×630)',
+        type: 'image',
+        localized: false,
+      },
+      {
+        key: 'editingTitle',
+        label: '02 · Админка: тексты и фото — заголовок',
+        type: 'text',
+        localized: true,
+        hint: 'Правите прямо на странице',
+      },
+      { key: 'editingLead', label: '02 · Подзаголовок', type: 'textarea', localized: true },
+      {
+        key: 'editingPoints',
+        label: '02 · Пункты (нумеруются сами)',
+        type: 'points',
+        localized: true,
+        addLabel: 'Добавить пункт',
+      },
+      {
+        key: 'editingImages',
+        label: '02 · Скриншоты админки',
+        type: 'media',
+        localized: false,
+        captions: 'editingCaptions',
+        addLabel: 'Добавить скриншот',
+        hint: 'Заголовок правится там же, где его видит клиент',
+      },
+      {
+        key: 'editingCaptions',
+        label: 'Подписи к скриншотам админки',
+        type: 'list',
+        localized: true,
+        hidden: true,
+      },
+      {
+        key: 'requestsTitle',
+        label: '03 · Админка: заявки — заголовок',
+        type: 'text',
+        localized: true,
+        hint: 'Ни одна заявка не теряется',
+      },
+      { key: 'requestsLead', label: '03 · Подзаголовок', type: 'textarea', localized: true },
+      {
+        key: 'requestsStatuses',
+        label: '03 · Статусы заявки, по порядку',
+        type: 'list',
+        localized: true,
+        addLabel: 'Добавить статус',
+        marker: '+',
+      },
+      {
+        key: 'requestsPoints',
+        label: '03 · Пункты',
+        type: 'points',
+        localized: true,
+        addLabel: 'Добавить пункт',
+      },
+      {
+        key: 'requestsImage',
+        label: '03 · Скриншот списка заявок',
+        type: 'image',
+        localized: false,
+      },
+      {
+        key: 'requestsCaption',
+        label: '03 · Подпись под скриншотом',
+        type: 'text',
+        localized: true,
+        hint: 'Список заявок: новые — сверху',
+      },
+      {
+        key: 'proofLine',
+        label: 'Строка «Проверьте сами» под схемой заявки',
+        type: 'textarea',
+        localized: true,
+        hint: '**Жирное начало:** текст. [Ссылка открывает форму заявки] — и дальше.',
+      },
+      {
+        key: 'reliability',
+        label: 'Сервер и надёжность — колонки',
+        type: 'points',
+        localized: true,
+        addLabel: 'Добавить колонку',
+        hint: 'Свой сервер',
+      },
+      {
+        key: 'nextProjectId',
+        label: 'Карточка «Следующий проект»',
+        type: 'select',
+        localized: false,
+        optionsFrom: 'projects',
+      },
+      {
+        key: 'durationWeeks',
+        label: 'Срок, недель (пока не показывается)',
+        type: 'text',
+        localized: false,
+        hint: '4',
+      },
+      {
+        key: 'launchedAt',
+        label: 'Запуск, ГГГГ-ММ (пока не показывается)',
+        type: 'text',
+        localized: false,
+        hint: '2026-07',
+      },
       {
         key: 'appStoreUrl',
         label: 'Ссылка на App Store',
@@ -793,6 +949,19 @@ const SECTION_BY_FIELD = new Map(
 // ─── Path helpers ────────────────────────────────────────────────────────────
 
 /** CMS path of `field` on `target`; `locale` is ignored for language-neutral fields. */
+/**
+ * Choices for «Следующий проект»: every other work, plus the default that simply follows
+ * the order of the list — which is also what a deleted target falls back to.
+ */
+export function projectChoices(tree: SiteTree, exceptId: string): FieldOption[] {
+  return [
+    { value: '', label: 'Следующая работа по порядку' },
+    ...tree.projects
+      .filter((project) => project.id !== exceptId)
+      .map((project) => ({ value: project.id, label: titleOrUntitled(project.ru.title) })),
+  ];
+}
+
 export function fieldPath(target: DrawerTarget, field: FieldSchema, locale: Locale): string {
   // Keys are checked against CMS_FIELD_MODEL where the schemas are declared, so the casts hold.
   if (target.kind === 'item') {

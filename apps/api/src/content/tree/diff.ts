@@ -5,6 +5,8 @@ import {
   type CmsFieldKind,
   type CmsScope,
   type ProjectFact,
+  type ProjectPoint,
+  type ProjectShot,
   type SiteTree,
 } from '@alcha/shared';
 
@@ -56,22 +58,40 @@ const countDifferent = (fields: FieldKinds, before: Owner, after: Owner) =>
     .length;
 
 /**
- * Leaves are strings, booleans, null, string lists or fact lists. A section list is a set:
- * the page renders sections in its own order, so hiding the same sections in another order
- * is no change. Facts are objects, so they are compared field by field.
+ * Leaves are strings, booleans, null, string lists, or lists of small objects (facts,
+ * points, screenshots). A section list is a set: the page renders sections in its own
+ * order, so hiding the same sections in another order is no change. Object entries are
+ * compared field by field — two equal lists built separately must count as no change.
  */
 function sameLeaf(kind: CmsFieldKind, a: unknown, b: unknown): boolean {
   if (!Array.isArray(a) || !Array.isArray(b)) return a === b;
   // Section lists never hold duplicates (the patch engine rejects them).
   if (kind === 'sectionList') return a.length === b.length && a.every((key) => b.includes(key));
-  if (kind === 'factList')
-    return a.length === b.length && a.every((fact, i) => sameFact(fact, b[i]));
+  if (kind === 'factList') return sameEntries(a, b, sameFact);
+  if (kind === 'pointList') return sameEntries(a, b, samePoint);
+  if (kind === 'shotList') return sameEntries(a, b, sameShot);
   return sameList(a, b);
 }
+
+const sameEntries = (
+  a: readonly unknown[],
+  b: readonly unknown[],
+  same: (x: unknown, y: unknown) => boolean,
+) => a.length === b.length && a.every((entry, i) => same(entry, b[i]));
 
 const sameFact = (a: unknown, b: unknown) => {
   const [before, after] = [a, b] as ProjectFact[];
   return before.text === after.text && (before.lead ?? '') === (after.lead ?? '');
+};
+
+const samePoint = (a: unknown, b: unknown) => {
+  const [before, after] = [a, b] as ProjectPoint[];
+  return before.title === after.title && before.text === after.text;
+};
+
+const sameShot = (a: unknown, b: unknown) => {
+  const [before, after] = [a, b] as ProjectShot[];
+  return before.src === after.src && before.device === after.device;
 };
 
 const sameList = (a: readonly unknown[], b: readonly unknown[]) =>

@@ -71,8 +71,14 @@ describe('projectProjects / projectProject', () => {
       badgeType: 'work',
       sortOrder: 1,
       showOnHome: false,
-      screenshots: ['https://cdn/pr2.png'],
+      screenshots: [{ src: 'https://cdn/pr2.png', device: 'desktop' }],
       coverImage: null,
+      shareImage: null,
+      editingImages: ['https://cdn/pr2-edit.png'],
+      requestsImage: null,
+      nextProjectId: '',
+      durationWeeks: '',
+      launchedAt: '',
       appStoreUrl: '',
       googlePlayUrl: '',
       ...tree.projects[1].en,
@@ -107,6 +113,26 @@ describe('EN → RU fallback', () => {
     expect(home.processSteps[1]).toMatchObject({ title: 's2.ru.title', from: '', result: '' });
     expect(home.projects[0]).toMatchObject({ metaLine: 'pr1.ru.metaLine', seoTitle: '' });
     expect(projectChrome(tree, 'en')).toEqual({ ...tree.chrome.en, navCta: 'chrome.ru.navCta' });
+  });
+
+  it('fills blank EN case-page copy from RU, lists included', () => {
+    const tree = treeFixture();
+    const project = tree.projects[0];
+    project.en.siteFeatures = [];
+    project.en.editingTitle = '';
+    project.en.requestsStatuses = [];
+    project.en.proofLine = '  ';
+    // Not a fallback field: the classic layout's bullets stay as the EN copy has them.
+    project.en.bullets = [];
+
+    const shown = projectProject(tree, 'first', 'en');
+    expect(shown).toMatchObject({
+      siteFeatures: project.ru.siteFeatures,
+      editingTitle: 'pr1.ru.editingTitle',
+      requestsStatuses: project.ru.requestsStatuses,
+      proofLine: 'pr1.ru.proofLine',
+      bullets: [],
+    });
   });
 
   it('never fills RU from EN', () => {

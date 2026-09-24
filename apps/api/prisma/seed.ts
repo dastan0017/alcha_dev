@@ -446,6 +446,18 @@ async function seedProjects(): Promise<void> {
       badgeType: ProjectBadge.own,
       sortOrder: 0,
       showOnHome: true,
+      // Picture slots of the detailed case page, in the order the page reads them:
+      // [0] hero, [1] the phone shot beside «Что умеет сайт», [2..] the «Экраны» gallery.
+      // The pictures themselves are uploaded through the CRM; a slot with no picture
+      // renders nothing, so the captions can wait here until it is filled.
+      screenshots: [
+        { src: '', device: 'desktop' },
+        { src: '', device: 'mobile' },
+        { src: '', device: 'desktop' },
+        { src: '', device: 'mobile' },
+        { src: '', device: 'mobile' },
+      ],
+      editingImages: ['', ''],
       ru: {
         title: 'Сайт, который вы ведёте сами',
         badge: 'ВЫ СЕЙЧАС ЗДЕСЬ',
@@ -465,11 +477,95 @@ async function seedProjects(): Promise<void> {
           },
         ],
         role: 'Свой продукт · дизайн, разработка и сервер',
+        // The hero lead of the detailed case page.
         description:
-          'Это сайт, который вы сейчас читаете. Услуги, цены и кейсы — на одной странице. Тексты и фото меняются в админке без программиста, а заявка с формы приходит в Telegram за секунду. Две языковые версии — русская и английская.',
+          'Вы читаете его прямо сейчас. Снаружи — услуги, цены и кейсы. Внутри — админка: тексты и фото меняются без программиста, а заявки не теряются.',
         pills: ['Дизайн и тексты', 'Админка и заявки', 'Поиск в Google', 'Сервер и запуск'],
         bullets: [],
-        techChips: ['Next.js', 'TypeScript'],
+        siteFeatures: [
+          {
+            title: 'Услуги и цены рядом',
+            text: 'Клиент сразу видит, что вы делаете и сколько это стоит.',
+          },
+          { title: 'Страницы кейсов', text: 'Каждая работа — отдельная страница. Как эта.' },
+          { title: 'Заявка в два поля', text: 'Имя и сообщение. Ничего лишнего.' },
+          { title: 'Два языка', text: 'Русский и английский. Переключатель в шапке.' },
+          {
+            title: 'Открывается меньше чем за секунду',
+            text: 'Страницы готовятся заранее. Даже с телефона в дороге.',
+          },
+          {
+            title: 'Находится в Google',
+            text: 'У каждой страницы свой заголовок и описание для поиска.',
+          },
+          {
+            title: 'Ссылка с картинкой',
+            text: 'Отправили в WhatsApp — собеседник видит карточку, а не голую ссылку.',
+          },
+        ],
+        screenshotCaptions: [
+          '',
+          'Главная на телефоне',
+          'Цены открыто — с тем, что входит в каждый тариф',
+          'Страница кейса на телефоне',
+          'Заявка в два поля',
+        ],
+        editingTitle: 'Правите прямо на странице',
+        editingLead:
+          'Админка выглядит как ваш сайт. Нажали на строку, напечатали — и сразу видно, как будет.',
+        editingPoints: [
+          {
+            title: 'Текст — прямо на странице',
+            text: 'Нажали на заголовок и исправили. Шрифт и отступы — как на сайте.',
+          },
+          {
+            title: 'Списки — в боковой панели',
+            text: 'Цены, кейсы, шаги работы: добавить, убрать, поменять порядок.',
+          },
+          {
+            title: 'Сначала черновик',
+            text: 'Посетители не видят правки, пока вы не нажмёте «Опубликовать». После — сайт обновится за несколько секунд.',
+          },
+          {
+            title: 'Фото — загрузили и готово',
+            text: 'Картинка уменьшается сама по себе. Страницы не тормозят.',
+          },
+          {
+            title: 'Два языка в одном месте',
+            text: 'Не заполнили английский — покажется русский. Пустых мест не будет.',
+          },
+        ],
+        editingCaptions: [
+          'Заголовок правится там же, где его видит клиент',
+          'Цены — списком в боковой панели, русский и английский рядом',
+        ],
+        requestsTitle: 'Ни одна заявка не теряется',
+        requestsLead:
+          'Заявка приходит в Telegram примерно за секунду. И остаётся в списке, даже если сообщение утонуло в чатах.',
+        requestsPoints: [
+          {
+            title: 'Статус — в один клик',
+            text: 'Взяли в работу, получили оплату, закрыли — всё в одной строке.',
+          },
+          {
+            title: 'Видно, кто ждёт ответа',
+            text: 'Даже через несколько недель. Новые заявки не прячутся в переписке.',
+          },
+        ],
+        requestsStatuses: ['Новая', 'В работе', 'Оплачена', 'Закрыта'],
+        requestsCaption: 'Список заявок: новые — сверху',
+        proofLine:
+          '**Проверьте сами:** всё, что описано выше, работает на этой странице. [Отправьте заявку] — увидите, как быстро придёт ответ.',
+        reliability: [
+          { title: 'Свой сервер', text: 'Сайт не зависит от конструктора и его подписки.' },
+          { title: 'HTTPS', text: 'Замок в адресной строке. Браузер не пугает посетителей.' },
+          {
+            title: 'Копия базы каждый день',
+            text: 'Если что-то сломается, данные можно вернуть.',
+          },
+          { title: 'Всё принадлежит вам', text: 'Сайт и исходный код — ваши. Их можно забрать.' },
+        ],
+        techChips: ['Next.js', 'TypeScript', 'PostgreSQL', 'свой сервер'],
         seoTitle: 'alcha.dev — портфолио и услуги',
         seoDescription:
           'Портфолио и витрина услуг: дизайн, разработка, поиск в Google и админка. Сайт, который вы ведёте сами.',
@@ -493,10 +589,105 @@ async function seedProjects(): Promise<void> {
         ],
         role: 'Own product · design, development and server',
         description:
-          'This is the site you are reading right now. Services, prices and cases on one page. Text and photos are edited in the admin panel — no developer — and a form request reaches Telegram in a second. Two language versions: Russian and English.',
+          'You are reading it right now. On the outside — services, prices and cases. Inside — an admin panel: text and photos change without a developer, and no request gets lost.',
         pills: ['Design & copy', 'Admin & requests', 'Google search', 'Server & launch'],
         bullets: [],
-        techChips: ['Next.js', 'TypeScript'],
+        siteFeatures: [
+          {
+            title: 'Prices next to services',
+            text: 'A client sees what you do and what it costs, straight away.',
+          },
+          {
+            title: 'A page per case',
+            text: 'Every piece of work gets its own page. Like this one.',
+          },
+          { title: 'A request in two fields', text: 'A name and a message. Nothing else.' },
+          { title: 'Two languages', text: 'Russian and English, switched from the header.' },
+          {
+            title: 'Opens in under a second',
+            text: 'Pages are built ahead of time. Even on a phone on the move.',
+          },
+          {
+            title: 'Found on Google',
+            text: 'Every page carries its own title and description for search.',
+          },
+          {
+            title: 'Links that show a picture',
+            text: 'Send one on WhatsApp and the other person sees a card, not a bare link.',
+          },
+        ],
+        screenshotCaptions: [
+          '',
+          'The homepage on a phone',
+          'Prices in the open — with what each plan includes',
+          'A case page on a phone',
+          'A request in two fields',
+        ],
+        editingTitle: 'You edit right on the page',
+        editingLead:
+          'The admin panel looks like your site. Click a line, type, and you see exactly how it will come out.',
+        editingPoints: [
+          {
+            title: 'Text, right on the page',
+            text: 'Click a heading and fix it. Same font, same spacing as the live page.',
+          },
+          {
+            title: 'Lists in the side panel',
+            text: 'Prices, cases, process steps: add, remove, reorder.',
+          },
+          {
+            title: 'A draft first',
+            text: 'Visitors see none of your edits until you press «Publish». After that the site updates within seconds.',
+          },
+          {
+            title: 'Photos: upload and done',
+            text: 'A picture is resized on its own. Pages stay fast.',
+          },
+          {
+            title: 'Both languages in one place',
+            text: 'Leave the English blank and the Russian shows instead. Nothing is left empty.',
+          },
+        ],
+        editingCaptions: [
+          'A heading is edited where the client sees it',
+          'Prices as a list in the side panel, Russian and English side by side',
+        ],
+        requestsTitle: 'No request gets lost',
+        requestsLead:
+          'A request reaches Telegram in about a second. And it stays in the list even after the message is buried in your chats.',
+        requestsPoints: [
+          {
+            title: 'Status in one click',
+            text: 'Took it on, got paid, closed it — all from one row.',
+          },
+          {
+            title: 'You can see who is waiting',
+            text: 'Even weeks later. New requests never hide in a chat thread.',
+          },
+        ],
+        requestsStatuses: ['New', 'In progress', 'Paid', 'Closed'],
+        requestsCaption: 'The request list, newest first',
+        proofLine:
+          '**See for yourself:** everything described above runs on this page. [Send a request] and watch how fast the answer comes.',
+        reliability: [
+          {
+            title: 'Your own server',
+            text: 'The site does not depend on a website builder or its subscription.',
+          },
+          {
+            title: 'HTTPS',
+            text: 'A padlock in the address bar. No browser warnings for visitors.',
+          },
+          {
+            title: 'A copy of the database every day',
+            text: 'If something breaks, the data can be brought back.',
+          },
+          {
+            title: 'Everything belongs to you',
+            text: 'The site and its source code are yours. You can take them with you.',
+          },
+        ],
+        techChips: ['Next.js', 'TypeScript', 'PostgreSQL', 'own server'],
         seoTitle: 'alcha.dev — portfolio and services',
         seoDescription:
           'A portfolio and services showcase: design, development, Google search and an admin panel. A site you can run yourself.',
@@ -676,7 +867,8 @@ async function seedProjects(): Promise<void> {
         sortOrder: p.sortOrder,
         showOnHome: p.showOnHome,
         published: true,
-        screenshots: [],
+        screenshots: p.screenshots ?? [],
+        editingImages: p.editingImages ?? [],
         coverImage: p.coverImage || null,
         appStoreUrl: p.appStoreUrl ?? '',
         googlePlayUrl: p.googlePlayUrl ?? '',

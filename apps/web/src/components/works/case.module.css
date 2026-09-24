@@ -1,0 +1,976 @@
+/*
+ * Detailed case page («Case alcha.dev» 1a): the site (open page) → editing texts and
+ * photos (lilac band) → requests (white card). The three must read as three different
+ * things at a glance, so each keeps its own background treatment.
+ *
+ * Horizontal rhythm comes from the site's own `.container`, including inside the band,
+ * so band copy lines up with the copy above and below it. Tokens that only this page
+ * needs (the two chip tints) are local.
+ */
+.case {
+  --tint: #efe9fb;
+  --tint-ink: #5b34c9;
+  --chip: #f4f0f8;
+  --chip-ink: #4a4453;
+  --band-ink: #4a4453;
+  --card-border: rgba(23, 18, 31, 0.1);
+}
+
+/* ------------------------------------------------------------------ Hero -- */
+
+.heroHead {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 720px;
+  margin-bottom: 28px;
+}
+.badgeRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.badgePill {
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--tint-ink);
+  background: var(--tint);
+  border-radius: var(--r-pill);
+  padding: 4px 10px;
+}
+.badgeTag {
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.caseTitle {
+  margin: 0;
+  font-size: 48px;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.caseLead {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--body);
+  max-width: 640px;
+  text-wrap: pretty;
+  white-space: pre-line;
+}
+
+/* --------------------------------------------------------------- Anchors -- */
+
+.anchors {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+.anchorsLabel {
+  text-transform: uppercase;
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-right: 6px;
+}
+.anchor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  padding: 0 14px;
+}
+.anchor:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.anchorNum {
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+}
+/* The anchor's own label at phone width, e.g. «Сайт» instead of «Сайт для клиентов». */
+.anchorShort {
+  display: none;
+}
+
+/* ----------------------------------------------------------- Section head -- */
+
+/* The sticky header must not cover the heading an anchor jumps to. */
+.section {
+  scroll-margin-top: 88px;
+}
+.eyebrow {
+  display: block;
+  font-family: var(--font-mono-stack);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.eyebrowNum {
+  color: var(--primary);
+}
+.h2 {
+  margin: 0 0 12px;
+  font-size: 34px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.lead {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--body);
+  max-width: 680px;
+  text-wrap: pretty;
+}
+
+/* -------------------------------------------------------------- Pictures -- */
+
+.figure {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.frame {
+  position: relative;
+  border-radius: var(--r-card-sm);
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  background: var(--plate);
+}
+.frameImg {
+  object-fit: cover;
+}
+/* Editor only: an unfilled picture, labelled with what belongs in it. Dashed, so it never
+   reads as a real picture, and it fills the frame it will eventually hold. */
+.slot {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  text-align: center;
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+  background: var(--plate);
+  border: 1px dashed var(--border-strong);
+  border-radius: inherit;
+  overflow: hidden;
+}
+.caption {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--body);
+}
+
+/* -------------------------------------------- 01 · What the site can do -- */
+
+.heroShot {
+  aspect-ratio: 16 / 10;
+  border-radius: var(--r-card);
+  box-shadow: 0 20px 50px rgba(23, 18, 31, 0.08);
+}
+
+.siteGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 640px) minmax(0, 1fr);
+  gap: 72px;
+  align-items: start;
+  margin-top: 96px;
+}
+/* No screenshot and no link preview: the copy takes the page instead of leaving a hole. */
+.siteGridAlone {
+  grid-template-columns: minmax(0, 680px);
+}
+.siteCopy {
+  display: flex;
+  flex-direction: column;
+}
+.siteCopy .lead {
+  margin-bottom: 20px;
+}
+.featureList {
+  display: flex;
+  flex-direction: column;
+}
+.feature {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 4px 24px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+.feature:last-child {
+  border-bottom: none;
+}
+.featureTitle {
+  font-weight: 700;
+  color: var(--ink);
+}
+.featureText {
+  color: var(--body);
+}
+
+.siteAside {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 34px;
+}
+.phoneFigure {
+  align-items: center;
+}
+.phoneFrame {
+  width: 260px;
+  max-width: 100%;
+  aspect-ratio: 9 / 19.5;
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(23, 18, 31, 0.08);
+}
+
+.share {
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-card);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.shareLabel {
+  text-transform: uppercase;
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.shareBubble {
+  align-self: flex-end;
+  width: 290px;
+  max-width: 100%;
+  background: var(--tint);
+  border-radius: 12px 12px 4px 12px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.shareImg {
+  position: relative;
+  aspect-ratio: 1.91 / 1;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--plate);
+}
+.shareText {
+  padding: 2px 6px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.shareTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.shareSub {
+  font-size: 13px;
+  color: var(--body);
+}
+
+/* ------------------------------------------------- 02 · Texts and photos -- */
+
+/* Full-bleed: rendered outside `.container`, with a `.container` of its own inside. */
+.band {
+  background: var(--plate);
+  padding-block: 72px;
+  margin-top: 96px;
+}
+.bandHead {
+  max-width: 680px;
+  margin-bottom: 36px;
+}
+.bandHead .lead {
+  font-size: 17px;
+  color: var(--band-ink);
+}
+.bandGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+}
+.points {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.point {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 12px;
+}
+.pointNum {
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  padding-top: 4px;
+}
+.pointTitle {
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.pointText {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--body);
+}
+.bandShots {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+/* The band is lilac, so its pictures sit on white to stay separate from it. */
+.bandFrame {
+  background: #fff;
+  border-radius: var(--r-card);
+  box-shadow: 0 20px 50px rgba(23, 18, 31, 0.1);
+}
+.bandFrameFlat {
+  box-shadow: none;
+}
+
+/* Decorative: the draft bar the admin panel itself shows over the page. */
+.draftBar {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--dark);
+  color: #fff;
+  border-radius: 10px;
+  padding: 7px 7px 7px 14px;
+  box-shadow: 0 10px 30px rgba(23, 18, 31, 0.25);
+  pointer-events: none;
+}
+.draftLabel {
+  text-transform: uppercase;
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 500;
+  color: #cfc8da;
+}
+.draftCount {
+  white-space: nowrap;
+}
+.draftAction {
+  background: var(--primary);
+  border-radius: 7px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* -------------------------------------------------------- 03 · Requests -- */
+
+.requests {
+  margin-top: 72px;
+}
+.requestsCard {
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  padding: 48px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 460px);
+  gap: 56px;
+  align-items: start;
+}
+.requestsCardAlone {
+  grid-template-columns: minmax(0, 680px);
+}
+.requestsShot {
+  aspect-ratio: 4 / 3;
+}
+.requestsCopy {
+  display: flex;
+  flex-direction: column;
+}
+.requestsCopy .lead {
+  font-size: 17px;
+  color: var(--band-ink);
+  margin-bottom: 24px;
+}
+.statuses {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 26px;
+}
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.statusChip {
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--chip-ink);
+  background: var(--chip);
+  border-radius: var(--r-pill);
+  padding: 4px 11px;
+}
+/* The first status is where a request lands, the last one is where it stops mattering. */
+.statusFirst {
+  color: var(--tint-ink);
+  background: var(--tint);
+}
+.statusLast {
+  color: var(--muted);
+}
+.statusArrow {
+  color: var(--faint);
+  font-size: 13px;
+}
+.requestsPoints {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ------------------------------------------------------ How a request arrives -- */
+
+.flow {
+  margin-top: 88px;
+}
+.flow .h2 {
+  font-size: 30px;
+  margin-bottom: 28px;
+}
+.flowSteps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px minmax(0, 1fr) 40px minmax(0, 1fr);
+  align-items: center;
+}
+.flowCard {
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-card);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.flowLabel {
+  text-transform: uppercase;
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.flowInput {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-btn-sm);
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--ink);
+}
+.flowSubmit {
+  background: var(--primary);
+  color: #fff;
+  border-radius: var(--r-btn-sm);
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+.flowArrow {
+  text-align: center;
+  color: var(--faint);
+  font-size: 20px;
+}
+.arrowNarrow {
+  display: none;
+}
+.tgBubble {
+  background: var(--plate);
+  border-radius: 12px 12px 12px 4px;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.tgTitle {
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.tgBody {
+  color: var(--band-ink);
+}
+.tgTime {
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  text-align: right;
+  margin-top: 4px;
+}
+.leadRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  font-size: 14px;
+  color: var(--ink);
+}
+.leadRowFirst {
+  border-bottom: 1px solid var(--border);
+}
+.leadRowRest {
+  color: var(--body);
+}
+.leadChip {
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--chip-ink);
+  background: var(--chip);
+  border-radius: var(--r-pill);
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.leadChipNew {
+  color: var(--tint-ink);
+  background: var(--tint);
+}
+.proof {
+  margin: 18px 0 0;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--body);
+}
+.proofLead {
+  color: var(--ink);
+  font-weight: 700;
+}
+.proofLink {
+  color: var(--primary);
+  font: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.proofLink:hover {
+  color: var(--primary-hover);
+}
+
+/* --------------------------------------------------------------- Screens -- */
+
+.gallery {
+  margin-top: 88px;
+}
+.galleryHead {
+  margin-bottom: 20px;
+}
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+/* The first screenshot is the wide one: 2fr beside two 1fr phone shots. */
+.galleryItem {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.galleryItem:first-child {
+  grid-column: span 2;
+}
+.galleryFrame {
+  border-radius: var(--r-card);
+}
+.galleryDesktop {
+  aspect-ratio: 4 / 3;
+}
+/* Phone shots share the row height of the wide one rather than running 600px tall. */
+.galleryMobile {
+  flex: 1;
+  min-height: 0;
+}
+
+/* -------------------------------------------------- Server & reliability -- */
+
+.reliability {
+  margin-top: 88px;
+}
+.reliabilityHead {
+  margin-bottom: 16px;
+}
+.reliabilityGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--card-border);
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--body);
+}
+.reliabilityTitle {
+  display: block;
+  color: var(--ink);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.stack {
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.stackLabel {
+  text-transform: uppercase;
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.stackChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--body);
+}
+.stackChips li + li::before {
+  content: '·';
+  margin-right: 6px;
+  color: var(--faint);
+}
+
+/* ------------------------------------------------------------------ CTA -- */
+
+/* The shared banner ends the homepage, so it carries 104px of air for the footer.
+   Here the «Следующий проект» card follows it instead, and the gap is the card's. */
+.cta > * {
+  padding-block: 72px 0;
+}
+
+/* --------------------------------------------------------- Next project -- */
+
+.next {
+  margin-top: 40px;
+}
+.nextCard {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: center;
+  padding: 14px 24px 14px 14px;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: var(--r-card);
+  transition:
+    box-shadow 0.18s,
+    transform 0.18s;
+}
+.nextCardFlat {
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding-left: 24px;
+}
+.nextCard:hover {
+  box-shadow: 0 12px 32px rgba(23, 18, 31, 0.1);
+  transform: translateY(-2px);
+}
+.nextCover {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--plate);
+}
+.nextCoverImg {
+  object-fit: contain;
+}
+.nextCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nextLabel {
+  text-transform: uppercase;
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.nextTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.nextAction {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--primary);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- Phone -- */
+
+@media (max-width: 1023px) {
+  .siteGrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+  .siteAside {
+    padding-top: 0;
+  }
+  .bandGrid,
+  .requestsCard {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+  .requestsCard {
+    padding: 32px;
+  }
+  .reliabilityGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .caseTitle {
+    font-size: 34px;
+    line-height: 1.08;
+  }
+  .caseLead {
+    font-size: 16.5px;
+  }
+  .heroHead {
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .anchors {
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .anchorsLabel {
+    display: none;
+  }
+  .anchor {
+    font-size: 14px;
+    padding: 0 12px;
+    gap: 6px;
+  }
+  /* «Сайт» rather than «Сайт для клиентов»: three pills fit two rows, not three. */
+  .anchorShort {
+    display: inline;
+  }
+  .anchorFull {
+    display: none;
+  }
+  /* Nothing on this page goes below 13px at phone width, mono labels included. */
+  .eyebrow {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+  }
+  .h2 {
+    font-size: 26px;
+    line-height: 1.2;
+  }
+  .lead {
+    font-size: 15.5px;
+  }
+  .section {
+    scroll-margin-top: 72px;
+  }
+
+  .siteGrid {
+    margin-top: 56px;
+    gap: 24px;
+  }
+  /* The list first, then the link preview: the phone shot is what the list describes. */
+  .feature {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding: 12px 0;
+    font-size: 15px;
+  }
+  .featureTitle {
+    display: block;
+  }
+  .phoneFigure {
+    align-items: stretch;
+  }
+  .phoneFrame {
+    width: 100%;
+  }
+
+  .band {
+    margin-top: 56px;
+    padding-block: 44px;
+  }
+  .bandHead {
+    margin-bottom: 20px;
+  }
+  .bandHead .lead {
+    font-size: 15.5px;
+  }
+  .bandGrid {
+    gap: 24px;
+  }
+  .points {
+    gap: 18px;
+  }
+  .point {
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 8px;
+  }
+  .pointTitle {
+    font-size: 16px;
+  }
+  .draftBar {
+    left: 10px;
+    bottom: 10px;
+    gap: 8px;
+    border-radius: 8px;
+    padding: 5px 5px 5px 10px;
+  }
+  .draftCount {
+    white-space: nowrap;
+  }
+  .draftAction {
+    border-radius: 6px;
+    padding: 5px 9px;
+  }
+
+  .requests {
+    margin-top: 40px;
+  }
+  .requestsCard {
+    padding: 24px 18px;
+    border-radius: var(--r-card);
+    gap: 20px;
+  }
+  .requestsCopy .lead {
+    font-size: 15.5px;
+    margin-bottom: 18px;
+  }
+  .statuses {
+    margin-bottom: 20px;
+  }
+
+  .flow {
+    margin-top: 56px;
+  }
+  .flow .h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  .flowSteps {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+  .flowCard {
+    padding: 16px;
+    gap: 8px;
+  }
+  .flowArrow {
+    padding: 6px 0;
+  }
+  .arrowWide {
+    display: none;
+  }
+  .arrowNarrow {
+    display: inline;
+  }
+
+  .gallery,
+  .reliability {
+    margin-top: 56px;
+  }
+  /* The wide shot full width, the phone shots two-up under it. */
+  .galleryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .galleryMobile {
+    flex: none;
+    aspect-ratio: 9 / 19.5;
+  }
+  .reliabilityGrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+  .stack {
+    margin-top: 22px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .next {
+    margin-top: 24px;
+  }
+  .nextCard {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px 12px 16px;
+  }
+  .nextCopy,
+  .nextAction {
+    padding-inline: 4px;
+  }
+  .nextTitle {
+    font-size: 19px;
+  }
+}

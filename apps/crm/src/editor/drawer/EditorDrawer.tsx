@@ -12,6 +12,9 @@ import {
   type ContentPatch,
   type Locale,
   type ProjectFact,
+  normalizePoints,
+  type ProjectPoint,
+  type ProjectShot,
   type SiteTree,
 } from '@alcha/shared';
 import { Button, Dialog, IconButton, cx, srOnly } from '../ui';
@@ -22,13 +25,17 @@ import {
   fieldPath,
   findItem,
   isRequired,
+  projectChoices,
   targetLabel,
   type DrawerTarget,
+  type FieldOption,
   type FieldSchema,
   type ItemDrawerTarget,
 } from '../schemas';
 import { BooleanField } from './fields/BooleanField';
 import { FactsField } from './fields/FactsField';
+import { MediaRowsField, type CaptionTrack } from './fields/MediaRowsField';
+import { PointsField } from './fields/PointsField';
 import { ImageField } from './fields/ImageField';
 import { ImagesField } from './fields/ImagesField';
 import { SelectField } from './fields/SelectField';
@@ -54,7 +61,8 @@ export interface EditorDrawerProps {
   onPickImage: (apply: (url: string) => void) => void;
 }
 
-type FieldValue = string | string[] | ProjectFact[] | boolean | null;
+type FieldValue =
+  string | string[] | ProjectFact[] | ProjectPoint[] | ProjectShot[] | boolean | null;
 type Values = Record<string, FieldValue>;
 type ValueUpdate = FieldValue | ((current: FieldValue) => FieldValue);
 
@@ -159,6 +167,7 @@ function DrawerPanel({ target, tree, onSave, onDelete, onClose, onPickImage }: D
             values={values}
             errors={errors}
             update={update}
+            options={optionsFor(field, tree, target)}
             onPickImage={onPickImage}
           />
         ))}
@@ -187,14 +196,26 @@ interface FieldBlockProps {
   values: Values;
   errors: Record<string, string>;
   update: (path: string, next: ValueUpdate) => void;
+  options: readonly FieldOption[];
   onPickImage: EditorDrawerProps['onPickImage'];
 }
 
 /** A field's caption and controls; localized fields stack RU above EN under a shared caption. */
-function FieldBlock({ target, field, values, errors, update, onPickImage }: FieldBlockProps) {
+function FieldBlock({
+  target,
+  field,
+  values,
+  errors,
+  update,
+  options,
+  onPickImage,
+}: FieldBlockProps) {
   const captionId = useId();
   const required = isRequired(target, field);
   const slots = slotsOf(target, field);
+
+  // A caption list is drawn inside the picture control it belongs to, never on its own.
+  if (field.hidden) return null;
 
   const control = (slot: Slot, label: ReactNode) => (
     <FieldControl
@@ -204,6 +225,8 @@ function FieldBlock({ target, field, values, errors, update, onPickImage }: Fiel
       value={values[slot.path]}
       error={errors[slot.path]}
       required={required && slot.locale !== 'en'}
+      captions={captionTracks(target, field, values, update)}
+      options={options}
       update={update}
       onPickImage={onPickImage}
     />
@@ -270,6 +293,9 @@ interface FieldControlProps {
   value: FieldValue;
   error: string | undefined;
   required: boolean;
+  /** `media`: the caption list of each locale, edited with the pictures. */
+  captions: CaptionTrack[];
+  options: readonly FieldOption[];
   update: (path: string, next: ValueUpdate) => void;
   onPickImage: EditorDrawerProps['onPickImage'];
 }
@@ -280,6 +306,8 @@ function FieldControl({
   value,
   error,
   required,
+  captions,
+  options,
   update,
   onPickImage,
 }: FieldControlProps) {
@@ -331,6 +359,31 @@ function FieldControl({
           onChange={set}
         />
       );
+    case 'points':
+      return (
+        <PointsField
+          id={id}
+          label={label}
+          value={asPoints(value)}
+          addLabel={field.addLabel}
+          hintTitle={field.hint}
+          onChange={set}
+        />
+      );
+    case 'media':
+      return (
+        <MediaRowsField
+          id={id}
+          label={typeof label === 'string' ? label : field.label}
+          value={asMedia(value)}
+          captions={captions}
+          withDevice={field.key === 'screenshots'}
+          addLabel={field.addLabel}
+          hint={field.hint}
+          onChange={set}
+          onPick={onPickImage}
+        />
+      );
     case 'tags':
       return <TagsField id={id} label={label} value={asList(value)} onChange={set} />;
     case 'image':
@@ -366,13 +419,7 @@ function FieldControl({
       );
     case 'select':
       return (
-        <SelectField
-          id={id}
-          label={label}
-          value={asText(value)}
-          options={field.options ?? []}
-          onChange={set}
-        />
+        <SelectField id={id} label={label} value={asText(value)} options={options} onChange={set} />
       );
   }
 }
@@ -389,6 +436,64 @@ const asFacts = (value: FieldValue): ProjectFact[] =>
 const isFact = (value: unknown): value is ProjectFact =>
   typeof value === 'object' && value !== null && typeof (value as ProjectFact).text === 'string';
 
+const asPoints = (value: FieldValue): ProjectPoint[] =>
+  Array.isArray(value) ? value.filter(isPoint) : [];
+
+const isPoint = (value: unknown): value is ProjectPoint =>
+  typeof value === 'object' &&
+  value !== null &&
+  typeof (value as ProjectPoint).title === 'string' &&
+  typeof (value as ProjectPoint).text === 'string';
+
+const asMedia = (value: FieldValue): string[] | ProjectShot[] =>
+  Array.isArray(value) && value.every((entry) => typeof entry === 'string')
+    ? (value as string[])
+    : Array.isArray(value)
+      ? value.filter(isShot)
+      : [];
+
+const isShot = (value: unknown): value is ProjectShot =>
+  typeof value === 'object' && value !== null && typeof (value as ProjectShot).src === 'string';
+
+/** A picture list holds plain URLs, or screenshots that also carry their frame. */
+const isMediaEntry = (value: unknown): value is string | ProjectShot =>
+  typeof value === 'string' || isShot(value);
+
+/** The caption list of each locale, as `MediaRowsField` edits them. */
+function captionTracks(
+  target: DrawerTarget,
+  field: FieldSchema,
+  values: Values,
+  update: (path: string, next: ValueUpdate) => void,
+): CaptionTrack[] {
+  if (!field.captions) return [];
+  const captionField: FieldSchema = {
+    key: field.captions,
+    label: '',
+    type: 'list',
+    localized: true,
+    scope: field.scope,
+  };
+  return LOCALES.map((locale) => {
+    const path = fieldPath(target, captionField, locale);
+    return {
+      locale,
+      value: asList(values[path]),
+      onChange: (next: string[]) => update(path, next),
+    };
+  });
+}
+
+/** Choices of a `select`; the dynamic ones need the tree the drawer was opened on. */
+function optionsFor(
+  field: FieldSchema,
+  tree: SiteTree,
+  target: DrawerTarget,
+): readonly FieldOption[] {
+  if (field.optionsFrom !== 'projects') return field.options ?? [];
+  return projectChoices(tree, target.kind === 'item' ? target.id : '');
+}
+
 const isBlank = (value: FieldValue) =>
   Array.isArray(value)
     ? value.length === 0
@@ -396,8 +501,12 @@ const isBlank = (value: FieldValue) =>
       ? value.trim() === ''
       : value === null;
 
-const sameEntry = (a: unknown, b: unknown) =>
-  isFact(a) && isFact(b) ? a.text === b.text && (a.lead ?? '') === (b.lead ?? '') : a === b;
+const sameEntry = (a: unknown, b: unknown) => {
+  if (isPoint(a) && isPoint(b)) return a.title === b.title && a.text === b.text;
+  if (isFact(a) && isFact(b)) return a.text === b.text && (a.lead ?? '') === (b.lead ?? '');
+  if (isShot(a) && isShot(b)) return a.src === b.src && a.device === b.device;
+  return a === b;
+};
 
 const sameValue = (a: FieldValue, b: FieldValue) =>
   Array.isArray(a) && Array.isArray(b)
@@ -418,6 +527,10 @@ function toFieldValue(field: FieldSchema, raw: unknown): FieldValue {
       return typeof raw === 'string' ? raw : null;
     case 'facts':
       return Array.isArray(raw) ? raw.filter(isFact) : [];
+    case 'points':
+      return Array.isArray(raw) ? raw.filter(isPoint) : [];
+    case 'media':
+      return Array.isArray(raw) ? (raw.filter(isMediaEntry) as string[] | ProjectShot[]) : [];
     case 'list':
     case 'tags':
     case 'images':
@@ -437,11 +550,17 @@ function readValues(tree: SiteTree, target: DrawerTarget, fields: readonly Field
   );
 }
 
-/** Blank bullet entries are dropped rather than published as empty ✓ lines. */
+/**
+ * Blank bullet entries are dropped rather than published as empty ✓ lines. A caption list
+ * keeps its blanks: dropping them would slide every later caption onto the wrong picture.
+ */
 function normalize(field: FieldSchema, value: FieldValue): FieldValue {
   if (!Array.isArray(value)) return value;
   if (field.type === 'facts') return normalizeFacts(asFacts(value));
-  if (field.type === 'list') return asList(value).filter((entry) => entry.trim() !== '');
+  if (field.type === 'points') return normalizePoints(asPoints(value));
+  if (field.type === 'list' && !field.hidden) {
+    return asList(value).filter((entry) => entry.trim() !== '');
+  }
   return value;
 }
 

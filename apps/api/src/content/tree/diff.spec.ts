@@ -32,7 +32,7 @@ describe('countChanges', () => {
         set('pricing.p1.ru.features.1', 'Hosting'),
       ]),
     ).toBe(1);
-    expect(changesAfter([set('projects.pr1.screenshots', ['a.png', 'b.png'])])).toBe(1);
+    expect(changesAfter([set('projects.pr1.editingImages', ['a.png', 'b.png'])])).toBe(1);
   });
 
   it('compares hidden sections as a set, ignoring their order', () => {

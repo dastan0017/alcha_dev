@@ -1,6 +1,14 @@
 import { z } from 'zod';
 import { HOME_SECTION_KEYS, projectBadgeSchema, type HomeSectionKey } from '../dto/enums';
-import { normalizeFacts, projectFactSchema } from '../dto/project';
+import {
+  normalizeFacts,
+  normalizePoints,
+  normalizeShots,
+  projectFactSchema,
+  projectPointSchema,
+  projectShotSchema,
+  type ProjectShot,
+} from '../dto/project';
 import { cmsPath, parseCmsPath, type CmsFieldTarget, type ParsedCmsPath } from './paths';
 import {
   CMS_FIELD_MODEL,
@@ -271,17 +279,26 @@ function setOnOwner(
     nextValue = value;
     inverse = { op: 'set', path, value: current };
   } else {
-    const list = current as readonly string[];
+    const list = current as readonly unknown[];
     if (target.index > list.length)
       return fail(`index ${target.index} is past the end (${list.length})`);
     const nextList = [...list];
-    nextList[target.index] = value as string;
+    // An indexed shot path addresses that screenshot's picture; its frame stays as it was,
+    // and a brand-new slot starts as a desktop one.
+    const shots = target.fieldKind === 'shotList';
+    const previous = list[target.index];
+    nextList[target.index] = shots
+      ? {
+          ...((previous as ProjectShot | undefined) ?? { device: 'desktop' }),
+          src: value as string,
+        }
+      : (value as string);
     nextValue = nextList;
     // An append is undone by restoring the whole list.
     inverse =
       target.index === list.length
         ? { op: 'set', path: path.slice(0, path.lastIndexOf('.')), value: list }
-        : { op: 'set', path, value: list[target.index] };
+        : { op: 'set', path, value: shots ? (previous as ProjectShot).src : previous };
   }
 
   const nextRecord = { ...record, [target.field]: nextValue };
@@ -310,6 +327,18 @@ function checkValue(kind: CmsFieldKind, scope: CmsScope, value: unknown, fail: F
       return facts.success
         ? normalizeFacts(facts.data)
         : fail('expected an array of { lead?, text } facts');
+    }
+    case 'pointList': {
+      const points = z.array(projectPointSchema).safeParse(value);
+      return points.success
+        ? normalizePoints(points.data)
+        : fail('expected an array of { title, text } points');
+    }
+    case 'shotList': {
+      const shots = z.array(projectShotSchema).safeParse(value);
+      return shots.success
+        ? normalizeShots(shots.data)
+        : fail("expected an array of { src, device: 'desktop' | 'mobile' } screenshots");
     }
     case 'sectionList': {
       const allowed: readonly string[] = scope === 'home' ? HOME_SECTION_KEYS : [];

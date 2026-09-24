@@ -9,6 +9,7 @@ function copy(fields: FieldKinds, tag: string) {
       Object.entries(fields).map(([field, kind]) => {
         const value = `${tag}.${locale}.${field}`;
         if (kind === 'factList') return [field, [{ text: value }]];
+        if (kind === 'pointList') return [field, [{ title: value, text: value }]];
         return [field, kind === 'stringList' ? [value] : value];
       }),
     );
@@ -44,9 +45,15 @@ export function treeFixture(): SiteTree {
       published: true,
       badgeType: 'work',
       coverImage: null,
+      shareImage: null,
+      requestsImage: null,
+      editingImages: [`https://cdn/${project.id}-edit.png`],
+      nextProjectId: '',
+      durationWeeks: '',
+      launchedAt: '',
       appStoreUrl: '',
       googlePlayUrl: '',
-      screenshots: [`https://cdn/${project.id}.png`],
+      screenshots: [{ src: `https://cdn/${project.id}.png`, device: 'desktop' }],
       ...copy(M.projects.localized, project.id),
     })),
   });

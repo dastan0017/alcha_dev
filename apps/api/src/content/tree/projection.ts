@@ -1,6 +1,7 @@
 import {
-  CMS_REQUIRED_FIELDS,
+  CMS_FALLBACK_FIELDS,
   DEFAULT_LOCALE,
+  isBlankCmsValue,
   type CmsScope,
   type HomeResponse,
   type Locale,
@@ -13,7 +14,6 @@ import {
   type SiteSettings,
   type SiteTree,
 } from '@alcha/shared';
-import { isBlank } from './validate';
 
 // Tree → public DTOs, one code path for published and draft reads (docs/visual-editor.md §3).
 // Only `published` items are projected; an item's `sortOrder` is its index in the full collection.
@@ -75,6 +75,12 @@ function toProject(node: ProjectNode, sortOrder: number, locale: Locale): Projec
     showOnHome: node.showOnHome,
     screenshots: node.screenshots,
     coverImage: node.coverImage,
+    shareImage: node.shareImage,
+    editingImages: node.editingImages,
+    requestsImage: node.requestsImage,
+    nextProjectId: node.nextProjectId,
+    durationWeeks: node.durationWeeks,
+    launchedAt: node.launchedAt,
     appStoreUrl: node.appStoreUrl,
     googlePlayUrl: node.googlePlayUrl,
     ...localize('projects', node, locale),
@@ -91,7 +97,7 @@ function published<N extends { published: boolean }>(
   );
 }
 
-/** The `locale` copy of a node; blank required fields of other locales fall back to RU. */
+/** The `locale` copy of a node; blank fallback fields of other locales fill in from RU. */
 function localize<C extends Record<string, unknown>>(
   scope: CmsScope,
   node: Record<Locale, C>,
@@ -99,8 +105,8 @@ function localize<C extends Record<string, unknown>>(
 ): C {
   const copy = node[locale];
   if (locale === DEFAULT_LOCALE) return copy;
-  const required: readonly string[] = CMS_REQUIRED_FIELDS[scope].localized;
-  const blank = required.filter((field) => isBlank(copy[field]));
+  const fields: readonly string[] = CMS_FALLBACK_FIELDS[scope];
+  const blank = fields.filter((field) => isBlankCmsValue(copy[field]));
   if (blank.length === 0) return copy;
   const fallback = node[DEFAULT_LOCALE];
   return { ...copy, ...Object.fromEntries(blank.map((field) => [field, fallback[field]])) };
