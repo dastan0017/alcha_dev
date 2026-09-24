@@ -25,7 +25,7 @@ import {
 
 /** The drawer control that edits a field. */
 export type FieldType =
-  'text' | 'textarea' | 'list' | 'tags' | 'image' | 'images' | 'boolean' | 'select';
+  'text' | 'textarea' | 'list' | 'facts' | 'tags' | 'image' | 'images' | 'boolean' | 'select';
 
 /** Entry glyph of a `list` field: ✓ for included items, + for optional ones. */
 export type ListMarker = '✓' | '+';
@@ -71,6 +71,7 @@ type FieldTypeByKind = {
   badgeType: 'select';
   stringList: 'list' | 'tags' | 'images';
   sectionList: never;
+  factList: 'facts';
 };
 
 type FieldModel = typeof CMS_FIELD_MODEL;
@@ -355,7 +356,13 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
         hint: 'СОБСТВЕННЫЙ ПРОДУКТ',
       },
       { key: 'metaLine', label: 'Описание для карточки', type: 'textarea', localized: true },
-      { key: 'factsLine', label: 'Строка с цифрами', type: 'text', localized: true },
+      {
+        key: 'facts',
+        label: 'Факты с ✓ — что клиент получит',
+        type: 'facts',
+        localized: true,
+        addLabel: 'Добавить факт',
+      },
       { key: 'role', label: 'Роль', type: 'text', localized: true },
       { key: 'description', label: 'Полное описание', type: 'textarea', localized: true },
       { key: 'pills', label: 'Что сделано', type: 'tags', localized: true },
@@ -384,7 +391,7 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
           title: 'Новый проект',
           typeTag: 'КЛИЕНТСКИЙ ПРОЕКТ',
           metaLine: 'С какой задачей пришёл клиент и что получилось в результате.',
-          factsLine: '×× показатель · ×× показатель',
+          facts: [{ lead: 'Главное', text: '— ×× показатель' }],
           pills: ['Тег'],
           techChips: ['Стек проекта'],
         },
@@ -393,7 +400,7 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
           title: 'New project',
           typeTag: 'CLIENT PROJECT',
           metaLine: 'What the client came with and what came out of it.',
-          factsLine: '×× metric · ×× metric',
+          facts: [{ lead: 'Headline', text: '— ×× metric' }],
           pills: ['Tag'],
           techChips: ['Project stack'],
         },

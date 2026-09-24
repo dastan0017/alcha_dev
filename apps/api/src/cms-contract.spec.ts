@@ -44,10 +44,18 @@ type FieldKinds = Readonly<Record<string, string>>;
 /** Fills every field of a model with a recognisable value (lists get two entries). */
 function fill(fields: FieldKinds, tag: string): Record<string, unknown> {
   return Object.fromEntries(
-    Object.entries(fields).map(([field, kind]) => [
-      field,
-      kind === 'stringList' ? [`${tag}.${field}.0`, `${tag}.${field}.1`] : `${tag}.${field}`,
-    ]),
+    Object.entries(fields).map(([field, kind]) => {
+      if (kind === 'factList') {
+        return [
+          field,
+          [{ text: `${tag}.${field}.0` }, { lead: 'Lead', text: `${tag}.${field}.1` }],
+        ];
+      }
+      return [
+        field,
+        kind === 'stringList' ? [`${tag}.${field}.0`, `${tag}.${field}.1`] : `${tag}.${field}`,
+      ];
+    }),
   );
 }
 
@@ -165,6 +173,7 @@ describe('newCollectionNode', () => {
     boolean: false,
     stringList: [],
     badgeType: 'work',
+    factList: [],
   };
 
   it.each(COLLECTION_KEYS)('builds a blank, published, insertable %s item', (collection) => {
@@ -814,6 +823,10 @@ function randomSequence(seed: number): ContentPatch[] {
         return Array.from({ length: int(0, 3) }, (_, i) => `l${i}.${int(0, 9)}`);
       case 'sectionList':
         return scope === 'home' ? pick([[], ['works'], ['process', 'pricing']]) : [];
+      case 'factList':
+        return Array.from({ length: int(0, 3) }, (_, i) =>
+          random() < 0.5 ? { text: `f${i}.${int(0, 9)}` } : { lead: `L${i}`, text: `f${i}` },
+        );
       default:
         return `v${int(0, 99)}`;
     }

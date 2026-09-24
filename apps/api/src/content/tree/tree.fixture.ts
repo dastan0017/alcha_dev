@@ -8,6 +8,7 @@ function copy(fields: FieldKinds, tag: string) {
     Object.fromEntries(
       Object.entries(fields).map(([field, kind]) => {
         const value = `${tag}.${locale}.${field}`;
+        if (kind === 'factList') return [field, [{ text: value }]];
         return [field, kind === 'stringList' ? [value] : value];
       }),
     );

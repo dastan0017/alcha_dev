@@ -1252,6 +1252,141 @@
   color: var(--primary-hover);
 }
 
+/* ======================= This site's own card (design «Project alcha.dev» 1a) */
+/* Wider screenshot column, one real screenshot instead of a mockup, and the
+   proof of the promise — a request landing in Telegram — laid over it. */
+.workCardFeatured {
+  grid-template-columns: 520px minmax(0, 1fr);
+}
+.workMediaFeatured {
+  display: block;
+  padding: 24px 24px 0;
+  text-align: left;
+}
+/* The screenshot sits in a window frame that bleeds off the bottom edge. */
+.workFrame {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(23, 18, 31, 0.1);
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(23, 18, 31, 0.1);
+}
+/* Top-anchored: a hero screenshot is read from its first screenful down. */
+.workFrameImg {
+  object-fit: cover;
+  object-position: top center;
+}
+.workProof {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 236px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 11px 13px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(23, 18, 31, 0.18);
+  text-align: left;
+  /* Decoration over a link target: it never eats the card's click. */
+  pointer-events: none;
+}
+.workProofHead {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono-stack);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.workProofTitle {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.workProofText {
+  font-size: 12.5px;
+  color: var(--body);
+}
+.workBodyFeatured {
+  padding: 26px 30px 22px;
+  gap: 14px;
+}
+.workMetaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.workDomain {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.workBadgeSelf {
+  flex: none;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--primary);
+  background: #efe9fb;
+  border-radius: var(--r-pill);
+  padding: 3px 9px;
+}
+.workTitleFeatured {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.workFactList {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+/* One body weight for every row: only a fact's lead is bold, so a fact without
+   one never reads as half-emphasised next to the others. */
+.workFact {
+  display: flex;
+  gap: 9px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: #4a4453;
+}
+.workFactCheck {
+  flex: none;
+  color: var(--primary);
+  font-weight: 800;
+}
+.workFactLead {
+  font-weight: 800;
+  color: var(--ink);
+}
+/* Flat, filled chips: labels for what was done, not buttons. */
+.workPillsFlat {
+  gap: 6px;
+}
+.workPillsFlat li {
+  border: none;
+  border-radius: var(--r-chip);
+  padding: 4px 10px;
+  background: var(--plate);
+  color: #4a4453;
+  font-size: 12px;
+  font-weight: 500;
+}
+
 /* ================================================================= Pricing */
 /* Design «Pricing Section Options» 1a. Mono labels port the design's `font:`
    shorthand, so they reset `line-height` to `normal` like the mock does. Text
@@ -1655,7 +1790,8 @@
     max-width: 460px;
     width: 100%;
   }
-  .workCard {
+  .workCard,
+  .workCardFeatured {
     grid-template-columns: 1fr;
   }
   .workMedia {
@@ -1769,8 +1905,30 @@
   }
 
   /* Works — image on top, trimmed to essentials */
-  .workCard {
+  .workCard,
+  .workCardFeatured {
     grid-template-columns: 1fr;
+  }
+  /* The framed screenshot goes full-bleed; the proof card stays, one size down. */
+  .workMediaFeatured {
+    padding: 0;
+  }
+  .workFrame {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .workProof {
+    right: 12px;
+    bottom: 12px;
+    width: 200px;
+  }
+  .workBodyFeatured {
+    padding: 20px;
+    gap: 12px;
+  }
+  .workTitleFeatured {
+    font-size: 21px;
   }
   .workBody {
     padding: 16px 18px 18px;

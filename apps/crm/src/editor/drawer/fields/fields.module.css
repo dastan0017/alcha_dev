@@ -261,3 +261,26 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ─── Facts (✓ lead + rest of the line) ───────────────────────────────────── */
+
+.factEntry {
+  align-items: flex-start;
+}
+
+/* The ✓ sits on the first input's text line, not between the two. */
+.factEntry .check {
+  padding-top: 15px;
+}
+
+.factInputs {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.factLead {
+  font-weight: 700;
+}

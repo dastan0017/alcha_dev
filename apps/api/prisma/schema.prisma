@@ -229,8 +229,8 @@ model ProjectTranslation {
   /// Product-type tag on the works card, e.g. "СОБСТВЕННЫЙ ПРОДУКТ" (empty = hidden).
   typeTag        String   @default("")
   metaLine       String
-  /// Mono highlight line of concrete facts on the works card.
-  factsLine      String   @default("")
+  /// ✓ facts on the works card: `[{ lead?, text }]`, `lead` is the bold opening phrase.
+  facts          Json     @default("[]")
   role           String   @default("")
   description    String
   pills          String[]

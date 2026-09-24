@@ -8,6 +8,26 @@ import { projectBadgeSchema } from './enums';
  */
 export const PROJECT_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
+/**
+ * One ✓ fact on the works card. `lead` is the bold opening phrase («Удобная админка»);
+ * a fact without one is a single plain sentence.
+ */
+export const projectFactSchema = z
+  .object({ lead: z.string().optional(), text: z.string() })
+  .strict();
+export type ProjectFact = z.infer<typeof projectFactSchema>;
+
+/**
+ * Storage form of a fact list: entries with blank text are dropped (never published as an
+ * empty ✓ row) and a blank lead is dropped instead of stored as `''`, so the same facts
+ * always compare equal.
+ */
+export function normalizeFacts(facts: readonly ProjectFact[]): ProjectFact[] {
+  return facts.flatMap(({ lead, text }) =>
+    text.trim() === '' ? [] : [lead?.trim() ? { lead, text } : { text }],
+  );
+}
+
 /** Localized project as returned by the public API (home cards + case pages). */
 export const projectSchema = z.object({
   id: z.string(),
@@ -24,8 +44,8 @@ export const projectSchema = z.object({
   typeTag: z.string(),
   /** Short card description / transformation story. */
   metaLine: z.string(),
-  /** Mono highlight line of concrete facts on the works card. */
-  factsLine: z.string(),
+  /** ✓ facts under the description on the works card. */
+  facts: z.array(projectFactSchema),
   /** Role line on the case page (may be empty). */
   role: z.string(),
   description: z.string(),

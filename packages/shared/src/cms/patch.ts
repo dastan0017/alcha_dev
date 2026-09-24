@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { HOME_SECTION_KEYS, projectBadgeSchema, type HomeSectionKey } from '../dto/enums';
+import { normalizeFacts, projectFactSchema } from '../dto/project';
 import { cmsPath, parseCmsPath, type CmsFieldTarget, type ParsedCmsPath } from './paths';
 import {
   CMS_FIELD_MODEL,
@@ -304,6 +305,12 @@ function checkValue(kind: CmsFieldKind, scope: CmsScope, value: unknown, fail: F
         : fail(`expected one of ${projectBadgeSchema.options.join(', ')}`);
     case 'stringList':
       return isStringArray(value) ? [...value] : fail('expected an array of strings');
+    case 'factList': {
+      const facts = z.array(projectFactSchema).safeParse(value);
+      return facts.success
+        ? normalizeFacts(facts.data)
+        : fail('expected an array of { lead?, text } facts');
+    }
     case 'sectionList': {
       const allowed: readonly string[] = scope === 'home' ? HOME_SECTION_KEYS : [];
       if (!isStringArray(value) || !value.every((key) => allowed.includes(key))) {

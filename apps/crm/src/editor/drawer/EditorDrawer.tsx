@@ -7,9 +7,11 @@ import {
   exclusiveFlagPatches,
   getAtPath,
   type CmsFlagField,
+  normalizeFacts,
   type CollectionKey,
   type ContentPatch,
   type Locale,
+  type ProjectFact,
   type SiteTree,
 } from '@alcha/shared';
 import { Button, Dialog, IconButton, cx, srOnly } from '../ui';
@@ -26,6 +28,7 @@ import {
   type ItemDrawerTarget,
 } from '../schemas';
 import { BooleanField } from './fields/BooleanField';
+import { FactsField } from './fields/FactsField';
 import { ImageField } from './fields/ImageField';
 import { ImagesField } from './fields/ImagesField';
 import { SelectField } from './fields/SelectField';
@@ -51,7 +54,7 @@ export interface EditorDrawerProps {
   onPickImage: (apply: (url: string) => void) => void;
 }
 
-type FieldValue = string | string[] | boolean | null;
+type FieldValue = string | string[] | ProjectFact[] | boolean | null;
 type Values = Record<string, FieldValue>;
 type ValueUpdate = FieldValue | ((current: FieldValue) => FieldValue);
 
@@ -318,6 +321,16 @@ function FieldControl({
           onChange={set}
         />
       );
+    case 'facts':
+      return (
+        <FactsField
+          id={id}
+          label={label}
+          value={asFacts(value)}
+          addLabel={field.addLabel}
+          onChange={set}
+        />
+      );
     case 'tags':
       return <TagsField id={id} label={label} value={asList(value)} onChange={set} />;
     case 'image':
@@ -367,7 +380,14 @@ function FieldControl({
 // ─── Form state ──────────────────────────────────────────────────────────────
 
 const asText = (value: FieldValue) => (typeof value === 'string' ? value : '');
-const asList = (value: FieldValue): string[] => (Array.isArray(value) ? value : []);
+const asList = (value: FieldValue): string[] =>
+  Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === 'string') : [];
+
+const asFacts = (value: FieldValue): ProjectFact[] =>
+  Array.isArray(value) ? value.filter((entry): entry is ProjectFact => isFact(entry)) : [];
+
+const isFact = (value: unknown): value is ProjectFact =>
+  typeof value === 'object' && value !== null && typeof (value as ProjectFact).text === 'string';
 
 const isBlank = (value: FieldValue) =>
   Array.isArray(value)
@@ -376,9 +396,12 @@ const isBlank = (value: FieldValue) =>
       ? value.trim() === ''
       : value === null;
 
+const sameEntry = (a: unknown, b: unknown) =>
+  isFact(a) && isFact(b) ? a.text === b.text && (a.lead ?? '') === (b.lead ?? '') : a === b;
+
 const sameValue = (a: FieldValue, b: FieldValue) =>
   Array.isArray(a) && Array.isArray(b)
-    ? a.length === b.length && a.every((entry, i) => entry === b[i])
+    ? a.length === b.length && a.every((entry, i) => sameEntry(entry, b[i]))
     : a === b;
 
 function slotsOf(target: DrawerTarget, field: FieldSchema): Slot[] {
@@ -393,6 +416,8 @@ function toFieldValue(field: FieldSchema, raw: unknown): FieldValue {
       return raw === true;
     case 'image':
       return typeof raw === 'string' ? raw : null;
+    case 'facts':
+      return Array.isArray(raw) ? raw.filter(isFact) : [];
     case 'list':
     case 'tags':
     case 'images':
@@ -413,10 +438,12 @@ function readValues(tree: SiteTree, target: DrawerTarget, fields: readonly Field
 }
 
 /** Blank bullet entries are dropped rather than published as empty ✓ lines. */
-const normalize = (field: FieldSchema, value: FieldValue) =>
-  field.type === 'list' && Array.isArray(value)
-    ? value.filter((entry) => entry.trim() !== '')
-    : value;
+function normalize(field: FieldSchema, value: FieldValue): FieldValue {
+  if (!Array.isArray(value)) return value;
+  if (field.type === 'facts') return normalizeFacts(asFacts(value));
+  if (field.type === 'list') return asList(value).filter((entry) => entry.trim() !== '');
+  return value;
+}
 
 /** One `set` per changed leaf (whole lists); an exclusive flag also clears it on the other items. */
 function diffPatches(

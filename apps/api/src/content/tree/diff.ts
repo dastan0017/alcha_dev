@@ -4,6 +4,7 @@ import {
   LOCALES,
   type CmsFieldKind,
   type CmsScope,
+  type ProjectFact,
   type SiteTree,
 } from '@alcha/shared';
 
@@ -55,16 +56,23 @@ const countDifferent = (fields: FieldKinds, before: Owner, after: Owner) =>
     .length;
 
 /**
- * Leaves are strings, booleans, null or string lists. A section list is a set: the page
- * renders sections in its own order, so hiding the same sections in another order is no change.
+ * Leaves are strings, booleans, null, string lists or fact lists. A section list is a set:
+ * the page renders sections in its own order, so hiding the same sections in another order
+ * is no change. Facts are objects, so they are compared field by field.
  */
 function sameLeaf(kind: CmsFieldKind, a: unknown, b: unknown): boolean {
   if (!Array.isArray(a) || !Array.isArray(b)) return a === b;
   // Section lists never hold duplicates (the patch engine rejects them).
-  return kind === 'sectionList'
-    ? a.length === b.length && a.every((key) => b.includes(key))
-    : sameList(a, b);
+  if (kind === 'sectionList') return a.length === b.length && a.every((key) => b.includes(key));
+  if (kind === 'factList')
+    return a.length === b.length && a.every((fact, i) => sameFact(fact, b[i]));
+  return sameList(a, b);
 }
+
+const sameFact = (a: unknown, b: unknown) => {
+  const [before, after] = [a, b] as ProjectFact[];
+  return before.text === after.text && (before.lead ?? '') === (after.lead ?? '');
+};
 
 const sameList = (a: readonly unknown[], b: readonly unknown[]) =>
   a.length === b.length && a.every((entry, i) => entry === b[i]);

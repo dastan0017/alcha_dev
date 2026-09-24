@@ -6,7 +6,7 @@ import { homeContentSchema } from '../dto/home';
 import { siteChromeSchema } from '../dto/chrome';
 import { processStepSchema } from '../dto/process-step';
 import { pricingPlanSchema } from '../dto/pricing';
-import { projectSchema } from '../dto/project';
+import { projectSchema, type ProjectFact } from '../dto/project';
 
 /** Item id charset — ids must stay safe inside dot paths and `<collection>:<id>` refs. */
 export const CMS_ID_PATTERN = /^[A-Za-z0-9_-]+$/;
@@ -67,7 +67,7 @@ const projectCopySchema = projectSchema
     badge: true,
     typeTag: true,
     metaLine: true,
-    factsLine: true,
+    facts: true,
     role: true,
     description: true,
     pills: true,
@@ -170,7 +170,7 @@ export type CollectionNode = CollectionNodeMap[CollectionKey];
 // ─── Field model (what paths may address and what a `set` must carry) ────────
 
 export type CmsFieldKind =
-  'string' | 'nullableString' | 'boolean' | 'stringList' | 'sectionList' | 'badgeType';
+  'string' | 'nullableString' | 'boolean' | 'stringList' | 'sectionList' | 'badgeType' | 'factList';
 
 type KindOf<T> = [T] extends [ProjectBadge]
   ? 'badgeType'
@@ -184,7 +184,9 @@ type KindOf<T> = [T] extends [ProjectBadge]
           ? 'sectionList'
           : [T] extends [string[]]
             ? 'stringList'
-            : never;
+            : [T] extends [ProjectFact[]]
+              ? 'factList'
+              : never;
 
 type ScopeFieldModel<Neutral, Copy> = {
   neutral: { [K in keyof Neutral]: KindOf<Neutral[K]> };
@@ -293,7 +295,7 @@ export const CMS_FIELD_MODEL = {
       badge: 'string',
       typeTag: 'string',
       metaLine: 'string',
-      factsLine: 'string',
+      facts: 'factList',
       role: 'string',
       description: 'string',
       pills: 'stringList',
@@ -381,6 +383,7 @@ const BLANK_BY_KIND: Record<CmsFieldKind, unknown> = {
   stringList: [],
   sectionList: [],
   badgeType: 'work',
+  factList: [],
 };
 
 type FieldKinds = Readonly<Record<string, CmsFieldKind>>;

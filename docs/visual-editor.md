@@ -65,8 +65,9 @@ StepNode       = { id; published; isMain }                                      
 PricingNode    = { id; published; highlighted }                                       & Localized<{ name; priceLabel; termLine; highlightLabel; ctaLabel; description;
                                                                                                   examples; listHeading; features: string[]; extras: string[] }>
 ProjectNode    = { id; published; slug; badgeType: 'work'|'own'; showOnHome;
-                   coverImage: string | null; screenshots: string[] }                 & Localized<{ title; badge; typeTag; metaLine; factsLine; role; description;
-                                                                                                  pills: string[]; bullets: string[]; techChips: string[]; seoTitle; seoDescription }>
+                   coverImage: string | null; screenshots: string[] }                 & Localized<{ title; badge; typeTag; metaLine; facts: { lead?; text }[]; role;
+                                                                                                  description; pills: string[]; bullets: string[]; techChips: string[];
+                                                                                                  seoTitle; seoDescription }>
 ```
 
 Ids of existing rows are the DB ids; new items get `newCmsId()` (`n` + 24 base36
@@ -76,7 +77,8 @@ unique per collection and `hiddenSections` holds each key at most once.
 ## 2. Paths — `packages/shared/src/cms/paths.ts`
 
 Dot-separated; collection items are addressed **by id**, string-list entries by
-numeric index.
+numeric index. A fact list (`projects.<id>.<locale>.facts`) is addressed whole —
+its entries are objects, so they are edited in the drawer, never inline.
 
 ```
 home.hiddenSections

@@ -188,7 +188,7 @@ function copyOf(scope: CmsScope, translations: readonly TranslationRow[] = []) {
     return Object.fromEntries(
       Object.entries(fields).map(([field, kind]) => [
         field,
-        row ? row[field] : kind === 'stringList' ? [] : '',
+        row ? row[field] : kind === 'stringList' || kind === 'factList' ? [] : '',
       ]),
     );
   };

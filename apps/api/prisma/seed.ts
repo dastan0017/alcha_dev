@@ -113,10 +113,9 @@ async function seedHome(): Promise<void> {
             processAnnotationLabel: 'МОЯ ГЛАВНАЯ СИЛА',
             processAnnotationText:
               'Этим занимаюсь лично и глубже всего: моя работа — понятно показать сильные стороны вашего бизнеса и сделать так, чтобы сайт с первых секунд вызывал доверие.',
-            worksEyebrow: 'РАБОТЫ',
-            worksHeading: 'Работы',
-            worksLede:
-              'Каждый проект — от начала до конца лично мной. Беру немного клиентов, поэтому каждому — максимум внимания.',
+            worksEyebrow: 'ПРОЕКТЫ',
+            worksHeading: 'Сделано под ключ',
+            worksLede: 'От идеи до запуска — всё необходимое для сайта в одном проекте.',
             pricingEyebrow: 'ЦЕНЫ',
             pricingHeading: 'Сколько это стоит',
             pricingNote:
@@ -158,10 +157,9 @@ async function seedHome(): Promise<void> {
             processAnnotationLabel: 'MY CORE STRENGTH',
             processAnnotationText:
               'I handle this personally and in the most depth: my job is to show your business’s strengths clearly and make the site earn trust from the very first seconds.',
-            worksEyebrow: 'WORK',
-            worksHeading: 'Selected work',
-            worksLede:
-              'Every project is done end to end by me personally. I take on few clients, so each one gets my full attention.',
+            worksEyebrow: 'PROJECTS',
+            worksHeading: 'Built end to end',
+            worksLede: 'From idea to launch — everything a website needs, in one project.',
             pricingEyebrow: 'PRICING',
             pricingHeading: 'How much it costs',
             pricingNote:
@@ -449,38 +447,59 @@ async function seedProjects(): Promise<void> {
       sortOrder: 0,
       showOnHome: true,
       ru: {
-        title: 'alcha.dev',
-        badge: 'ЭТОТ САЙТ',
-        typeTag: '',
+        title: 'Сайт, который вы ведёте сами',
+        badge: 'ВЫ СЕЙЧАС ЗДЕСЬ',
+        // The mono line next to the badge: this project's tag is its domain.
+        typeTag: 'alcha.dev',
         metaLine:
-          'Портфолио и витрина услуг — сайт, на котором вы сейчас находитесь. Спроектирован, написан и запущен целиком мной: от текстов и дизайна до сервера.',
-        factsLine: 'Lighthouse 95+ · два языка (RU / EN) · заявки — в Telegram',
+          'Вы сейчас на нём. Услуги, цены и кейсы — на одной странице. Тексты и фото меняются в админке без программиста, а заявка с формы приходит в Telegram за секунду.',
+        facts: [
+          { text: 'Заявка приходит в Telegram и остаётся в списке — не теряется' },
+          {
+            lead: 'Загрузка меньше 1 секунды',
+            text: '— высший балл Google Lighthouse (95+) даже на телефоне в дороге',
+          },
+          {
+            lead: 'Удобная админка',
+            text: '— меняйте тексты, цены и фото в пару кликов без разработчика.',
+          },
+        ],
         role: 'Свой продукт · дизайн, разработка и сервер',
         description:
-          'Портфолио и витрина услуг — сайт, на котором вы сейчас находитесь. Спроектирован, написан и запущен целиком мной: от текстов и дизайна до сервера. Статическая генерация, две языковые версии и CRM для управления контентом без программиста.',
-        pills: ['Дизайн и тексты', 'SEO', 'Сервер и передача'],
+          'Это сайт, который вы сейчас читаете. Услуги, цены и кейсы — на одной странице. Тексты и фото меняются в админке без программиста, а заявка с формы приходит в Telegram за секунду. Две языковые версии — русская и английская.',
+        pills: ['Дизайн и тексты', 'Админка и заявки', 'Поиск в Google', 'Сервер и запуск'],
         bullets: [],
-        techChips: ['React', 'Next.js', 'TypeScript'],
+        techChips: ['Next.js', 'TypeScript'],
         seoTitle: 'alcha.dev — портфолио и услуги',
         seoDescription:
-          'Портфолио и витрина услуг: дизайн, разработка, SEO и CRM. Спроектирован и запущен целиком мной.',
+          'Портфолио и витрина услуг: дизайн, разработка, поиск в Google и админка. Сайт, который вы ведёте сами.',
       },
       en: {
-        title: 'alcha.dev',
-        badge: 'THIS SITE',
-        typeTag: '',
+        title: 'A site you can run yourself',
+        badge: 'YOU ARE HERE',
+        typeTag: 'alcha.dev',
         metaLine:
-          'A portfolio and services showcase — the very site you’re on now. Designed, written and shipped entirely by me: from copy and design to the server.',
-        factsLine: 'Lighthouse 95+ · two languages (RU / EN) · leads — to Telegram',
+          'You’re on it right now. Services, prices and cases on one page. Text and photos are edited in the admin panel — no developer — and a form request reaches Telegram in a second.',
+        facts: [
+          { text: 'Requests arrive in Telegram and stay in a list — nothing gets lost' },
+          {
+            lead: 'Loads in under 1 second',
+            text: '— top Google Lighthouse score (95+), even on a phone on the go',
+          },
+          {
+            lead: 'Easy admin panel',
+            text: '— change text, prices and photos in a couple of clicks, no developer needed.',
+          },
+        ],
         role: 'Own product · design, development and server',
         description:
-          'A portfolio and services showcase — the very site you’re on now. Designed, written and shipped entirely by me: from copy and design to the server. Static generation, two language versions and a CRM to manage content without a developer.',
-        pills: ['Design & copy', 'SEO', 'Server & handover'],
+          'This is the site you are reading right now. Services, prices and cases on one page. Text and photos are edited in the admin panel — no developer — and a form request reaches Telegram in a second. Two language versions: Russian and English.',
+        pills: ['Design & copy', 'Admin & requests', 'Google search', 'Server & launch'],
         bullets: [],
-        techChips: ['React', 'Next.js', 'TypeScript'],
+        techChips: ['Next.js', 'TypeScript'],
         seoTitle: 'alcha.dev — portfolio and services',
         seoDescription:
-          'A portfolio and services showcase: design, development, SEO and a CRM. Designed and shipped entirely by me.',
+          'A portfolio and services showcase: design, development, Google search and an admin panel. A site you can run yourself.',
       },
     },
     {
@@ -495,7 +514,11 @@ async function seedProjects(): Promise<void> {
         metaLine:
           'Заводчики арашанских овец искали племенных животных через знакомых и базары. Теперь — карта проверенных ферм, электронные родословные и объявления «на племя» в одном приложении: покупка породы стала прозрачной.',
         // TODO(dastan): подставьте реальные цифры (×× ферм / родословных).
-        factsLine: 'Карта проверенных ферм · электронные родословные · календарь ухода за стадом',
+        facts: [
+          { text: 'Карта проверенных ферм' },
+          { text: 'электронные родословные' },
+          { text: 'календарь ухода за стадом' },
+        ],
         role: 'Свой продукт · дизайн, разработка, сервер',
         description:
           'Заводчики арашанских овец искали племенных животных через знакомых и базары. Теперь — карта проверенных ферм, электронные родословные и объявления «на племя» в одном приложении: покупка породы стала прозрачной.',
@@ -523,16 +546,15 @@ async function seedProjects(): Promise<void> {
         typeTag: 'OWN PRODUCT',
         metaLine:
           'Arashan sheep breeders used to find breeding animals through acquaintances and markets. Now a map of verified farms, digital pedigrees and breeding listings live in one app — buying a breed became transparent.',
-        factsLine: 'Verified farm map · digital pedigrees · herd-care calendar',
+        facts: [
+          { text: 'Verified farm map' },
+          { text: 'digital pedigrees' },
+          { text: 'herd-care calendar' },
+        ],
         role: 'Own product · design, development, server',
         description:
           'Arashan sheep breeders used to find breeding animals through acquaintances and markets. Now a map of verified farms, digital pedigrees and breeding listings live in one app — buying a breed became transparent.',
-        pills: [
-          'Mobile app (iOS + Android)',
-          'Admin panel',
-          'Farm map',
-          'WhatsApp-code login',
-        ],
+        pills: ['Mobile app (iOS + Android)', 'Admin panel', 'Farm map', 'WhatsApp-code login'],
         bullets: [
           'A map of verified farms with ranch profiles',
           'Digital pedigrees for animals',
@@ -558,7 +580,11 @@ async function seedProjects(): Promise<void> {
         metaLine:
           'Магазины заказывают товар у дистрибьютора прямо с телефона — как в интернет-магазине. Раньше заказы собирали торговые агенты вручную; теперь каталог, заказы и клиенты — в CRM у менеджеров.',
         // TODO(dastan): подставьте реальные цифры (×× магазинов-партнёров).
-        factsLine: 'Магазины заказывают сами · заказы без звонков · уведомления в WhatsApp',
+        facts: [
+          { text: 'Магазины заказывают сами' },
+          { text: 'заказы без звонков' },
+          { text: 'уведомления в WhatsApp' },
+        ],
         role: 'Клиентский проект · мобильное приложение, CRM и сервер',
         description:
           'Магазины заказывают товар у дистрибьютора прямо с телефона — как в интернет-магазине. Раньше заказы собирали торговые агенты вручную; теперь каталог, заказы и клиенты — в CRM у менеджеров.',
@@ -586,7 +612,11 @@ async function seedProjects(): Promise<void> {
         typeTag: 'CLIENT PROJECT',
         metaLine:
           'Stores order goods from the distributor straight from their phone — like an online shop. Orders used to be collected by sales reps by hand; now the catalogue, orders and clients live in the managers’ CRM.',
-        factsLine: 'Stores order themselves · orders without calls · WhatsApp notifications',
+        facts: [
+          { text: 'Stores order themselves' },
+          { text: 'orders without calls' },
+          { text: 'WhatsApp notifications' },
+        ],
         role: 'Client project · mobile app, CRM and server',
         description:
           'Stores order goods from the distributor straight from their phone — like an online shop. Orders used to be collected by sales reps by hand; now the catalogue, orders and clients live in the managers’ CRM.',
