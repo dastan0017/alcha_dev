@@ -46,7 +46,13 @@ export interface DraftCallbacks {
  */
 export function useDraft(callbacks: DraftCallbacks) {
   const queryClient = useQueryClient();
-  const query = useQuery({ queryKey: TREE_QUERY_KEY, queryFn: fetchTree });
+  const query = useQuery({
+    queryKey: TREE_QUERY_KEY,
+    queryFn: fetchTree,
+    // Only a load that failed is retried when the tab comes back: refetching a tree that is
+    // already on screen would land on top of the optimistic changes it is holding.
+    refetchOnWindowFocus: ({ state }) => state.status === 'error',
+  });
 
   const historyRef = useRef<HistoryEntry[]>([]);
   const [lastEntry, setLastEntry] = useState<HistoryEntry | null>(null);
