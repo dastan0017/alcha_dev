@@ -126,6 +126,17 @@ const UNTITLED = 'Без названия';
 const titleOrUntitled = (title: string) => title.trim() || UNTITLED;
 const COPY_SUFFIX: Record<Locale, string> = { ru: ' — копия', en: ' — copy' };
 
+/** A store link is optional, but a filled one must be an https URL the card can open. */
+const storeUrl = (value: string): string | null => {
+  const trimmed = value.trim();
+  if (trimmed === '') return null;
+  try {
+    return new URL(trimmed).protocol === 'https:' ? null : 'Ссылка должна начинаться с https://';
+  } catch {
+    return 'Не похоже на ссылку — вставьте адрес страницы приложения целиком';
+  }
+};
+
 const SLUG_ALPHABET = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
 function randomSlugPart(length: number): string {
@@ -375,6 +386,22 @@ export const COLLECTION_SCHEMAS: { readonly [C in CollectionKey]: CollectionSche
       },
       { key: 'techChips', label: 'Технологии', type: 'tags', localized: true },
       { key: 'screenshots', label: 'Скриншоты', type: 'images', localized: false },
+      {
+        key: 'appStoreUrl',
+        label: 'Ссылка на App Store',
+        type: 'text',
+        localized: false,
+        hint: 'https://apps.apple.com/…  (пусто — ссылку не показываем)',
+        validate: storeUrl,
+      },
+      {
+        key: 'googlePlayUrl',
+        label: 'Ссылка на Google Play',
+        type: 'text',
+        localized: false,
+        hint: 'https://play.google.com/…  (пусто — ссылку не показываем)',
+        validate: storeUrl,
+      },
       { key: 'showOnHome', label: 'Показывать на главной', type: 'boolean', localized: false },
       { key: 'seoTitle', label: 'SEO title', type: 'text', localized: true },
       { key: 'seoDescription', label: 'SEO description', type: 'textarea', localized: true },

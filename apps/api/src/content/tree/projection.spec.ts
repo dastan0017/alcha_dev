@@ -73,6 +73,8 @@ describe('projectProjects / projectProject', () => {
       showOnHome: false,
       screenshots: ['https://cdn/pr2.png'],
       coverImage: null,
+      appStoreUrl: '',
+      googlePlayUrl: '',
       ...tree.projects[1].en,
     });
   });

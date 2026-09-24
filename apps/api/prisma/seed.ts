@@ -507,27 +507,31 @@ async function seedProjects(): Promise<void> {
       badgeType: ProjectBadge.own,
       sortOrder: 1,
       showOnHome: true,
+      // TODO(dastan): вставьте ссылки на страницы приложения — пустая ссылка не показывается.
+      appStoreUrl: '',
+      googlePlayUrl: '',
       ru: {
-        title: 'Чабан',
-        badge: 'APP STORE + GOOGLE PLAY',
-        typeTag: 'СОБСТВЕННЫЙ ПРОДУКТ',
+        // The mono line next to the badge: this project's tag is its name.
+        title: 'Приложение для заводчиков племенных овец',
+        badge: 'СОБСТВЕННЫЙ ПРОДУКТ',
+        typeTag: 'Чабан',
         metaLine:
-          'Заводчики арашанских овец искали племенных животных через знакомых и базары. Теперь — карта проверенных ферм, электронные родословные и объявления «на племя» в одном приложении: покупка породы стала прозрачной.',
-        // TODO(dastan): подставьте реальные цифры (×× ферм / родословных).
+          'Раньше хозяйства вели Instagram и YouTube, и покупатель не понимал, кто есть кто, — выбирали по знакомым. Теперь у каждой фермы один профиль: видео, история, достижения и контакты. Все фермы — на одной карте.',
         facts: [
-          { text: 'Карта проверенных ферм' },
-          { text: 'электронные родословные' },
-          { text: 'календарь ухода за стадом' },
+          {
+            lead: 'Ферму видят новые покупатели',
+            text: '— без рекламы и без цепочки знакомых',
+          },
+          {
+            lead: 'Понятно, с кем имеешь дело',
+            text: '— видео, история и достижения хозяйства в одном профиле',
+          },
+          { lead: 'Пишут напрямую', text: '— WhatsApp и Instagram прямо из профиля' },
         ],
         role: 'Свой продукт · дизайн, разработка, сервер',
         description:
-          'Заводчики арашанских овец искали племенных животных через знакомых и базары. Теперь — карта проверенных ферм, электронные родословные и объявления «на племя» в одном приложении: покупка породы стала прозрачной.',
-        pills: [
-          'Мобильное приложение (iOS + Android)',
-          'Админка',
-          'Карта ферм',
-          'Вход по WhatsApp-коду',
-        ],
+          'Раньше хозяйства вели Instagram и YouTube, и покупатель не понимал, кто есть кто, — выбирали по знакомым. Теперь у каждой фермы один профиль: видео, история, достижения и контакты. Все фермы — на одной карте.',
+        pills: ['Мобильное приложение', 'Профили и карта', 'Модерация', 'Вход через WhatsApp'],
         bullets: [
           'Карта проверенных ферм с профилями хозяйств',
           'Электронные родословные животных',
@@ -535,26 +539,32 @@ async function seedProjects(): Promise<void> {
           'Календарь ухода за стадом с напоминаниями',
           'Админ-панель для модерации и контента',
         ],
-        techChips: ['React Native', 'Expo', 'NestJS', 'GraphQL', 'PostgreSQL'],
+        techChips: ['React Native', 'NestJS', 'PostgreSQL'],
         seoTitle: 'Чабан — приложение для заводчиков овец',
         seoDescription:
           'Сообщество заводчиков арашанских овец: карта ферм, родословные, объявления и календарь ухода за стадом.',
       },
       en: {
-        title: 'Chaban',
-        badge: 'APP STORE + GOOGLE PLAY',
-        typeTag: 'OWN PRODUCT',
+        title: 'An app for pedigree sheep breeders',
+        badge: 'OWN PRODUCT',
+        typeTag: 'Chaban',
         metaLine:
-          'Arashan sheep breeders used to find breeding animals through acquaintances and markets. Now a map of verified farms, digital pedigrees and breeding listings live in one app — buying a breed became transparent.',
+          'Farms used to run Instagram and YouTube separately, and buyers couldn’t tell who was who — they chose through acquaintances. Now every farm has one profile: videos, history, achievements and contacts. All farms on one map.',
         facts: [
-          { text: 'Verified farm map' },
-          { text: 'digital pedigrees' },
-          { text: 'herd-care calendar' },
+          { lead: 'New buyers find the farm', text: '— no ads, no chain of acquaintances' },
+          {
+            lead: 'You know who you’re dealing with',
+            text: '— the farm’s videos, history and achievements in one profile',
+          },
+          {
+            lead: 'Buyers message directly',
+            text: '— WhatsApp and Instagram right from the profile',
+          },
         ],
         role: 'Own product · design, development, server',
         description:
-          'Arashan sheep breeders used to find breeding animals through acquaintances and markets. Now a map of verified farms, digital pedigrees and breeding listings live in one app — buying a breed became transparent.',
-        pills: ['Mobile app (iOS + Android)', 'Admin panel', 'Farm map', 'WhatsApp-code login'],
+          'Farms used to run Instagram and YouTube separately, and buyers couldn’t tell who was who — they chose through acquaintances. Now every farm has one profile: videos, history, achievements and contacts. All farms on one map.',
+        pills: ['Mobile app', 'Profiles & map', 'Moderation', 'WhatsApp sign-in'],
         bullets: [
           'A map of verified farms with ranch profiles',
           'Digital pedigrees for animals',
@@ -562,7 +572,7 @@ async function seedProjects(): Promise<void> {
           'A herd-care calendar with reminders',
           'An admin panel for moderation and content',
         ],
-        techChips: ['React Native', 'Expo', 'NestJS', 'GraphQL', 'PostgreSQL'],
+        techChips: ['React Native', 'NestJS', 'PostgreSQL'],
         seoTitle: 'Chaban — an app for sheep breeders',
         seoDescription:
           'A community for Arashan sheep breeders: farm map, pedigrees, listings and a herd-care calendar.',
@@ -651,6 +661,8 @@ async function seedProjects(): Promise<void> {
         published: true,
         screenshots: [],
         coverImage: null,
+        appStoreUrl: p.appStoreUrl ?? '',
+        googlePlayUrl: p.googlePlayUrl ?? '',
         translations: {
           create: [
             { locale: 'ru', ...p.ru },

@@ -66,11 +66,7 @@
   "works": {
     "screenshot": "Project screenshot",
     "prev": "Previous work",
-    "next": "Next work",
-    "proofChannel": "TELEGRAM",
-    "proofWhen": "now",
-    "proofTitle": "New request from the site",
-    "proofText": "“Need a website for a café”"
+    "next": "Next work"
   },
   "notFound": {
     "code": "404",

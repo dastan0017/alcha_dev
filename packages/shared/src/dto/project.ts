@@ -37,6 +37,9 @@ export const projectSchema = z.object({
   showOnHome: z.boolean(),
   screenshots: z.array(z.string()),
   coverImage: z.string().nullable(),
+  /** Store pages for a shipped app; blank hides the link. Language-neutral. */
+  appStoreUrl: z.string(),
+  googlePlayUrl: z.string(),
   title: z.string(),
   /** Badge label text, e.g. "ЭТОТ САЙТ" / "APP STORE + GOOGLE PLAY". */
   badge: z.string(),

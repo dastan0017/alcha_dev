@@ -66,11 +66,7 @@
   "works": {
     "screenshot": "Скриншот проекта",
     "prev": "Предыдущие работы",
-    "next": "Следующие работы",
-    "proofChannel": "TELEGRAM",
-    "proofWhen": "сейчас",
-    "proofTitle": "Новая заявка с сайта",
-    "proofText": "«Нужен сайт для кафе»"
+    "next": "Следующие работы"
   },
   "notFound": {
     "code": "404",

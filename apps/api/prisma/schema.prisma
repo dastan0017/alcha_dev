@@ -212,6 +212,9 @@ model Project {
   published    Boolean              @default(false)
   screenshots  String[]
   coverImage   String?
+  /// Store pages of a shipped app; blank hides the link on the card.
+  appStoreUrl   String              @default("")
+  googlePlayUrl String              @default("")
   createdAt    DateTime             @default(now())
   updatedAt    DateTime             @updatedAt
   translations ProjectTranslation[]

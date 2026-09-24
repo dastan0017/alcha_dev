@@ -1252,71 +1252,24 @@
   color: var(--primary-hover);
 }
 
-/* ======================= This site's own card (design «Project alcha.dev» 1a) */
-/* Wider screenshot column, one real screenshot instead of a mockup, and the
-   proof of the promise — a request landing in Telegram — laid over it. */
-.workCardFeatured {
+/* ================= Wide project card (designs «Project alcha.dev» 1a, «Chaban» 1b) */
+/* One anatomy for every rebuilt card: name → badge → headline → description →
+   ✓ facts → flat chips → footer, with a screenshot filling the media cell. */
+.workCardWide {
   grid-template-columns: 520px minmax(0, 1fr);
 }
-.workMediaFeatured {
-  display: block;
-  padding: 24px 24px 0;
-  text-align: left;
-}
-/* The screenshot sits in a window frame that bleeds off the bottom edge. */
-.workFrame {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+/* The screenshot fills the cell: `aspect-ratio` here would leave white under a
+   taller text column, so the cell stretches and a min-height holds the floor. */
+.workMediaCover {
+  aspect-ratio: auto;
+  min-height: 325px;
   height: 100%;
-  overflow: hidden;
-  border: 1px solid rgba(23, 18, 31, 0.1);
-  border-bottom: none;
-  border-radius: 10px 10px 0 0;
-  background: #fff;
-  box-shadow: 0 10px 30px rgba(23, 18, 31, 0.1);
+  padding: 0;
 }
-/* Top-anchored: a hero screenshot is read from its first screenful down. */
-.workFrameImg {
+.workCoverImg {
   object-fit: cover;
-  object-position: top center;
 }
-.workProof {
-  position: absolute;
-  right: 18px;
-  bottom: 18px;
-  width: 236px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 11px 13px;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 12px 30px rgba(23, 18, 31, 0.18);
-  text-align: left;
-  /* Decoration over a link target: it never eats the card's click. */
-  pointer-events: none;
-}
-.workProofHead {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--font-mono-stack);
-  font-size: 10.5px;
-  font-weight: 500;
-  color: var(--muted);
-}
-.workProofTitle {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--ink);
-}
-.workProofText {
-  font-size: 12.5px;
-  color: var(--body);
-}
-.workBodyFeatured {
+.workBodyWide {
   padding: 26px 30px 22px;
   gap: 14px;
 }
@@ -1331,17 +1284,32 @@
   font-weight: 500;
   color: var(--muted);
 }
-.workBadgeSelf {
-  flex: none;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+/* Same pill as the project-type tags, in the accent that means «this one». */
+.workTagSelf {
   color: var(--primary);
   background: #efe9fb;
-  border-radius: var(--r-pill);
-  padding: 3px 9px;
 }
-.workTitleFeatured {
+/* Right edge of the header row. z-index lifts them over the case link's
+   stretched ::after, so a store link takes the click and the rest of the card
+   still opens the case — no click handler, so the card stays server-rendered. */
+.workStores {
+  position: relative;
+  z-index: 1;
+  margin-left: auto;
+  display: flex;
+  gap: 14px;
+}
+.workStore {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #4a4453;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.workStore:hover {
+  color: var(--primary);
+}
+.workTitleWide {
   font-size: 24px;
   font-weight: 800;
   line-height: 1.2;
@@ -1378,6 +1346,7 @@
   gap: 6px;
 }
 .workPillsFlat li {
+  flex: none;
   border: none;
   border-radius: var(--r-chip);
   padding: 4px 10px;
@@ -1385,6 +1354,12 @@
   color: #4a4453;
   font-size: 12px;
   font-weight: 500;
+  white-space: nowrap;
+}
+/* The footer is one row at every container width the card is used at. */
+.workCardWide .workTech,
+.workCardWide .workLink {
+  white-space: nowrap;
 }
 
 /* ================================================================= Pricing */
@@ -1791,7 +1766,7 @@
     width: 100%;
   }
   .workCard,
-  .workCardFeatured {
+  .workCardWide {
     grid-template-columns: 1fr;
   }
   .workMedia {
@@ -1906,28 +1881,23 @@
 
   /* Works — image on top, trimmed to essentials */
   .workCard,
-  .workCardFeatured {
+  .workCardWide {
     grid-template-columns: 1fr;
   }
-  /* The framed screenshot goes full-bleed; the proof card stays, one size down. */
-  .workMediaFeatured {
-    padding: 0;
+  .workMediaCover {
+    aspect-ratio: 16 / 10;
+    min-height: 0;
   }
-  .workFrame {
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
+  /* Full width pushes them below the name and badge instead of squeezing the row. */
+  .workStores {
+    margin-left: 0;
+    width: 100%;
   }
-  .workProof {
-    right: 12px;
-    bottom: 12px;
-    width: 200px;
-  }
-  .workBodyFeatured {
+  .workBodyWide {
     padding: 20px;
     gap: 12px;
   }
-  .workTitleFeatured {
+  .workTitleWide {
     font-size: 21px;
   }
   .workBody {

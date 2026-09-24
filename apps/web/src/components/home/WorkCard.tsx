@@ -5,11 +5,15 @@ import { Link } from '@/i18n/navigation';
 import type { Cms } from '@/lib/cms';
 import styles from './home.module.css';
 
-/**
- * This site's own project. Its card is the section's lead card (design «Project alcha.dev»
- * 1a): a wider screenshot column with a live proof overlay instead of the shared 380px plate.
- */
+/** This site's own project: the only card whose badge is the purple «you are here». */
 const SELF_SLUG = 'alcha-dev';
+
+/**
+ * Cards already rebuilt on the wide layout — name → badge → headline → description →
+ * ✓ facts → flat chips → footer (designs «Project alcha.dev» 1a, «Project Chaban» 1b).
+ * Kit Store keeps the compact card until its own pass.
+ */
+const WIDE_SLUGS: readonly string[] = [SELF_SLUG, 'chaban'];
 
 export function WorkCard({
   project,
@@ -21,7 +25,7 @@ export function WorkCard({
   cms: Cms;
 }) {
   const t = useTranslations('works');
-  const featured = project.slug === SELF_SLUG;
+  const self = project.slug === SELF_SLUG;
 
   const caseLink = (
     <Link href={`/works/${project.slug}`} className={styles.workLink}>
@@ -34,44 +38,43 @@ export function WorkCard({
     <span className={`mono ${styles.workTech}`}>{project.techChips.join(' · ')}</span>
   );
 
-  if (featured) {
+  const cover = (className: string) =>
+    project.coverImage ? (
+      <Image
+        src={project.coverImage}
+        alt={`${project.title} — ${t('screenshot')}`}
+        fill
+        sizes="(max-width: 900px) 100vw, 520px"
+        className={className}
+      />
+    ) : (
+      <span className={styles.workShot}>
+        {t('screenshot')}: {project.title}
+      </span>
+    );
+
+  if (WIDE_SLUGS.includes(project.slug)) {
+    // Purple marks the card you are standing on; every other own product stays green.
+    const badgeTone = self
+      ? styles.workTagSelf
+      : project.badgeType === 'own'
+        ? styles.workTagOwn
+        : styles.workTagWork;
+
     return (
       <article
-        className={`${styles.workCard} ${styles.workCardFeatured}`}
+        className={`${styles.workCard} ${styles.workCardWide}`}
         {...cms.item('projects', project.id)}
       >
+        {/* One cell on every wide card: the screenshot fills it and sets the card's height. */}
         <div
-          className={`${styles.workMedia} ${styles.workMediaFeatured}`}
+          className={`${styles.workMedia} ${styles.workMediaCover}`}
           {...cms.image(cms.itemField('projects', project.id, 'coverImage'))}
         >
-          {/* One real screenshot, framed like a window and bleeding off the bottom edge. */}
-          <div className={styles.workFrame}>
-            {project.coverImage ? (
-              <Image
-                src={project.coverImage}
-                alt={`${project.title} — ${t('screenshot')}`}
-                fill
-                sizes="(max-width: 900px) 100vw, 520px"
-                className={styles.workFrameImg}
-              />
-            ) : (
-              <span className={styles.workShot}>
-                {t('screenshot')}: {project.title}
-              </span>
-            )}
-          </div>
-          {/* Proof, not chrome: what the visitor's request looks like when it lands. */}
-          <div className={styles.workProof} aria-hidden="true">
-            <div className={styles.workProofHead}>
-              <span>{t('proofChannel')}</span>
-              <span>{t('proofWhen')}</span>
-            </div>
-            <div className={styles.workProofTitle}>{t('proofTitle')}</div>
-            <div className={styles.workProofText}>{t('proofText')}</div>
-          </div>
+          {cover(styles.workCoverImg)}
         </div>
 
-        <div className={`${styles.workBody} ${styles.workBodyFeatured}`}>
+        <div className={`${styles.workBody} ${styles.workBodyWide}`}>
           <div className={styles.workMetaRow}>
             {project.typeTag && (
               <span
@@ -83,16 +86,41 @@ export function WorkCard({
             )}
             {project.badge && (
               <span
-                className={`mono ${styles.workBadgeSelf}`}
+                className={`mono ${styles.workTag} ${badgeTone}`}
                 {...cms.field(cms.itemLocale('projects', project.id, 'badge'))}
               >
                 {project.badge}
               </span>
             )}
+            {/* Stacked above the stretched case link, so a store link wins the click. */}
+            {(project.appStoreUrl || project.googlePlayUrl) && (
+              <span className={styles.workStores}>
+                {project.appStoreUrl && (
+                  <a
+                    href={project.appStoreUrl}
+                    target="_blank"
+                    rel="noopener"
+                    className={styles.workStore}
+                  >
+                    App Store <span aria-hidden="true">↗</span>
+                  </a>
+                )}
+                {project.googlePlayUrl && (
+                  <a
+                    href={project.googlePlayUrl}
+                    target="_blank"
+                    rel="noopener"
+                    className={styles.workStore}
+                  >
+                    Google Play <span aria-hidden="true">↗</span>
+                  </a>
+                )}
+              </span>
+            )}
           </div>
 
           <h3
-            className={styles.workTitleFeatured}
+            className={styles.workTitleWide}
             {...cms.field(cms.itemLocale('projects', project.id, 'title'))}
           >
             {project.title}

@@ -75,6 +75,8 @@ function toProject(node: ProjectNode, sortOrder: number, locale: Locale): Projec
     showOnHome: node.showOnHome,
     screenshots: node.screenshots,
     coverImage: node.coverImage,
+    appStoreUrl: node.appStoreUrl,
+    googlePlayUrl: node.googlePlayUrl,
     ...localize('projects', node, locale),
   };
 }

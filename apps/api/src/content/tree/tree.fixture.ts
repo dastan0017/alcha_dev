@@ -44,6 +44,8 @@ export function treeFixture(): SiteTree {
       published: true,
       badgeType: 'work',
       coverImage: null,
+      appStoreUrl: '',
+      googlePlayUrl: '',
       screenshots: [`https://cdn/${project.id}.png`],
       ...copy(M.projects.localized, project.id),
     })),

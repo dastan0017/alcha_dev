@@ -88,6 +88,8 @@ const TREE: SiteTree = siteTreeSchema.parse({
     slug: `${id}-slug`,
     badgeType: i === 0 ? 'own' : 'work',
     showOnHome: i !== 1,
+    appStoreUrl: `https://apps.apple.com/${id}`,
+    googlePlayUrl: '',
     coverImage: i === 0 ? null : `https://cdn/${id}.png`,
     screenshots: [`https://cdn/${id}-0.png`, `https://cdn/${id}-1.png`],
     ...localized(M.projects.localized, id),

@@ -110,6 +110,8 @@ export const projectNodeSchema = z
     showOnHome: z.boolean(),
     coverImage: z.string().nullable(),
     screenshots: z.array(z.string()),
+    appStoreUrl: z.string(),
+    googlePlayUrl: z.string(),
     ...translatedSchema(projectCopySchema).shape,
   })
   .strict();
@@ -289,6 +291,8 @@ export const CMS_FIELD_MODEL = {
       showOnHome: 'boolean',
       coverImage: 'nullableString',
       screenshots: 'stringList',
+      appStoreUrl: 'string',
+      googlePlayUrl: 'string',
     },
     localized: {
       title: 'string',
