@@ -192,6 +192,9 @@
   background: #fff;
 }
 .locale-switch__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-family: var(--font-mono-stack);
   font-size: 12px;
   font-weight: 600;
@@ -204,7 +207,7 @@
     background 0.15s ease,
     color 0.15s ease;
 }
-.locale-switch__btn[aria-pressed='true'] {
+.locale-switch__btn[aria-current='true'] {
   background: var(--ink);
   color: #fff;
 }
@@ -224,6 +227,19 @@
   margin-top: 16px;
   max-width: 32ch;
   color: var(--on-dark-muted);
+}
+.site-footer__phone {
+  display: block;
+  width: max-content;
+  margin-top: 14px;
+  color: #fff;
+  font-weight: 600;
+}
+.site-footer__phone:hover {
+  text-decoration: underline;
+}
+.site-footer__phone + .site-footer__email {
+  margin-top: 6px;
 }
 .site-footer__email {
   display: inline-block;

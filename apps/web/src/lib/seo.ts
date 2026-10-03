@@ -10,9 +10,22 @@ export function localizedPath(path: string, locale: Locale): string {
   return locale === 'ru' ? `/${clean.replace(/^\//, '')}` : `/en${clean}`;
 }
 
-function abs(path: string): string {
+export function absoluteUrl(path: string): string {
   const p = path === '' ? '/' : path;
   return `${env.siteUrl}${p}`;
+}
+
+const BRAND_SUFFIX = ` | ${SITE_NAME}`;
+
+/**
+ * Titles written in the CMS (`seoTitle`) often leave the brand out, and the layout
+ * template can't add it to an absolute title — so it is appended here unless the
+ * title already names the site.
+ */
+export function withBrand(title: string): string {
+  const trimmed = title.trim();
+  if (!trimmed) return SITE_NAME;
+  return trimmed.toLowerCase().includes(SITE_NAME) ? trimmed : `${trimmed}${BRAND_SUFFIX}`;
 }
 
 export function buildMetadata(input: {
@@ -23,21 +36,23 @@ export function buildMetadata(input: {
   locale: Locale;
   ogImageUrl?: string | null;
 }): Metadata {
-  const { title, description, keywords, path, locale, ogImageUrl } = input;
+  const { description, keywords, path, locale, ogImageUrl } = input;
+  const title = withBrand(input.title);
 
-  const canonical = abs(localizedPath(path, locale));
+  const canonical = absoluteUrl(localizedPath(path, locale));
   const languages: Record<string, string> = {
-    ru: abs(localizedPath(path, 'ru')),
-    en: abs(localizedPath(path, 'en')),
-    'x-default': abs(localizedPath(path, 'ru')),
+    ru: absoluteUrl(localizedPath(path, 'ru')),
+    en: absoluteUrl(localizedPath(path, 'en')),
+    'x-default': absoluteUrl(localizedPath(path, 'ru')),
   };
 
   const ogImage =
     ogImageUrl ||
-    `${env.siteUrl}/api/og?title=${encodeURIComponent(title)}&locale=${locale}`;
+    // The card already draws the brand, so it gets the bare title.
+    `${env.siteUrl}/api/og?title=${encodeURIComponent(input.title.trim() || SITE_NAME)}&locale=${locale}`;
 
   return {
-    title: title ? { absolute: title } : undefined,
+    title: { absolute: title },
     description: description || undefined,
     keywords: keywords && keywords.length ? keywords : undefined,
     alternates: { canonical, languages },
@@ -46,13 +61,13 @@ export function buildMetadata(input: {
       siteName: SITE_NAME,
       locale: OG_LOCALE[locale],
       url: canonical,
-      title: title || SITE_NAME,
+      title,
       description,
-      images: [{ url: ogImage, width: 1200, height: 630, alt: title || SITE_NAME }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: title || SITE_NAME,
+      title,
       description,
       images: [ogImage],
     },

@@ -9,6 +9,7 @@ export const EMPTY_SETTINGS: SiteSettings = {
   email: '',
   telegram: '',
   whatsapp: '',
+  phone: '',
   github: '',
   linkedin: '',
   instagram: '',

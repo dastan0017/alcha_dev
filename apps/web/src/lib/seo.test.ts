@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildMetadata, localizedPath } from './seo';
+import { buildMetadata, localizedPath, withBrand } from './seo';
 
 test('localizedPath keeps RU at the root and prefixes EN with /en', () => {
   assert.equal(localizedPath('/', 'ru'), '/');
@@ -27,6 +27,31 @@ test('buildMetadata sets a canonical and hreflang alternates', () => {
 });
 
 test('buildMetadata uses an absolute title so the layout template does not double the brand', () => {
-  const meta = buildMetadata({ title: 'My Page — alcha.dev', description: 'x', path: '/', locale: 'ru' });
+  const meta = buildMetadata({
+    title: 'My Page — alcha.dev',
+    description: 'x',
+    path: '/',
+    locale: 'ru',
+  });
   assert.deepEqual(meta.title, { absolute: 'My Page — alcha.dev' });
+});
+
+test('withBrand appends the site name once, and only when the title lacks it', () => {
+  assert.equal(withBrand('Кейс «Чабан»'), 'Кейс «Чабан» | alcha.dev');
+  assert.equal(
+    withBrand('Создание сайтов в Бишкеке — alcha.dev'),
+    'Создание сайтов в Бишкеке — alcha.dev',
+  );
+  assert.equal(withBrand('About ALCHA.DEV'), 'About ALCHA.DEV');
+  assert.equal(withBrand('  '), 'alcha.dev');
+});
+
+test('buildMetadata brands a CMS title that leaves the site name out', () => {
+  const meta = buildMetadata({
+    title: 'Чабан — приложение',
+    description: 'x',
+    path: '/works/chaban',
+    locale: 'ru',
+  });
+  assert.deepEqual(meta.title, { absolute: 'Чабан — приложение | alcha.dev' });
 });

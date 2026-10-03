@@ -30,6 +30,7 @@ export class SettingsService {
       email: row.email,
       telegram: row.telegram,
       whatsapp: row.whatsapp,
+      phone: row.phone,
       github: row.github,
       linkedin: row.linkedin,
       instagram: row.instagram,

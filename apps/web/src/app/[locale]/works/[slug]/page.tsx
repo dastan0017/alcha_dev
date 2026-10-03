@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const project = await getProject(slug, typed);
   if (!project) return {};
   return buildMetadata({
-    title: project.seoTitle || `${project.title} — alcha.dev`,
+    title: project.seoTitle || project.title,
     description: project.seoDescription || project.metaLine,
     keywords: project.techChips,
     path: `/works/${slug}`,

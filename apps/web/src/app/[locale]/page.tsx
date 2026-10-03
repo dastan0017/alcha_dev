@@ -46,7 +46,7 @@ export default async function HomePage({ params }: Params) {
 
   return (
     <>
-      <HomeJsonLd home={home} locale={typed} />
+      <HomeJsonLd home={home} description={chrome.footerTagline} locale={typed} />
       <Hero
         content={home.content}
         worksHidden={hiddenSections.includes('works')}

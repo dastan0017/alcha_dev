@@ -19,3 +19,8 @@ export const env = {
 } as const;
 
 export const SITE_NAME = 'alcha.dev';
+/**
+ * The brand as people write it. Never «Alcha» alone or «Алча»: those already
+ * name a residential complex in Bishkek and other businesses.
+ */
+export const SITE_ALTERNATE_NAMES = ['Alcha Dev'];

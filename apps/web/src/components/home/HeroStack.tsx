@@ -9,7 +9,8 @@ import styles from './home.module.css';
  * illustrations (8a desktop / 12a mobile): one fluid component now serves both,
  * shrinking from the 460px desktop track down to 390px on a phone.
  *
- * Pure decoration — the root is `aria-hidden` and nothing inside is focusable,
+ * Pure decoration — the root is `aria-hidden` (and `data-nosnippet`, so its sample
+ * copy stays out of search snippets) and nothing inside is focusable,
  * so the animated panel is invisible to assistive tech. The loop is disabled
  * under `prefers-reduced-motion`, where every animated node's base state is
  * authored to be the story's end state (see `home.module.css`).
@@ -18,7 +19,9 @@ export function HeroStack() {
   const t = useTranslations('hero');
 
   return (
-    <div className={styles.hsCol} aria-hidden="true">
+    // data-nosnippet: the mock-up's made-up client («Стоматология…», «С 2012 года») must
+    // never be quoted in a search snippet or an AI answer as if it described alcha.dev.
+    <div className={styles.hsCol} aria-hidden="true" data-nosnippet="">
       {/* 1 — the live site, as a client sees it */}
       <div className={styles.hsCard}>
         <div className={styles.hsHead}>

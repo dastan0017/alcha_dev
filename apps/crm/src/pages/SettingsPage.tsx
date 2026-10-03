@@ -138,6 +138,16 @@ export function SettingsPage() {
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
+            <Form.Item
+              name="phone"
+              label="Телефон"
+              extra="Показывается в подвале сайта и передаётся поисковикам. Пусто — скрыт."
+              rules={[{ pattern: /^(\+\d{8,15})?$/, message: 'Формат: +996XXXXXXXXX' }]}
+            >
+              <Input placeholder="+996XXXXXXXXX" inputMode="tel" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
             <Form.Item name="github" label="GitHub">
               <Input />
             </Form.Item>

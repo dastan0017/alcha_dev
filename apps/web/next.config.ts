@@ -33,9 +33,14 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '**.cloudfront.net' },
     ],
   },
-  // Add production 301s here as the site grows.
+  // Add production 301s here as the site grows. These run before the middleware.
   async redirects() {
-    return [];
+    return [
+      // RU is the unprefixed default; next-intl answers /ru with a temporary 307,
+      // which search engines keep re-checking. Make it permanent.
+      { source: '/ru', destination: '/', permanent: true },
+      { source: '/ru/:path*', destination: '/:path*', permanent: true },
+    ];
   },
 };
 

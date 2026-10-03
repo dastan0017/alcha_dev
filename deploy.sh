@@ -178,7 +178,9 @@ log "Service status"
 $COMPOSE ps
 
 log "Public endpoints"
-for u in "https://alcha.dev" "https://www.alcha.dev" "https://api.alcha.dev/health" "https://admin.alcha.dev"; do
+for u in "https://alcha.dev" "https://www.alcha.dev" "https://api.alcha.dev/health" "https://admin.alcha.dev" \
+  "https://alcha.dev/favicon.ico" "https://alcha.dev/icon.png" "https://alcha.dev/apple-icon.png" \
+  "https://alcha.dev/manifest.webmanifest" "https://alcha.dev/brand/logo-512.png"; do
   code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$u" || echo 000)
   printf '  %-34s %s\n' "$u" "$code"
 done

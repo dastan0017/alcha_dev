@@ -22,14 +22,20 @@ export function Hero({
     <section className={styles.hero} {...cms.section('hero')}>
       <div className={`container ${styles.heroInner}`}>
         <div className={styles.heroCopy}>
-          <p className={`eyebrow ${styles.heroEyebrow}`} {...cms.field(cms.home('eyebrow'))}>
-            {content.eyebrow}
-          </p>
-          <h1
-            className={styles.heroTitle}
-            {...cms.field(cms.home('heroTitle'), { multiline: true })}
-          >
-            {content.heroTitle}
+          {/* The eyebrow is the page's topic («Создание сайтов в Бишкеке»), so it is part of
+              the heading search engines read; the slogan stays the big line. Each part keeps
+              its own field span (a field element holds nothing but its text). */}
+          <h1 className={styles.heroHeading}>
+            <span className={`eyebrow ${styles.heroEyebrow}`} {...cms.field(cms.home('eyebrow'))}>
+              {content.eyebrow}
+            </span>
+            <span className="sr-only">. </span>
+            <span
+              className={styles.heroTitle}
+              {...cms.field(cms.home('heroTitle'), { multiline: true })}
+            >
+              {content.heroTitle}
+            </span>
           </h1>
           <p
             className={styles.heroSub}

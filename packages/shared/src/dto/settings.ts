@@ -5,6 +5,8 @@ export const siteSettingsSchema = z.object({
   email: z.string(),
   telegram: z.string(),
   whatsapp: z.string(),
+  /** E.164 (`+996…`), shown as text; blank hides it. Defaulted so an older API still parses. */
+  phone: z.string().default(''),
   github: z.string(),
   linkedin: z.string(),
   instagram: z.string(),
@@ -22,6 +24,12 @@ export const siteSettingsUpdateSchema = z.object({
   email: z.string().email(),
   telegram: z.string(),
   whatsapp: z.string(),
+  // Optional, so a CRM bundle built before the field existed can still save.
+  phone: z
+    .string()
+    .trim()
+    .regex(/^(\+\d{8,15})?$/, 'Телефон в формате +996XXXXXXXXX')
+    .optional(),
   github: z.string(),
   linkedin: z.string(),
   instagram: z.string(),

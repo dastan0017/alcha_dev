@@ -20,6 +20,13 @@ async function bootstrap(): Promise<void> {
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
 
   app.use(helmet());
+  // JSON for the site and the CRM, never a search result.
+  app.use(
+    (_req: unknown, res: { setHeader(name: string, value: string): void }, next: () => void) => {
+      res.setHeader('X-Robots-Tag', 'noindex');
+      next();
+    },
+  );
   app.use(cookieParser());
   app.useGlobalFilters(new ZodExceptionFilter());
 

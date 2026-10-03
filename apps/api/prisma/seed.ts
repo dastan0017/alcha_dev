@@ -50,6 +50,7 @@ async function seedSettings(): Promise<void> {
       email: 'dastan.rakhmanzhanov@gmail.com',
       telegram: 'https://t.me/rakhmanzhanov', // TODO(dastan): real Telegram handle
       whatsapp: 'https://wa.me/996706304803', // TODO(dastan): real WhatsApp number
+      phone: '+996706304803',
       github: 'https://github.com/dastan0017', // TODO(dastan): real GitHub username
       linkedin: 'https://www.linkedin.com/in/dastan-rakhmanzhanov', // TODO(dastan)
       instagram: 'https://www.instagram.com/dastich_fantastich_r',

@@ -66,6 +66,8 @@ model SiteSettings {
   email           String   @default("hello@alcha.dev")
   telegram        String   @default("")
   whatsapp        String   @default("")
+  // Shown as text in the footer and sent as `telephone` in the JSON-LD (E.164, e.g. +996…).
+  phone           String   @default("")
   github          String   @default("")
   linkedin        String   @default("")
   instagram       String   @default("")

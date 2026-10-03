@@ -11,6 +11,6 @@ export default function robots(): MetadataRoute.Robots {
       disallow: ['/api/preview', '/api/revalidate'],
     },
     sitemap: `${env.siteUrl}/sitemap.xml`,
-    host: env.siteUrl,
+    // No `Host:` line: Google ignores it and Yandex replaced it with 301s in 2018.
   };
 }

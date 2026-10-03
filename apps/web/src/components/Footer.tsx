@@ -8,6 +8,12 @@ interface SocialLink {
   href: string;
 }
 
+/** +996706304803 → «+996 706 304 803»; any other format is shown as stored. */
+function formatPhone(phone: string): string {
+  const kg = phone.match(/^\+996(\d{3})(\d{3})(\d{3})$/);
+  return kg ? `+996 ${kg[1]} ${kg[2]} ${kg[3]}` : phone;
+}
+
 export function Footer({
   settings,
   chrome,
@@ -40,6 +46,13 @@ export function Footer({
           <p className="site-footer__tagline" {...cms.field(cms.chrome('footerTagline'))}>
             {chrome.footerTagline}
           </p>
+          {/* The phone as text, matching the JSON-LD `telephone`: search engines and
+              directories compare the two. */}
+          {settings.phone && (
+            <a className="site-footer__phone" href={`tel:${settings.phone}`}>
+              {formatPhone(settings.phone)}
+            </a>
+          )}
           {settings.email && (
             <a className="site-footer__email" href={`mailto:${settings.email}`}>
               {settings.email}
@@ -93,7 +106,7 @@ export function Footer({
 
       <div className="container site-footer__bottom">
         <span>
-          © {year} alcha.dev —{' '}
+          © {year} Alcha Dev (alcha.dev) —{' '}
           <span {...cms.field(cms.chrome('footerRights'))}>{chrome.footerRights}</span>
         </span>
         <span className="mono" {...cms.field(cms.chrome('footerMadeIn'))}>
